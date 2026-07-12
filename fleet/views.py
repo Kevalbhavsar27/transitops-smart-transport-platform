@@ -216,9 +216,14 @@ def driver_list(request):
     )
 
 
-@role_required(*DRIVER_MANAGE_ROLES)
+@role_required(
+    User.Role.ADMIN,
+    User.Role.FLEET_MANAGER,
+)
 def driver_create(request):
-    form = DriverForm(request.POST or None)
+    form = DriverForm(
+        request.POST or None
+    )
 
     if request.method == "POST" and form.is_valid():
         driver = form.save()
@@ -228,22 +233,34 @@ def driver_create(request):
             f"Driver {driver.name} created successfully.",
         )
 
-        return redirect("fleet:driver_list")
+        return redirect(
+            "fleet:driver_list"
+        )
 
     return render(
         request,
         "fleet/driver_form.html",
         {
             "form": form,
-            "page_heading": "Register Driver",
+            "page_heading": "Add Driver",
+            "page_subtitle": (
+                "Register a new driver in TransitOps."
+            ),
             "button_text": "Save Driver",
+            "is_edit": False,
         },
     )
 
 
-@role_required(*DRIVER_MANAGE_ROLES)
+@role_required(
+    User.Role.ADMIN,
+    User.Role.FLEET_MANAGER,
+)
 def driver_update(request, pk):
-    driver = get_object_or_404(Driver, pk=pk)
+    driver = get_object_or_404(
+        Driver,
+        pk=pk,
+    )
 
     form = DriverForm(
         request.POST or None,
@@ -251,14 +268,19 @@ def driver_update(request, pk):
     )
 
     if request.method == "POST" and form.is_valid():
-        driver = form.save()
+        updated_driver = form.save()
 
         messages.success(
             request,
-            f"Driver {driver.name} updated successfully.",
+            (
+                f"Driver {updated_driver.name} "
+                "updated successfully."
+            ),
         )
 
-        return redirect("fleet:driver_list")
+        return redirect(
+            "fleet:driver_list"
+        )
 
     return render(
         request,
@@ -266,8 +288,12 @@ def driver_update(request, pk):
         {
             "form": form,
             "driver": driver,
-            "page_heading": "Update Driver",
-            "button_text": "Update Driver",
+            "page_heading": "Edit Driver",
+            "page_subtitle": (
+                f"Update details for {driver.name}."
+            ),
+            "button_text": "Save Changes",
+            "is_edit": True,
         },
     )
 
