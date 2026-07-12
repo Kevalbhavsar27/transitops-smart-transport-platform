@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block title %}
+Reports | TransitOps
+{% endblock %}
+
+{% block page_title %}
+Reports and Analytics
+{% endblock %}
+
+{% block page_subtitle %}
+Vehicle cost, efficiency, profitability and ROI analysis.
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h4 class="mb-1">
+            Vehicle Performance Report
+        </h4>
+
+        <p class="text-muted mb-0">
+            Financial and operational analysis
+        </p>
+    </div>
+
+    <a
+        href="{% url 'operations:export_vehicle_report_csv' %}"
+        class="btn btn-success"
+    >
+        Export CSV
+    </a>
+
+</div>
+
+<div class="row g-3 mb-4">
+
+    <div class="col-lg-3 col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <small class="text-muted">
+                    Revenue
+                </small>
+
+                <h4 class="mt-2">
+                    ₹{{ totals.revenue|floatformat:2 }}
+                </h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <small class="text-muted">
+                    Fuel Cost
+                </small>
+
+                <h4 class="mt-2">
+                    ₹{{ totals.fuel_cost|floatformat:2 }}
+                </h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <small class="text-muted">
+                    Operational Cost
+                </small>
+
+                <h4 class="mt-2">
+                    ₹{{ totals.operational_cost|floatformat:2 }}
+                </h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <small class="text-muted">
+                    Profit
+                </small>
+
+                <h4 class="mt-2">
+                    ₹{{ totals.profit|floatformat:2 }}
+                </h4>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+
+        <table class="table table-hover align-middle mb-0">
+
+            <thead class="table-light">
+                <tr>
+                    <th>Vehicle</th>
+                    <th>Trips</th>
+                    <th>Distance</th>
+                    <th>Fuel Efficiency</th>
+                    <th>Revenue</th>
+                    <th>Operational Cost</th>
+                    <th>Profit</th>
+                    <th>ROI</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for row in rows %}
+                    <tr>
+                        <td>
+                            <strong>
+                                {{ row.vehicle.registration_number }}
+                            </strong>
+
+                            <small class="d-block text-muted">
+                                {{ row.vehicle.vehicle_name }}
+                            </small>
+                        </td>
+
+                        <td>
+                            {{ row.completed_trips }}
+                        </td>
+
+                        <td>
+                            {{ row.total_distance|floatformat:2 }}
+                            km
+                        </td>
+
+                        <td>
+                            {{ row.fuel_efficiency|floatformat:2 }}
+                            km/L
+                        </td>
+
+                        <td>
+                            ₹{{ row.revenue|floatformat:2 }}
+                        </td>
+
+                        <td>
+                            ₹{{ row.operational_cost|floatformat:2 }}
+                        </td>
+
+                        <td>
+                            ₹{{ row.profit|floatformat:2 }}
+                        </td>
+
+                        <td>
+                            {{ row.roi|floatformat:2 }}%
+                        </td>
+                    </tr>
+
+                {% empty %}
+                    <tr>
+                        <td
+                            colspan="8"
+                            class="text-center text-muted py-5"
+                        >
+                            No vehicle report data available.
+                        </td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}

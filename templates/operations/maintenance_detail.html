@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}
+Maintenance #{{ record.pk }} | TransitOps
+{% endblock %}
+
+{% block page_title %}
+Maintenance #{{ record.pk }}
+{% endblock %}
+
+{% block page_subtitle %}
+{{ record.vehicle.registration_number }} —
+{{ record.maintenance_type }}
+{% endblock %}
+
+{% block content %}
+
+<div class="row g-4">
+
+    <div class="col-lg-8">
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+
+                <h5 class="mb-4">
+                    Maintenance Information
+                </h5>
+
+                <div class="row g-4">
+
+                    <div class="col-md-6">
+                        <small class="text-muted">
+                            Vehicle
+                        </small>
+
+                        <div class="fw-semibold">
+                            {{ record.vehicle.registration_number }}
+                            — {{ record.vehicle.vehicle_name }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <small class="text-muted">
+                            Status
+                        </small>
+
+                        <div class="fw-semibold">
+                            {{ record.get_status_display }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <small class="text-muted">
+                            Maintenance Type
+                        </small>
+
+                        <div class="fw-semibold">
+                            {{ record.maintenance_type }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <small class="text-muted">
+                            Priority
+                        </small>
+
+                        <div class="fw-semibold">
+                            {{ record.get_priority_display }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <small class="text-muted">
+                            Estimated Cost
+                        </small>
+
+                        <div class="fw-semibold">
+                            ₹{{ record.estimated_cost }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <small class="text-muted">
+                            Final Cost
+                        </small>
+
+                        <div class="fw-semibold">
+                            ₹{{ record.final_cost }}
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <small class="text-muted">
+                            Description
+                        </small>
+
+                        <p class="mb-0">
+                            {{ record.description }}
+                        </p>
+                    </div>
+
+                    {% if record.completion_notes %}
+                        <div class="col-12">
+                            <small class="text-muted">
+                                Completion Notes
+                            </small>
+
+                            <p class="mb-0">
+                                {{ record.completion_notes }}
+                            </p>
+                        </div>
+                    {% endif %}
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-lg-4">
+
+        {% if can_manage and record.status == "IN_PROGRESS" %}
+
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body p-4">
+
+                    <h5 class="mb-3">
+                        Complete Maintenance
+                    </h5>
+
+                    <form
+                        method="post"
+                        action="{% url 'operations:maintenance_close' record.pk %}"
+                    >
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Final Cost
+                            </label>
+
+                            {{ close_form.final_cost }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                Completion Notes
+                            </label>
+
+                            {{ close_form.completion_notes }}
+                        </div>
+
+                        <button class="btn btn-success w-100">
+                            Complete Maintenance
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+
+            <form
+                method="post"
+                action="{% url 'operations:maintenance_cancel' record.pk %}"
+            >
+                {% csrf_token %}
+
+                <button
+                    class="btn btn-outline-danger w-100"
+                    onclick="return confirm('Cancel this maintenance record?')"
+                >
+                    Cancel Maintenance
+                </button>
+            </form>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

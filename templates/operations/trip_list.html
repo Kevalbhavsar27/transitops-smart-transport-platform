@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}
+Trips | TransitOps
+{% endblock %}
+
+{% block page_title %}
+Trip Management
+{% endblock %}
+
+{% block page_subtitle %}
+Create, dispatch, complete and monitor transport trips.
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="mb-1">Trips</h4>
+        <p class="text-muted mb-0">
+            {{ trips|length }} trip{{ trips|length|pluralize }}
+        </p>
+    </div>
+
+    {% if can_manage %}
+        <a
+            href="{% url 'operations:trip_create' %}"
+            class="btn btn-primary"
+        >
+            + Create Trip
+        </a>
+    {% endif %}
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+
+        <form method="get" class="row g-3">
+
+            <div class="col-md-7">
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ request.GET.search }}"
+                    class="form-control"
+                    placeholder="Search source, destination, vehicle or driver"
+                >
+            </div>
+
+            <div class="col-md-3">
+                <select
+                    name="status"
+                    class="form-select"
+                >
+                    <option value="">All statuses</option>
+
+                    {% for value, label in trip_statuses %}
+                        <option
+                            value="{{ value }}"
+                            {% if request.GET.status == value %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-2 d-grid">
+                <button class="btn btn-dark">
+                    Search
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+
+        <table class="table table-hover align-middle mb-0">
+
+            <thead class="table-light">
+                <tr>
+                    <th>Trip</th>
+                    <th>Route</th>
+                    <th>Vehicle</th>
+                    <th>Driver</th>
+                    <th>Cargo</th>
+                    <th>Distance</th>
+                    <th>Status</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for trip in trips %}
+                    <tr>
+                        <td>
+                            <strong>#{{ trip.pk }}</strong>
+                        </td>
+
+                        <td>
+                            {{ trip.source }}
+                            <span class="text-muted">→</span>
+                            {{ trip.destination }}
+                        </td>
+
+                        <td>
+                            {{ trip.vehicle.registration_number }}
+                        </td>
+
+                        <td>
+                            {{ trip.driver.name }}
+                        </td>
+
+                        <td>
+                            {{ trip.cargo_weight }} kg
+                        </td>
+
+                        <td>
+                            {{ trip.planned_distance }} km
+                        </td>
+
+                        <td>
+                            {% if trip.status == "DRAFT" %}
+                                <span class="badge text-bg-secondary">
+                                    Draft
+                                </span>
+
+                            {% elif trip.status == "DISPATCHED" %}
+                                <span class="badge text-bg-primary">
+                                    Dispatched
+                                </span>
+
+                            {% elif trip.status == "COMPLETED" %}
+                                <span class="badge text-bg-success">
+                                    Completed
+                                </span>
+
+                            {% else %}
+                                <span class="badge text-bg-danger">
+                                    Cancelled
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <td class="text-end">
+                            <a
+                                href="{% url 'operations:trip_detail' trip.pk %}"
+                                class="btn btn-sm btn-outline-primary"
+                            >
+                                View
+                            </a>
+                        </td>
+                    </tr>
+
+                {% empty %}
+                    <tr>
+                        <td
+                            colspan="8"
+                            class="text-center text-muted py-5"
+                        >
+                            No trips found.
+                        </td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}

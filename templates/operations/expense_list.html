@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block title %}
+Expenses | TransitOps
+{% endblock %}
+
+{% block page_title %}
+Expense Management
+{% endblock %}
+
+{% block page_subtitle %}
+Track tolls, repairs, parking and operational expenses.
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h4 class="mb-1">
+            Operational Expenses
+        </h4>
+
+        <p class="text-muted mb-0">
+            Total expenses: ₹{{ total_amount }}
+        </p>
+    </div>
+
+    {% if can_manage %}
+        <a
+            href="{% url 'operations:expense_create' %}"
+            class="btn btn-primary"
+        >
+            + Add Expense
+        </a>
+    {% endif %}
+
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+
+        <form method="get" class="row g-3">
+
+            <div class="col-md-7">
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ request.GET.search }}"
+                    class="form-control"
+                    placeholder="Search vehicle or description"
+                >
+            </div>
+
+            <div class="col-md-3">
+                <select
+                    name="expense_type"
+                    class="form-select"
+                >
+                    <option value="">
+                        All expense types
+                    </option>
+
+                    {% for value, label in expense_types %}
+                        <option
+                            value="{{ value }}"
+                            {% if request.GET.expense_type == value %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-2 d-grid">
+                <button class="btn btn-dark">
+                    Search
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+
+        <table class="table table-hover align-middle mb-0">
+
+            <thead class="table-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Vehicle</th>
+                    <th>Trip</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+
+                    {% if can_manage %}
+                        <th class="text-end">
+                            Actions
+                        </th>
+                    {% endif %}
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for expense in expenses %}
+                    <tr>
+                        <td>
+                            {{ expense.date }}
+                        </td>
+
+                        <td>
+                            {{ expense.vehicle.registration_number }}
+                        </td>
+
+                        <td>
+                            {% if expense.trip %}
+                                #{{ expense.trip.pk }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {{ expense.get_expense_type_display }}
+                        </td>
+
+                        <td>
+                            {{ expense.description }}
+                        </td>
+
+                        <td>
+                            <strong>
+                                ₹{{ expense.amount }}
+                            </strong>
+                        </td>
+
+                        {% if can_manage %}
+                            <td class="text-end">
+
+                                <a
+                                    href="{% url 'operations:expense_update' expense.pk %}"
+                                    class="btn btn-sm btn-outline-primary"
+                                >
+                                    Edit
+                                </a>
+
+                                <form
+                                    method="post"
+                                    action="{% url 'operations:expense_delete' expense.pk %}"
+                                    class="d-inline"
+                                >
+                                    {% csrf_token %}
+
+                                    <button
+                                        class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('Delete this expense?')"
+                                    >
+                                        Delete
+                                    </button>
+                                </form>
+
+                            </td>
+                        {% endif %}
+                    </tr>
+
+                {% empty %}
+                    <tr>
+                        <td
+                            colspan="7"
+                            class="text-center text-muted py-5"
+                        >
+                            No expenses found.
+                        </td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}

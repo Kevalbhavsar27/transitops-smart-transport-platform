@@ -1,0 +1,346 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dashboard | TransitOps
+{% endblock %}
+
+{% block page_title %}
+Operations Dashboard
+{% endblock %}
+
+{% block page_subtitle %}
+Monitor fleet availability, trips, costs and licence compliance.
+{% endblock %}
+
+{% block content %}
+
+<div class="welcome-banner">
+    <div>
+        <p class="eyebrow">LIVE FLEET OPERATIONS</p>
+
+        <h3>
+            Welcome,
+            {{ request.user.first_name|default:request.user.email }}
+        </h3>
+
+        <p>
+            Your latest transport operation overview.
+        </p>
+    </div>
+
+    <div class="utilization-box">
+        <span>Fleet Utilization</span>
+        <strong>{{ fleet_utilization }}%</strong>
+    </div>
+</div>
+
+<div class="stats-grid">
+    {% for stat in stats %}
+        <article class="stat-card">
+            <div class="stat-card-top">
+                <span class="stat-label">
+                    {{ stat.title }}
+                </span>
+
+                <span class="stat-indicator"></span>
+            </div>
+
+            <div class="stat-value">
+                {{ stat.value }}
+            </div>
+
+            <p>{{ stat.subtitle }}</p>
+        </article>
+    {% endfor %}
+</div>
+
+<div class="row g-3 mt-2">
+
+    <div class="col-lg-3 col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <small class="text-muted">
+                    Total Revenue
+                </small>
+
+                <h4 class="mt-2 mb-0">
+                    ₹{{ total_revenue|floatformat:2 }}
+                </h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <small class="text-muted">
+                    Fuel Cost
+                </small>
+
+                <h4 class="mt-2 mb-0">
+                    ₹{{ total_fuel_cost|floatformat:2 }}
+                </h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <small class="text-muted">
+                    Operational Cost
+                </small>
+
+                <h4 class="mt-2 mb-0">
+                    ₹{{ total_operational_cost|floatformat:2 }}
+                </h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <small class="text-muted">
+                    Estimated Profit
+                </small>
+
+                <h4 class="mt-2 mb-0">
+                    ₹{{ estimated_profit|floatformat:2 }}
+                </h4>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row g-4 mt-1">
+
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <h5>Vehicle Status</h5>
+
+                <div style="height: 300px;">
+                    <canvas id="vehicleStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <h5>Trip Status</h5>
+
+                <div style="height: 300px;">
+                    <canvas id="tripStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row g-4 mt-1">
+
+    <div class="col-lg-8">
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between mb-3">
+                    <div>
+                        <h5 class="mb-1">Recent Trips</h5>
+                        <small class="text-muted">
+                            Latest dispatch activity
+                        </small>
+                    </div>
+
+                    <a
+                        href="{% url 'operations:trip_list' %}"
+                        class="btn btn-sm btn-outline-primary"
+                    >
+                        View All
+                    </a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>Trip</th>
+                                <th>Route</th>
+                                <th>Vehicle</th>
+                                <th>Driver</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for trip in recent_trips %}
+                                <tr>
+                                    <td>
+                                        <a
+                                            href="{% url 'operations:trip_detail' trip.pk %}"
+                                        >
+                                            #{{ trip.pk }}
+                                        </a>
+                                    </td>
+
+                                    <td>
+                                        {{ trip.source }} →
+                                        {{ trip.destination }}
+                                    </td>
+
+                                    <td>
+                                        {{ trip.vehicle.registration_number }}
+                                    </td>
+
+                                    <td>
+                                        {{ trip.driver.name }}
+                                    </td>
+
+                                    <td>
+                                        {{ trip.get_status_display }}
+                                    </td>
+                                </tr>
+
+                            {% empty %}
+                                <tr>
+                                    <td
+                                        colspan="5"
+                                        class="text-center text-muted py-4"
+                                    >
+                                        No trips created yet.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-lg-4">
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+
+                <h5>Licence Expiry Alerts</h5>
+
+                <p class="text-muted small">
+                    Drivers expiring within 30 days
+                </p>
+
+                {% for driver in expiring_licenses %}
+                    <div
+                        class="border rounded p-3 mb-2"
+                    >
+                        <strong>{{ driver.name }}</strong>
+
+                        <small class="d-block text-muted">
+                            {{ driver.license_number }}
+                        </small>
+
+                        <span class="text-danger small">
+                            Expires:
+                            {{ driver.license_expiry_date }}
+                        </span>
+                    </div>
+
+                {% empty %}
+                    <div class="alert alert-success mb-0">
+                        No licences expire within 30 days.
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{{ vehicle_chart_labels|json_script:"vehicle-chart-labels" }}
+{{ vehicle_chart_values|json_script:"vehicle-chart-values" }}
+{{ trip_chart_labels|json_script:"trip-chart-labels" }}
+{{ trip_chart_values|json_script:"trip-chart-values" }}
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const vehicleLabels = JSON.parse(
+        document.getElementById(
+            "vehicle-chart-labels"
+        ).textContent
+    );
+
+    const vehicleValues = JSON.parse(
+        document.getElementById(
+            "vehicle-chart-values"
+        ).textContent
+    );
+
+    const tripLabels = JSON.parse(
+        document.getElementById(
+            "trip-chart-labels"
+        ).textContent
+    );
+
+    const tripValues = JSON.parse(
+        document.getElementById(
+            "trip-chart-values"
+        ).textContent
+    );
+
+    new Chart(
+        document.getElementById("vehicleStatusChart"),
+        {
+            type: "doughnut",
+            data: {
+                labels: vehicleLabels,
+                datasets: [
+                    {
+                        data: vehicleValues
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        }
+    );
+
+    new Chart(
+        document.getElementById("tripStatusChart"),
+        {
+            type: "bar",
+            data: {
+                labels: tripLabels,
+                datasets: [
+                    {
+                        label: "Trips",
+                        data: tripValues
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        }
+    );
+</script>
+
+{% endblock %}

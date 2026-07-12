@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}
+Fuel Logs | TransitOps
+{% endblock %}
+
+{% block page_title %}
+Fuel Management
+{% endblock %}
+
+{% block page_subtitle %}
+Track fuel consumption and cost per vehicle.
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h4 class="mb-1">
+            Fuel Logs
+        </h4>
+
+        <p class="text-muted mb-0">
+            Total fuel cost: ₹{{ total_cost }}
+        </p>
+    </div>
+
+    {% if can_manage %}
+        <a
+            href="{% url 'operations:fuel_log_create' %}"
+            class="btn btn-primary"
+        >
+            + Add Fuel Log
+        </a>
+    {% endif %}
+
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+
+        <form method="get" class="row g-3">
+
+            <div class="col-md-10">
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ request.GET.search }}"
+                    class="form-control"
+                    placeholder="Search vehicle or trip route"
+                >
+            </div>
+
+            <div class="col-md-2 d-grid">
+                <button class="btn btn-dark">
+                    Search
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+
+        <table class="table table-hover align-middle mb-0">
+
+            <thead class="table-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Vehicle</th>
+                    <th>Trip</th>
+                    <th>Litres</th>
+                    <th>Price/Litre</th>
+                    <th>Total Cost</th>
+                    <th>Odometer</th>
+
+                    {% if can_manage %}
+                        <th class="text-end">
+                            Actions
+                        </th>
+                    {% endif %}
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for fuel in fuel_logs %}
+                    <tr>
+                        <td>
+                            {{ fuel.date }}
+                        </td>
+
+                        <td>
+                            {{ fuel.vehicle.registration_number }}
+                        </td>
+
+                        <td>
+                            {% if fuel.trip %}
+                                #{{ fuel.trip.pk }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {{ fuel.liters }} L
+                        </td>
+
+                        <td>
+                            ₹{{ fuel.price_per_liter }}
+                        </td>
+
+                        <td>
+                            <strong>
+                                ₹{{ fuel.total_cost }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ fuel.odometer }} km
+                        </td>
+
+                        {% if can_manage %}
+                            <td class="text-end">
+
+                                <a
+                                    href="{% url 'operations:fuel_log_update' fuel.pk %}"
+                                    class="btn btn-sm btn-outline-primary"
+                                >
+                                    Edit
+                                </a>
+
+                                {% if request.user.is_superuser or request.user.role == "FINANCIAL_ANALYST" %}
+                                    <form
+                                        method="post"
+                                        action="{% url 'operations:fuel_log_delete' fuel.pk %}"
+                                        class="d-inline"
+                                    >
+                                        {% csrf_token %}
+
+                                        <button
+                                            class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirm('Delete this fuel log?')"
+                                        >
+                                            Delete
+                                        </button>
+                                    </form>
+                                {% endif %}
+
+                            </td>
+                        {% endif %}
+                    </tr>
+
+                {% empty %}
+                    <tr>
+                        <td
+                            colspan="8"
+                            class="text-center text-muted py-5"
+                        >
+                            No fuel logs found.
+                        </td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}

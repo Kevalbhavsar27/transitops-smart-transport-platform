@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Vehicles | TransitOps
+{% endblock %}
+
+{% block page_title %}
+    Vehicle Registry
+{% endblock %}
+
+{% block page_subtitle %}
+    Register, monitor and manage fleet vehicles.
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="mb-1">Fleet Vehicles</h4>
+        <p class="text-muted mb-0">
+            {{ vehicles|length }} vehicle{{ vehicles|length|pluralize }}
+        </p>
+    </div>
+
+    {% if can_manage %}
+        <a
+            href="{% url 'fleet:vehicle_create' %}"
+            class="btn btn-primary"
+        >
+            + Register Vehicle
+        </a>
+    {% endif %}
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+
+        <form method="get" class="row g-3">
+
+            <div class="col-lg-4">
+                <input
+                    type="text"
+                    name="search"
+                    class="form-control"
+                    value="{{ request.GET.search }}"
+                    placeholder="Search registration, name or model"
+                >
+            </div>
+
+            <div class="col-lg-2">
+                <select name="status" class="form-select">
+                    <option value="">All statuses</option>
+
+                    {% for value, label in vehicle_statuses %}
+                        <option
+                            value="{{ value }}"
+                            {% if request.GET.status == value %}selected{% endif %}
+                        >
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-lg-2">
+                <select name="vehicle_type" class="form-select">
+                    <option value="">All types</option>
+
+                    {% for value, label in vehicle_types %}
+                        <option
+                            value="{{ value }}"
+                            {% if request.GET.vehicle_type == value %}selected{% endif %}
+                        >
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-lg-2">
+                <input
+                    type="text"
+                    name="region"
+                    class="form-control"
+                    value="{{ request.GET.region }}"
+                    placeholder="Region"
+                >
+            </div>
+
+            <div class="col-lg-2 d-grid">
+                <button class="btn btn-dark">
+                    Search
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+
+        <table class="table table-hover align-middle mb-0">
+
+            <thead class="table-light">
+                <tr>
+                    <th>Registration</th>
+                    <th>Vehicle</th>
+                    <th>Type</th>
+                    <th>Capacity</th>
+                    <th>Odometer</th>
+                    <th>Region</th>
+                    <th>Status</th>
+
+                    {% if can_manage %}
+                        <th class="text-end">Actions</th>
+                    {% endif %}
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for vehicle in vehicles %}
+                    <tr>
+                        <td>
+                            <strong>
+                                {{ vehicle.registration_number }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ vehicle.vehicle_name }}
+
+                            {% if vehicle.model %}
+                                <small class="d-block text-muted">
+                                    {{ vehicle.model }}
+                                </small>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {{ vehicle.get_vehicle_type_display }}
+                        </td>
+
+                        <td>
+                            {{ vehicle.maximum_load_capacity }} kg
+                        </td>
+
+                        <td>
+                            {{ vehicle.odometer }} km
+                        </td>
+
+                        <td>
+                            {{ vehicle.region|default:"—" }}
+                        </td>
+
+                        <td>
+                            {% if vehicle.status == "AVAILABLE" %}
+                                <span class="badge text-bg-success">
+                                    Available
+                                </span>
+                            {% elif vehicle.status == "ON_TRIP" %}
+                                <span class="badge text-bg-primary">
+                                    On Trip
+                                </span>
+                            {% elif vehicle.status == "IN_SHOP" %}
+                                <span class="badge text-bg-warning">
+                                    In Shop
+                                </span>
+                            {% else %}
+                                <span class="badge text-bg-secondary">
+                                    Retired
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        {% if can_manage %}
+                            <td class="text-end">
+
+                                <a
+                                    href="{% url 'fleet:vehicle_update' vehicle.pk %}"
+                                    class="btn btn-sm btn-outline-primary"
+                                >
+                                    Edit
+                                </a>
+
+                                {% if request.user.is_superuser %}
+                                    <a
+                                        href="{% url 'fleet:vehicle_delete' vehicle.pk %}"
+                                        class="btn btn-sm btn-outline-danger"
+                                    >
+                                        Delete
+                                    </a>
+                                {% endif %}
+
+                            </td>
+                        {% endif %}
+                    </tr>
+
+                {% empty %}
+                    <tr>
+                        <td
+                            colspan="8"
+                            class="text-center py-5 text-muted"
+                        >
+                            No vehicles found.
+                        </td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}

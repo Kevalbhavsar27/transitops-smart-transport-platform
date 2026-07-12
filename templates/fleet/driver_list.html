@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Drivers | TransitOps
+{% endblock %}
+
+{% block page_title %}
+    Driver Management
+{% endblock %}
+
+{% block page_subtitle %}
+    Manage licences, safety scores and driver availability.
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="mb-1">Drivers</h4>
+
+        <p class="text-muted mb-0">
+            {{ drivers|length }} driver{{ drivers|length|pluralize }}
+        </p>
+    </div>
+
+    {% if can_manage %}
+        <a
+            href="{% url 'fleet:driver_create' %}"
+            class="btn btn-primary"
+        >
+            + Register Driver
+        </a>
+    {% endif %}
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+
+        <form method="get" class="row g-3">
+
+            <div class="col-lg-5">
+                <input
+                    type="text"
+                    name="search"
+                    class="form-control"
+                    value="{{ request.GET.search }}"
+                    placeholder="Search name, licence or contact"
+                >
+            </div>
+
+            <div class="col-lg-3">
+                <select name="status" class="form-select">
+                    <option value="">All statuses</option>
+
+                    {% for value, label in driver_statuses %}
+                        <option
+                            value="{{ value }}"
+                            {% if request.GET.status == value %}selected{% endif %}
+                        >
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-lg-2">
+                <input
+                    type="text"
+                    name="license_category"
+                    value="{{ request.GET.license_category }}"
+                    class="form-control"
+                    placeholder="Licence category"
+                >
+            </div>
+
+            <div class="col-lg-2 d-grid">
+                <button class="btn btn-dark">
+                    Search
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+
+        <table class="table table-hover align-middle mb-0">
+
+            <thead class="table-light">
+                <tr>
+                    <th>Driver</th>
+                    <th>Licence</th>
+                    <th>Category</th>
+                    <th>Expiry Date</th>
+                    <th>Safety Score</th>
+                    <th>Contact</th>
+                    <th>Status</th>
+
+                    {% if can_manage %}
+                        <th class="text-end">Actions</th>
+                    {% endif %}
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for driver in drivers %}
+                    <tr>
+                        <td>
+                            <strong>{{ driver.name }}</strong>
+                        </td>
+
+                        <td>
+                            {{ driver.license_number }}
+                        </td>
+
+                        <td>
+                            {{ driver.license_category }}
+                        </td>
+
+                        <td>
+                            {{ driver.license_expiry_date }}
+
+                            {% if driver.is_license_expired %}
+                                <span class="badge text-bg-danger">
+                                    Expired
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {{ driver.safety_score }}/100
+                        </td>
+
+                        <td>
+                            {{ driver.contact_number }}
+                        </td>
+
+                        <td>
+                            {% if driver.status == "AVAILABLE" %}
+                                <span class="badge text-bg-success">
+                                    Available
+                                </span>
+                            {% elif driver.status == "ON_TRIP" %}
+                                <span class="badge text-bg-primary">
+                                    On Trip
+                                </span>
+                            {% elif driver.status == "OFF_DUTY" %}
+                                <span class="badge text-bg-secondary">
+                                    Off Duty
+                                </span>
+                            {% else %}
+                                <span class="badge text-bg-danger">
+                                    Suspended
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        {% if can_manage %}
+                            <td class="text-end">
+                                <a
+                                    href="{% url 'fleet:driver_update' driver.pk %}"
+                                    class="btn btn-sm btn-outline-primary"
+                                >
+                                    Edit
+                                </a>
+
+                                {% if request.user.is_superuser or request.user.role == "SAFETY_OFFICER" %}
+                                    <a
+                                        href="{% url 'fleet:driver_delete' driver.pk %}"
+                                        class="btn btn-sm btn-outline-danger"
+                                    >
+                                        Delete
+                                    </a>
+                                {% endif %}
+                            </td>
+                        {% endif %}
+                    </tr>
+
+                {% empty %}
+                    <tr>
+                        <td
+                            colspan="8"
+                            class="text-center py-5 text-muted"
+                        >
+                            No drivers found.
+                        </td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}

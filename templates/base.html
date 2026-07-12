@@ -51,33 +51,50 @@
                 Dashboard
             </a>
 
-            <a href="#" class="nav-item">
-                Vehicles
-            </a>
+            <a
+    href="{% url 'fleet:vehicle_list' %}"class="nav-item">Vehicles</a>
 
-            <a href="#" class="nav-item">
-                Drivers
-            </a>
+<a
+    href="{% url 'fleet:driver_list' %}"
+    class="nav-item"
+>
+    Drivers
+</a>
 
-            <a href="#" class="nav-item">
-                Trips
-            </a>
+            <a
+    href="{% url 'operations:trip_list' %}"
+    class="nav-item"
+>
+    Trips
+</a>
 
-            <a href="#" class="nav-item">
-                Maintenance
-            </a>
+           <a
+    href="{% url 'operations:maintenance_list' %}"
+    class="nav-item"
+>
+    Maintenance
+</a>
 
-            <a href="#" class="nav-item">
-                Fuel Logs
-            </a>
+<a
+    href="{% url 'operations:fuel_log_list' %}"
+    class="nav-item"
+>
+    Fuel Logs
+</a>
 
-            <a href="#" class="nav-item">
-                Expenses
-            </a>
+<a
+    href="{% url 'operations:expense_list' %}"
+    class="nav-item"
+>
+    Expenses
+</a>
 
-            <a href="#" class="nav-item">
-                Reports
-            </a>
+           <a
+    href="{% url 'operations:reports_dashboard' %}"
+    class="nav-item"
+>
+    Reports
+</a>
 
             {% if request.user.is_superuser %}
                 <a

@@ -1,0 +1,313 @@
+{% extends "base.html" %}
+
+{% block title %}
+Trip #{{ trip.pk }} | TransitOps
+{% endblock %}
+
+{% block page_title %}
+Trip #{{ trip.pk }}
+{% endblock %}
+
+{% block page_subtitle %}
+{{ trip.source }} → {{ trip.destination }}
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        {% if trip.status == "DRAFT" %}
+            <span class="badge text-bg-secondary fs-6">
+                Draft
+            </span>
+
+        {% elif trip.status == "DISPATCHED" %}
+            <span class="badge text-bg-primary fs-6">
+                Dispatched
+            </span>
+
+        {% elif trip.status == "COMPLETED" %}
+            <span class="badge text-bg-success fs-6">
+                Completed
+            </span>
+
+        {% else %}
+            <span class="badge text-bg-danger fs-6">
+                Cancelled
+            </span>
+        {% endif %}
+    </div>
+
+    <a
+        href="{% url 'operations:trip_list' %}"
+        class="btn btn-light"
+    >
+        Back to Trips
+    </a>
+
+</div>
+
+<div class="row g-4">
+
+    <div class="col-lg-8">
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+
+                <h5 class="mb-4">
+                    Trip Information
+                </h5>
+
+                <div class="row g-4">
+
+                    <div class="col-md-6">
+                        <small class="text-muted">
+                            Source
+                        </small>
+                        <div class="fw-semibold">
+                            {{ trip.source }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <small class="text-muted">
+                            Destination
+                        </small>
+                        <div class="fw-semibold">
+                            {{ trip.destination }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <small class="text-muted">
+                            Vehicle
+                        </small>
+                        <div class="fw-semibold">
+                            {{ trip.vehicle.registration_number }}
+                            — {{ trip.vehicle.vehicle_name }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <small class="text-muted">
+                            Driver
+                        </small>
+                        <div class="fw-semibold">
+                            {{ trip.driver.name }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <small class="text-muted">
+                            Cargo Weight
+                        </small>
+                        <div class="fw-semibold">
+                            {{ trip.cargo_weight }} kg
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <small class="text-muted">
+                            Planned Distance
+                        </small>
+                        <div class="fw-semibold">
+                            {{ trip.planned_distance }} km
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <small class="text-muted">
+                            Revenue
+                        </small>
+                        <div class="fw-semibold">
+                            ₹{{ trip.revenue }}
+                        </div>
+                    </div>
+
+                    {% if trip.start_odometer %}
+                        <div class="col-md-4">
+                            <small class="text-muted">
+                                Start Odometer
+                            </small>
+                            <div class="fw-semibold">
+                                {{ trip.start_odometer }} km
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if trip.final_odometer %}
+                        <div class="col-md-4">
+                            <small class="text-muted">
+                                Final Odometer
+                            </small>
+                            <div class="fw-semibold">
+                                {{ trip.final_odometer }} km
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if trip.fuel_consumed %}
+                        <div class="col-md-4">
+                            <small class="text-muted">
+                                Fuel Consumed
+                            </small>
+                            <div class="fw-semibold">
+                                {{ trip.fuel_consumed }} litres
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if trip.actual_distance %}
+                        <div class="col-md-4">
+                            <small class="text-muted">
+                                Actual Distance
+                            </small>
+                            <div class="fw-semibold">
+                                {{ trip.actual_distance }} km
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if trip.fuel_efficiency %}
+                        <div class="col-md-4">
+                            <small class="text-muted">
+                                Fuel Efficiency
+                            </small>
+                            <div class="fw-semibold">
+                                {{ trip.fuel_efficiency|floatformat:2 }}
+                                km/l
+                            </div>
+                        </div>
+                    {% endif %}
+
+                </div>
+
+                {% if trip.notes %}
+                    <hr>
+
+                    <small class="text-muted">
+                        Notes
+                    </small>
+
+                    <p class="mb-0">
+                        {{ trip.notes }}
+                    </p>
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-lg-4">
+
+        {% if can_manage %}
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+
+                    <h5 class="mb-3">
+                        Trip Actions
+                    </h5>
+
+                    {% if trip.status == "DRAFT" %}
+
+                        <a
+                            href="{% url 'operations:trip_update' trip.pk %}"
+                            class="btn btn-outline-primary w-100 mb-2"
+                        >
+                            Edit Trip
+                        </a>
+
+                        <form
+                            method="post"
+                            action="{% url 'operations:trip_dispatch' trip.pk %}"
+                        >
+                            {% csrf_token %}
+
+                            <button
+                                class="btn btn-primary w-100 mb-2"
+                                onclick="return confirm('Dispatch this trip?')"
+                            >
+                                Dispatch Trip
+                            </button>
+                        </form>
+
+                        <form
+                            method="post"
+                            action="{% url 'operations:trip_cancel' trip.pk %}"
+                        >
+                            {% csrf_token %}
+
+                            <button
+                                class="btn btn-outline-danger w-100"
+                                onclick="return confirm('Cancel this trip?')"
+                            >
+                                Cancel Trip
+                            </button>
+                        </form>
+
+                    {% elif trip.status == "DISPATCHED" %}
+
+                        <form
+                            method="post"
+                            action="{% url 'operations:trip_complete' trip.pk %}"
+                        >
+                            {% csrf_token %}
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    Final Odometer
+                                </label>
+
+                                {{ complete_form.final_odometer }}
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    Fuel Consumed
+                                </label>
+
+                                {{ complete_form.fuel_consumed }}
+                            </div>
+
+                            <button
+                                class="btn btn-success w-100 mb-2"
+                            >
+                                Complete Trip
+                            </button>
+                        </form>
+
+                        <form
+                            method="post"
+                            action="{% url 'operations:trip_cancel' trip.pk %}"
+                        >
+                            {% csrf_token %}
+
+                            <button
+                                class="btn btn-outline-danger w-100"
+                                onclick="return confirm('Cancel this dispatched trip?')"
+                            >
+                                Cancel Trip
+                            </button>
+                        </form>
+
+                    {% else %}
+
+                        <p class="text-muted mb-0">
+                            No further actions are available.
+                        </p>
+
+                    {% endif %}
+
+                </div>
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
