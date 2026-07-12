@@ -75,9 +75,14 @@ class VehicleForm(BootstrapModelForm):
         return registration_number
 
 
-class DriverForm(BootstrapModelForm):
+
+
+
+class DriverForm(forms.ModelForm):
+
     class Meta:
         model = Driver
+
         fields = [
             "name",
             "license_number",
@@ -89,52 +94,53 @@ class DriverForm(BootstrapModelForm):
         ]
 
         widgets = {
-            "license_expiry_date": forms.DateInput(
-                attrs={"type": "date"}
+            "name": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter driver name",
+                }
             ),
+
+            "license_number": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter licence number",
+                }
+            ),
+
+            "license_category": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Example: LMV, HMV",
+                }
+            ),
+
+            "license_expiry_date": forms.DateInput(
+                attrs={
+                    "class": "form-control",
+                    "type": "date",
+                }
+            ),
+
+            "contact_number": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter contact number",
+                }
+            ),
+
             "safety_score": forms.NumberInput(
                 attrs={
+                    "class": "form-control",
                     "min": "0",
                     "max": "100",
+                    "step": "0.01",
+                }
+            ),
+
+            "status": forms.Select(
+                attrs={
+                    "class": "form-select",
                 }
             ),
         }
-
-    def clean_license_number(self):
-        license_number = (
-            self.cleaned_data["license_number"]
-            .upper()
-            .strip()
-        )
-
-        duplicate = Driver.objects.filter(
-            license_number=license_number
-        )
-
-        if self.instance.pk:
-            duplicate = duplicate.exclude(pk=self.instance.pk)
-
-        if duplicate.exists():
-            raise forms.ValidationError(
-                "A driver with this licence number already exists."
-            )
-
-        return license_number
-
-    def clean(self):
-        cleaned_data = super().clean()
-
-        expiry_date = cleaned_data.get("license_expiry_date")
-        status = cleaned_data.get("status")
-
-        if (
-            expiry_date
-            and expiry_date < timezone.localdate()
-            and status == Driver.Status.AVAILABLE
-        ):
-            self.add_error(
-                "status",
-                "A driver with an expired licence cannot be Available.",
-            )
-
-        return cleaned_data
