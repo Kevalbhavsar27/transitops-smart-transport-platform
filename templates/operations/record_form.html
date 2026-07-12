@@ -1,79 +1,2094 @@
 {% extends "base.html" %}
 
 {% block title %}
-{{ page_heading }} | TransitOps
+{{ page_heading|default:"Record Form" }} | TransitOps
 {% endblock %}
 
 {% block page_title %}
-{{ page_heading }}
+{{ page_heading|default:"Record Management" }}
 {% endblock %}
 
 {% block page_subtitle %}
-{{ page_subtitle }}
+{{ page_subtitle|default:"Add or update operational information." }}
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+    .operation-form-page {
+        --of-primary: #2563eb;
+        --of-primary-dark: #1d4ed8;
+        --of-primary-soft: #eff6ff;
+
+        --of-success: #16a34a;
+        --of-success-soft: #f0fdf4;
+
+        --of-warning: #d97706;
+        --of-warning-soft: #fff7ed;
+
+        --of-danger: #dc2626;
+        --of-danger-soft: #fef2f2;
+
+        --of-purple: #7c3aed;
+        --of-purple-soft: #f5f3ff;
+
+        --of-cyan: #0891b2;
+        --of-cyan-soft: #ecfeff;
+
+        --of-dark: #0f172a;
+        --of-text: #334155;
+        --of-muted: #64748b;
+        --of-border: #e2e8f0;
+        --of-surface: #ffffff;
+
+        --of-radius: 18px;
+        --of-shadow: 0 16px 42px rgba(15, 23, 42, 0.07);
+    }
+
+    .operation-form-page * {
+        box-sizing: border-box;
+    }
+
+    .operation-form-wrapper {
+        width: 100%;
+        max-width: 1180px;
+        margin: 0 auto;
+    }
+
+    /* Breadcrumb */
+
+    .operation-breadcrumb {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        margin-bottom: 18px;
+
+        color: var(--of-muted);
+        font-size: 12px;
+    }
+
+    .operation-breadcrumb a {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        color: var(--of-muted);
+        font-weight: 600;
+        text-decoration: none;
+
+        transition: color 0.2s ease;
+    }
+
+    .operation-breadcrumb a:hover {
+        color: var(--of-primary);
+    }
+
+    .operation-breadcrumb > i {
+        color: #94a3b8;
+        font-size: 10px;
+    }
+
+    /* Hero */
+
+    .operation-form-hero {
+        position: relative;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+
+        overflow: hidden;
+
+        margin-bottom: 22px;
+        padding: 27px 29px;
+
+        color: #ffffff;
+
+        background:
+            radial-gradient(
+                circle at 91% 10%,
+                rgba(255, 255, 255, 0.18),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 8% 115%,
+                rgba(245, 158, 11, 0.23),
+                transparent 36%
+            ),
+            linear-gradient(
+                135deg,
+                #0f172a 0%,
+                #1e3a8a 52%,
+                #2563eb 100%
+            );
+
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 21px;
+
+        box-shadow: 0 18px 42px rgba(37, 99, 235, 0.17);
+    }
+
+    .operation-form-hero::after {
+        position: absolute;
+        right: -65px;
+        bottom: -105px;
+
+        width: 240px;
+        height: 240px;
+
+        content: "";
+
+        border: 32px solid rgba(255, 255, 255, 0.055);
+        border-radius: 50%;
+    }
+
+    .operation-form-hero-content {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        gap: 15px;
+
+        max-width: 770px;
+    }
+
+    .operation-form-hero-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 55px;
+        height: 55px;
+
+        color: #ffffff;
+        font-size: 23px;
+
+        background: rgba(255, 255, 255, 0.13);
+        border: 1px solid rgba(255, 255, 255, 0.17);
+        border-radius: 16px;
+
+        backdrop-filter: blur(10px);
+    }
+
+    .operation-form-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+
+        margin-bottom: 8px;
+        padding: 5px 9px;
+
+        color: #dbeafe;
+        font-size: 9px;
+        font-weight: 750;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 30px;
+    }
+
+    .operation-form-eyebrow span {
+        width: 7px;
+        height: 7px;
+
+        background: #fbbf24;
+        border-radius: 50%;
+
+        box-shadow: 0 0 0 5px rgba(251, 191, 36, 0.14);
+    }
+
+    .operation-form-hero h2 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: clamp(23px, 4vw, 31px);
+        font-weight: 760;
+        letter-spacing: -0.8px;
+    }
+
+    .operation-form-hero p {
+        max-width: 640px;
+
+        margin: 7px 0 0;
+
+        color: #dbeafe;
+        font-size: 12px;
+        line-height: 1.65;
+    }
+
+    .operation-back-button {
+        position: relative;
+        z-index: 2;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        gap: 8px;
+
+        min-height: 43px;
+        padding: 9px 15px;
+
+        color: #1e3a8a;
+        font-size: 11px;
+        font-weight: 700;
+        text-decoration: none;
+
+        background: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        border-radius: 10px;
+
+        box-shadow: 0 9px 20px rgba(15, 23, 42, 0.13);
+
+        transition:
+            color 0.2s ease,
+            background 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .operation-back-button:hover {
+        color: var(--of-primary);
+        background: var(--of-primary-soft);
+        transform: translateY(-2px);
+    }
+
+    /* Main Layout */
+
+    .operation-form-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 285px;
+        align-items: start;
+        gap: 22px;
+    }
+
+    /* Form Card */
+
+    .operation-form-card {
+        overflow: hidden;
+
+        background: var(--of-surface);
+        border: 1px solid var(--of-border);
+        border-radius: var(--of-radius);
+
+        box-shadow: var(--of-shadow);
+    }
+
+    .operation-form-card-header {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+
+        padding: 20px 23px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(239, 246, 255, 0.95),
+                rgba(255, 255, 255, 0.98)
+            );
+
+        border-bottom: 1px solid var(--of-border);
+    }
+
+    .operation-card-header-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 43px;
+        height: 43px;
+
+        color: var(--of-primary);
+        font-size: 19px;
+
+        background: #ffffff;
+        border: 1px solid #dbeafe;
+        border-radius: 12px;
+
+        box-shadow: 0 7px 17px rgba(37, 99, 235, 0.09);
+    }
+
+    .operation-form-card-header h3 {
+        margin: 0;
+
+        color: var(--of-dark);
+        font-size: 16px;
+        font-weight: 720;
+    }
+
+    .operation-form-card-header p {
+        margin: 4px 0 0;
+
+        color: var(--of-muted);
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+    .operation-form-card-body {
+        padding: 24px;
+    }
+
+    /* General Errors */
+
+    .operation-general-errors {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+
+        margin-bottom: 22px;
+        padding: 14px 15px;
+
+        color: #991b1b;
+
+        background: var(--of-danger-soft);
+        border: 1px solid #fecaca;
+        border-radius: 12px;
+    }
+
+    .operation-general-errors-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 33px;
+        height: 33px;
+
+        color: var(--of-danger);
+
+        background: #fee2e2;
+        border-radius: 9px;
+    }
+
+    .operation-general-errors strong {
+        display: block;
+
+        margin-bottom: 4px;
+
+        font-size: 11px;
+        font-weight: 750;
+    }
+
+    .operation-general-errors ul {
+        margin: 0;
+        padding-left: 17px;
+
+        font-size: 10px;
+        line-height: 1.55;
+    }
+
+    /* Section */
+
+    .operation-form-section {
+        margin-bottom: 27px;
+    }
+
+    .operation-form-section:last-of-type {
+        margin-bottom: 0;
+    }
+
+    .operation-section-heading {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+
+        margin-bottom: 17px;
+        padding-bottom: 12px;
+
+        border-bottom: 1px solid #eef2f7;
+    }
+
+    .operation-section-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 36px;
+        height: 36px;
+
+        color: var(--of-primary);
+        font-size: 15px;
+
+        background: var(--of-primary-soft);
+        border-radius: 10px;
+    }
+
+    .operation-section-heading h4 {
+        margin: 0;
+
+        color: var(--of-dark);
+        font-size: 13px;
+        font-weight: 720;
+    }
+
+    .operation-section-heading p {
+        margin: 3px 0 0;
+
+        color: var(--of-muted);
+        font-size: 9px;
+        line-height: 1.45;
+    }
+
+    /* Fields */
+
+    .operation-field {
+        width: 100%;
+    }
+
+    .operation-field-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+
+        margin-bottom: 7px;
+
+        color: var(--of-text);
+        font-size: 11px;
+        font-weight: 680;
+    }
+
+    .operation-field-label-text {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .required-mark {
+        color: var(--of-danger);
+    }
+
+    .optional-label {
+        color: #94a3b8;
+        font-size: 8px;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+    }
+
+    .operation-field input:not([type="checkbox"]),
+    .operation-field select,
+    .operation-field textarea {
+        width: 100%;
+        min-height: 46px;
+
+        padding: 10px 13px;
+
+        color: var(--of-dark);
+        font-size: 12px;
+
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+
+        outline: none;
+        box-shadow: none;
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            background 0.2s ease;
+    }
+
+    .operation-field textarea {
+        min-height: 115px;
+        resize: vertical;
+        line-height: 1.6;
+    }
+
+    .operation-field select {
+        cursor: pointer;
+    }
+
+    .operation-field input:not([type="checkbox"]):hover,
+    .operation-field select:hover,
+    .operation-field textarea:hover {
+        border-color: #94a3b8;
+    }
+
+    .operation-field input:not([type="checkbox"]):focus,
+    .operation-field select:focus,
+    .operation-field textarea:focus {
+        background: #ffffff;
+        border-color: var(--of-primary);
+
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+
+    .operation-field input::placeholder,
+    .operation-field textarea::placeholder {
+        color: #94a3b8;
+    }
+
+    .operation-field.has-error input:not([type="checkbox"]),
+    .operation-field.has-error select,
+    .operation-field.has-error textarea {
+        background: #fffafa;
+        border-color: #f87171;
+    }
+
+    .operation-field-help {
+        display: flex;
+        align-items: flex-start;
+        gap: 5px;
+
+        margin-top: 6px;
+
+        color: var(--of-muted);
+        font-size: 9px;
+        line-height: 1.5;
+    }
+
+    .operation-field-help i {
+        margin-top: 1px;
+        color: #94a3b8;
+    }
+
+    .operation-field-errors {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        margin-top: 6px;
+    }
+
+    .operation-field-error {
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+
+        color: var(--of-danger);
+        font-size: 9px;
+        font-weight: 650;
+        line-height: 1.45;
+    }
+
+    .operation-field-error i {
+        margin-top: 1px;
+    }
+
+    /* Checkbox Field */
+
+    .operation-checkbox-panel {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+
+        min-height: 75px;
+        padding: 14px 15px;
+
+        background: #f8fafc;
+        border: 1px solid var(--of-border);
+        border-radius: 12px;
+    }
+
+    .operation-checkbox-information {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+    }
+
+    .operation-checkbox-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 38px;
+        height: 38px;
+
+        color: var(--of-primary);
+        font-size: 16px;
+
+        background: var(--of-primary-soft);
+        border-radius: 10px;
+    }
+
+    .operation-checkbox-information strong {
+        display: block;
+
+        color: var(--of-dark);
+        font-size: 10px;
+    }
+
+    .operation-checkbox-information small {
+        display: block;
+
+        margin-top: 3px;
+
+        color: var(--of-muted);
+        font-size: 8px;
+        line-height: 1.4;
+    }
+
+    .operation-checkbox-control input[type="checkbox"] {
+        width: 42px;
+        height: 22px;
+
+        margin: 0;
+
+        cursor: pointer;
+
+        accent-color: var(--of-primary);
+    }
+
+    /* Status Preview */
+
+    .operation-status-preview {
+        display: none;
+        align-items: center;
+        gap: 10px;
+
+        margin-top: 9px;
+        padding: 11px 12px;
+
+        background: var(--of-primary-soft);
+        border: 1px solid #bfdbfe;
+        border-radius: 10px;
+    }
+
+    .operation-status-preview.show {
+        display: flex;
+    }
+
+    .operation-status-preview-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 33px;
+        height: 33px;
+
+        color: var(--of-primary);
+
+        background: #dbeafe;
+        border-radius: 9px;
+    }
+
+    .operation-status-preview strong {
+        display: block;
+
+        color: var(--of-dark);
+        font-size: 10px;
+    }
+
+    .operation-status-preview small {
+        display: block;
+
+        margin-top: 2px;
+
+        color: var(--of-muted);
+        font-size: 8px;
+        line-height: 1.4;
+    }
+
+    /* Cost Preview */
+
+    .operation-cost-preview {
+        display: none;
+        align-items: center;
+        gap: 10px;
+
+        margin-top: 9px;
+        padding: 11px 12px;
+
+        background: var(--of-purple-soft);
+        border: 1px solid #ddd6fe;
+        border-radius: 10px;
+    }
+
+    .operation-cost-preview.show {
+        display: flex;
+    }
+
+    .operation-cost-preview-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 33px;
+        height: 33px;
+
+        color: var(--of-purple);
+
+        background: #ede9fe;
+        border-radius: 9px;
+    }
+
+    .operation-cost-preview strong {
+        display: block;
+
+        color: var(--of-dark);
+        font-size: 11px;
+    }
+
+    .operation-cost-preview small {
+        display: block;
+
+        margin-top: 2px;
+
+        color: var(--of-muted);
+        font-size: 8px;
+    }
+
+    /* Footer */
+
+    .operation-form-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+
+        margin-top: 28px;
+        padding-top: 20px;
+
+        border-top: 1px solid #eef2f7;
+    }
+
+    .operation-footer-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 7px;
+
+        color: var(--of-muted);
+        font-size: 9px;
+        line-height: 1.5;
+    }
+
+    .operation-footer-note i {
+        margin-top: 1px;
+        color: var(--of-primary);
+    }
+
+    .operation-form-actions {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+    .operation-cancel-button,
+    .operation-save-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+
+        min-height: 42px;
+        padding: 9px 15px;
+
+        font-size: 11px;
+        font-weight: 700;
+        text-decoration: none;
+
+        border-radius: 10px;
+
+        transition:
+            color 0.2s ease,
+            background 0.2s ease,
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .operation-cancel-button {
+        color: #475569;
+
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+    }
+
+    .operation-cancel-button:hover {
+        color: var(--of-dark);
+
+        background: #f8fafc;
+        border-color: #94a3b8;
+
+        transform: translateY(-1px);
+    }
+
+    .operation-save-button {
+        color: #ffffff;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--of-primary),
+                var(--of-primary-dark)
+            );
+
+        border: 1px solid var(--of-primary);
+
+        box-shadow: 0 8px 18px rgba(37, 99, 235, 0.2);
+    }
+
+    .operation-save-button:hover {
+        color: #ffffff;
+
+        background:
+            linear-gradient(
+                135deg,
+                #1d4ed8,
+                #1e40af
+            );
+
+        border-color: #1d4ed8;
+
+        box-shadow: 0 11px 23px rgba(37, 99, 235, 0.26);
+
+        transform: translateY(-2px);
+    }
+
+    .operation-save-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.7;
+        transform: none;
+    }
+
+    /* Sidebar */
+
+    .operation-form-sidebar {
+        position: sticky;
+        top: 115px;
+
+        overflow: hidden;
+
+        background: #ffffff;
+        border: 1px solid var(--of-border);
+        border-radius: var(--of-radius);
+
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
+    }
+
+    .operation-sidebar-header {
+        padding: 20px;
+
+        color: #ffffff;
+
+        background:
+            radial-gradient(
+                circle at top right,
+                rgba(255, 255, 255, 0.15),
+                transparent 35%
+            ),
+            linear-gradient(
+                135deg,
+                #0f172a,
+                #1e3a8a
+            );
+    }
+
+    .operation-sidebar-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 42px;
+        height: 42px;
+
+        margin-bottom: 13px;
+
+        color: #ffffff;
+        font-size: 18px;
+
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+    }
+
+    .operation-sidebar-header h4 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 720;
+    }
+
+    .operation-sidebar-header p {
+        margin: 6px 0 0;
+
+        color: #cbd5e1;
+        font-size: 9px;
+        line-height: 1.55;
+    }
+
+    .operation-sidebar-body {
+        padding: 18px;
+    }
+
+    .operation-guide-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+
+        margin: 0;
+        padding: 0;
+
+        list-style: none;
+    }
+
+    .operation-guide-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .operation-guide-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 31px;
+        height: 31px;
+
+        color: var(--of-primary);
+        font-size: 13px;
+
+        background: var(--of-primary-soft);
+        border-radius: 9px;
+    }
+
+    .operation-guide-list strong {
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: var(--of-dark);
+        font-size: 10px;
+        font-weight: 720;
+    }
+
+    .operation-guide-list p {
+        margin: 0;
+
+        color: var(--of-muted);
+        font-size: 8px;
+        line-height: 1.5;
+    }
+
+    .operation-safety-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+
+        margin-top: 17px;
+        padding: 11px;
+
+        color: #9a3412;
+        font-size: 8px;
+        line-height: 1.5;
+
+        background: var(--of-warning-soft);
+        border: 1px solid #fed7aa;
+        border-radius: 10px;
+    }
+
+    .operation-safety-note i {
+        margin-top: 1px;
+
+        color: var(--of-warning);
+        font-size: 12px;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 991.98px) {
+        .operation-form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .operation-form-sidebar {
+            position: static;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .operation-form-hero {
+            align-items: stretch;
+            flex-direction: column;
+
+            padding: 22px;
+        }
+
+        .operation-back-button {
+            width: 100%;
+        }
+
+        .operation-form-card-body {
+            padding: 20px;
+        }
+
+        .operation-form-footer {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .operation-footer-note {
+            justify-content: center;
+            text-align: center;
+        }
+
+        .operation-form-actions {
+            width: 100%;
+        }
+
+        .operation-cancel-button,
+        .operation-save-button {
+            flex: 1;
+        }
+    }
+
+    @media (max-width: 479.98px) {
+        .operation-form-hero {
+            padding: 19px;
+            border-radius: 16px;
+        }
+
+        .operation-form-hero-content {
+            align-items: flex-start;
+        }
+
+        .operation-form-hero-icon {
+            width: 45px;
+            height: 45px;
+
+            font-size: 19px;
+        }
+
+        .operation-form-card,
+        .operation-form-sidebar {
+            border-radius: 15px;
+        }
+
+        .operation-form-card-header,
+        .operation-form-card-body {
+            padding: 17px;
+        }
+
+        .operation-form-actions {
+            flex-direction: column-reverse;
+        }
+
+        .operation-cancel-button,
+        .operation-save-button {
+            width: 100%;
+        }
+
+        .operation-checkbox-panel {
+            align-items: flex-start;
+        }
+    }
+</style>
+
 {% endblock %}
 
 {% block content %}
 
-<div class="card border-0 shadow-sm">
-    <div class="card-body p-4">
+<div class="operation-form-page">
 
-        <form method="post" novalidate>
-            {% csrf_token %}
+    <div class="operation-form-wrapper">
 
-            {% if form.non_field_errors %}
-                <div class="alert alert-danger">
-                    {{ form.non_field_errors }}
+        <!-- Breadcrumb -->
+        <nav class="operation-breadcrumb">
+
+            <a href="{% url 'dashboard:home' %}">
+                <i class="bi bi-house-door"></i>
+                Dashboard
+            </a>
+
+            <i class="bi bi-chevron-right"></i>
+
+            <a href="{% url cancel_url %}">
+                Records
+            </a>
+
+            <i class="bi bi-chevron-right"></i>
+
+            <span>
+                {{ page_heading|default:"Record Form" }}
+            </span>
+
+        </nav>
+
+        <!-- Hero -->
+        <section class="operation-form-hero">
+
+            <div class="operation-form-hero-content">
+
+                <div class="operation-form-hero-icon">
+                    <i class="bi bi-clipboard2-check-fill"></i>
                 </div>
-            {% endif %}
 
-            <div class="row g-3">
+                <div>
 
-                {% for field in form %}
-                    <div
-                        class="{% if field.name == 'description' or field.name == 'notes' or field.name == 'completion_notes' %}col-12{% else %}col-md-6{% endif %}"
+                    <div class="operation-form-eyebrow">
+                        <span></span>
+                        TransitOps Operations
+                    </div>
+
+                    <h2>
+                        {{ page_heading|default:"Record Form" }}
+                    </h2>
+
+                    <p>
+                        {{ page_subtitle|default:"Complete the information below and verify all operational details before saving." }}
+                    </p>
+
+                </div>
+
+            </div>
+
+            <a
+                href="{% url cancel_url %}"
+                class="operation-back-button"
+            >
+                <i class="bi bi-arrow-left"></i>
+                Back to Records
+            </a>
+
+        </section>
+
+        <div class="operation-form-grid">
+
+            <!-- Main Form Card -->
+            <section class="operation-form-card">
+
+                <header class="operation-form-card-header">
+
+                    <div class="operation-card-header-icon">
+                        <i class="bi bi-card-checklist"></i>
+                    </div>
+
+                    <div>
+
+                        <h3>Record Information</h3>
+
+                        <p>
+                            Complete all required fields and review the
+                            information before saving.
+                        </p>
+
+                    </div>
+
+                </header>
+
+                <div class="operation-form-card-body">
+
+                    <form
+                        method="post"
+                        id="operationForm"
+                        novalidate
                     >
-                        <label class="form-label fw-semibold">
-                            {{ field.label }}
+                        {% csrf_token %}
 
-                            {% if field.field.required %}
-                                <span class="text-danger">*</span>
-                            {% endif %}
-                        </label>
+                        {% for hidden_field in form.hidden_fields %}
+                            {{ hidden_field }}
+                        {% endfor %}
 
-                        {{ field }}
+                        <!-- Non-field Errors -->
+                        {% if form.non_field_errors %}
 
-                        {% if field.help_text %}
-                            <small class="text-muted d-block">
-                                {{ field.help_text }}
-                            </small>
+                            <div class="operation-general-errors">
+
+                                <div class="operation-general-errors-icon">
+                                    <i class="bi bi-exclamation-octagon-fill"></i>
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        Please correct the following errors
+                                    </strong>
+
+                                    <ul>
+
+                                        {% for error in form.non_field_errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+
+                                    </ul>
+
+                                </div>
+
+                            </div>
+
                         {% endif %}
 
-                        {% for error in field.errors %}
-                            <div class="text-danger small mt-1">
-                                {{ error }}
+                        <!-- Main Fields -->
+                        <section class="operation-form-section">
+
+                            <div class="operation-section-heading">
+
+                                <div class="operation-section-icon">
+                                    <i class="bi bi-pencil-square"></i>
+                                </div>
+
+                                <div>
+
+                                    <h4>General Information</h4>
+
+                                    <p>
+                                        Enter the main operational and record details.
+                                    </p>
+
+                                </div>
+
                             </div>
-                        {% endfor %}
+
+                            <div class="row g-3">
+
+                                {% for field in form.visible_fields %}
+
+                                    <div
+                                        class="
+                                            {% if field.name == 'description' or field.name == 'notes' or field.name == 'completion_notes' or field.name == 'remarks' or field.name == 'reason' %}
+                                                col-12
+                                            {% else %}
+                                                col-md-6
+                                            {% endif %}
+                                        "
+                                    >
+
+                                        <div
+                                            class="
+                                                operation-field
+
+                                                {% if field.errors %}
+                                                    has-error
+                                                {% endif %}
+                                            "
+                                        >
+
+                                            {% if field.field.widget.input_type == "checkbox" %}
+
+                                                <div class="operation-checkbox-panel">
+
+                                                    <div class="operation-checkbox-information">
+
+                                                        <div class="operation-checkbox-icon">
+                                                            <i class="bi bi-toggle-on"></i>
+                                                        </div>
+
+                                                        <div>
+
+                                                            <strong>
+                                                                {{ field.label }}
+                                                            </strong>
+
+                                                            <small>
+
+                                                                {% if field.help_text %}
+                                                                    {{ field.help_text }}
+                                                                {% else %}
+                                                                    Enable or disable this option.
+                                                                {% endif %}
+
+                                                            </small>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="operation-checkbox-control">
+                                                        {{ field }}
+                                                    </div>
+
+                                                </div>
+
+                                            {% else %}
+
+                                                <label
+                                                    for="{{ field.id_for_label }}"
+                                                    class="operation-field-label"
+                                                >
+
+                                                    <span class="operation-field-label-text">
+
+                                                        {{ field.label }}
+
+                                                        {% if field.field.required %}
+                                                            <span class="required-mark">*</span>
+                                                        {% endif %}
+
+                                                    </span>
+
+                                                    {% if not field.field.required %}
+
+                                                        <span class="optional-label">
+                                                            Optional
+                                                        </span>
+
+                                                    {% endif %}
+
+                                                </label>
+
+                                                {{ field }}
+
+                                                {% if field.help_text %}
+
+                                                    <div class="operation-field-help">
+
+                                                        <i class="bi bi-info-circle"></i>
+
+                                                        <span>
+                                                            {{ field.help_text }}
+                                                        </span>
+
+                                                    </div>
+
+                                                {% else %}
+
+                                                    {% if field.name == "vehicle" %}
+
+                                                        <div class="operation-field-help">
+                                                            <i class="bi bi-truck"></i>
+
+                                                            <span>
+                                                                Select the vehicle associated
+                                                                with this record.
+                                                            </span>
+                                                        </div>
+
+                                                    {% elif field.name == "maintenance_type" %}
+
+                                                        <div class="operation-field-help">
+                                                            <i class="bi bi-tools"></i>
+
+                                                            <span>
+                                                                Enter the repair, service or
+                                                                maintenance category.
+                                                            </span>
+                                                        </div>
+
+                                                    {% elif field.name == "priority" %}
+
+                                                        <div class="operation-field-help">
+                                                            <i class="bi bi-flag"></i>
+
+                                                            <span>
+                                                                Select urgency based on operational
+                                                                impact and safety.
+                                                            </span>
+                                                        </div>
+
+                                                    {% elif field.name == "estimated_cost" %}
+
+                                                        <div class="operation-field-help">
+                                                            <i class="bi bi-calculator"></i>
+
+                                                            <span>
+                                                                Enter the expected cost before
+                                                                maintenance begins.
+                                                            </span>
+                                                        </div>
+
+                                                    {% elif field.name == "final_cost" %}
+
+                                                        <div class="operation-field-help">
+                                                            <i class="bi bi-receipt"></i>
+
+                                                            <span>
+                                                                Enter the total actual cost
+                                                                after completion.
+                                                            </span>
+                                                        </div>
+
+                                                    {% elif field.name == "status" %}
+
+                                                        <div class="operation-field-help">
+                                                            <i class="bi bi-activity"></i>
+
+                                                            <span>
+                                                                Status controls the current
+                                                                operational lifecycle.
+                                                            </span>
+                                                        </div>
+
+                                                    {% elif field.name == "description" %}
+
+                                                        <div class="operation-field-help">
+                                                            <i class="bi bi-card-text"></i>
+
+                                                            <span>
+                                                                Describe the issue, required work
+                                                                or important operational details.
+                                                            </span>
+                                                        </div>
+
+                                                    {% endif %}
+
+                                                {% endif %}
+
+                                                {% if field.name == "status" %}
+
+                                                    <div
+                                                        class="operation-status-preview"
+                                                        id="operationStatusPreview"
+                                                    >
+
+                                                        <div
+                                                            class="operation-status-preview-icon"
+                                                            id="operationStatusIcon"
+                                                        >
+                                                            <i class="bi bi-activity"></i>
+                                                        </div>
+
+                                                        <div>
+
+                                                            <strong id="operationStatusTitle">
+                                                                Status Selected
+                                                            </strong>
+
+                                                            <small id="operationStatusDescription">
+                                                                Review the selected record status.
+                                                            </small>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                {% endif %}
+
+                                                {% if field.name == "estimated_cost" %}
+
+                                                    <div
+                                                        class="operation-cost-preview"
+                                                        id="estimatedCostPreview"
+                                                    >
+
+                                                        <div class="operation-cost-preview-icon">
+                                                            <i class="bi bi-calculator"></i>
+                                                        </div>
+
+                                                        <div>
+
+                                                            <strong id="estimatedCostValue">
+                                                                ₹0.00
+                                                            </strong>
+
+                                                            <small>
+                                                                Estimated operational cost
+                                                            </small>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                {% endif %}
+
+                                                {% if field.name == "final_cost" %}
+
+                                                    <div
+                                                        class="operation-cost-preview"
+                                                        id="finalCostPreview"
+                                                    >
+
+                                                        <div class="operation-cost-preview-icon">
+                                                            <i class="bi bi-cash-stack"></i>
+                                                        </div>
+
+                                                        <div>
+
+                                                            <strong id="finalCostValue">
+                                                                ₹0.00
+                                                            </strong>
+
+                                                            <small>
+                                                                Final recorded expense
+                                                            </small>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                {% endif %}
+
+                                            {% endif %}
+
+                                            {% if field.errors %}
+
+                                                <div class="operation-field-errors">
+
+                                                    {% for error in field.errors %}
+
+                                                        <div class="operation-field-error">
+
+                                                            <i class="bi bi-exclamation-circle-fill"></i>
+
+                                                            <span>
+                                                                {{ error }}
+                                                            </span>
+
+                                                        </div>
+
+                                                    {% endfor %}
+
+                                                </div>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        </section>
+
+                        <!-- Form Actions -->
+                        <footer class="operation-form-footer">
+
+                            <div class="operation-footer-note">
+
+                                <i class="bi bi-shield-check"></i>
+
+                                <span>
+                                    Review all required information before
+                                    saving this record.
+                                </span>
+
+                            </div>
+
+                            <div class="operation-form-actions">
+
+                                <a
+                                    href="{% url cancel_url %}"
+                                    class="operation-cancel-button"
+                                >
+                                    <i class="bi bi-x-lg"></i>
+                                    Cancel
+                                </a>
+
+                                <button
+                                    type="submit"
+                                    class="operation-save-button"
+                                    id="operationSaveButton"
+                                >
+
+                                    <i class="bi bi-check2-circle"></i>
+
+                                    <span>
+                                        {{ button_text|default:"Save Record" }}
+                                    </span>
+
+                                </button>
+
+                            </div>
+
+                        </footer>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+            <!-- Guidance Sidebar -->
+            <aside class="operation-form-sidebar">
+
+                <header class="operation-sidebar-header">
+
+                    <div class="operation-sidebar-icon">
+                        <i class="bi bi-info-circle-fill"></i>
                     </div>
-                {% endfor %}
 
-            </div>
+                    <h4>Record Completion Guide</h4>
 
-            <div class="mt-4 d-flex gap-2">
-                <button class="btn btn-primary">
-                    {{ button_text }}
-                </button>
+                    <p>
+                        Follow these recommendations to maintain accurate
+                        and reliable operational data.
+                    </p>
 
-                <a
-                    href="{% url cancel_url %}"
-                    class="btn btn-light"
-                >
-                    Cancel
-                </a>
-            </div>
+                </header>
 
-        </form>
+                <div class="operation-sidebar-body">
+
+                    <ul class="operation-guide-list">
+
+                        <li>
+
+                            <span class="operation-guide-icon">
+                                <i class="bi bi-check2-square"></i>
+                            </span>
+
+                            <div>
+
+                                <strong>Complete Required Fields</strong>
+
+                                <p>
+                                    Fields marked with an asterisk must be
+                                    completed before saving.
+                                </p>
+
+                            </div>
+
+                        </li>
+
+                        <li>
+
+                            <span class="operation-guide-icon">
+                                <i class="bi bi-truck-front"></i>
+                            </span>
+
+                            <div>
+
+                                <strong>Verify the Vehicle</strong>
+
+                                <p>
+                                    Confirm the selected vehicle matches the
+                                    actual operational record.
+                                </p>
+
+                            </div>
+
+                        </li>
+
+                        <li>
+
+                            <span class="operation-guide-icon">
+                                <i class="bi bi-flag"></i>
+                            </span>
+
+                            <div>
+
+                                <strong>Choose Correct Priority</strong>
+
+                                <p>
+                                    Priority should reflect safety risk,
+                                    operational impact and urgency.
+                                </p>
+
+                            </div>
+
+                        </li>
+
+                        <li>
+
+                            <span class="operation-guide-icon">
+                                <i class="bi bi-currency-rupee"></i>
+                            </span>
+
+                            <div>
+
+                                <strong>Check Cost Information</strong>
+
+                                <p>
+                                    Enter accurate estimated and final costs
+                                    for reporting and ROI calculations.
+                                </p>
+
+                            </div>
+
+                        </li>
+
+                        <li>
+
+                            <span class="operation-guide-icon">
+                                <i class="bi bi-card-text"></i>
+                            </span>
+
+                            <div>
+
+                                <strong>Add Clear Notes</strong>
+
+                                <p>
+                                    Use descriptions and notes to record work,
+                                    issues and important recommendations.
+                                </p>
+
+                            </div>
+
+                        </li>
+
+                    </ul>
+
+                    <div class="operation-safety-note">
+
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+
+                        <span>
+                            Incomplete or incorrect operational records may
+                            affect vehicle availability, reports and costs.
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </div>
 
     </div>
+
 </div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        /*
+         * Automatically add placeholders based on field names.
+         */
+
+        const placeholderMap = {
+            maintenance_type:
+                "Example: Engine service, tyre replacement",
+            description:
+                "Describe the issue, required work or record details...",
+            notes:
+                "Enter any additional notes...",
+            completion_notes:
+                "Describe completed work, replaced parts and recommendations...",
+            estimated_cost:
+                "Example: 6500",
+            final_cost:
+                "Example: 7200",
+            region:
+                "Example: Surat",
+            reason:
+                "Enter the reason...",
+            remarks:
+                "Enter remarks..."
+        };
+
+        Object.keys(placeholderMap).forEach(function (fieldName) {
+            const field = document.querySelector(
+                '[name="' + fieldName + '"]'
+            );
+
+            if (field && !field.placeholder) {
+                field.placeholder = placeholderMap[fieldName];
+            }
+        });
+
+        /*
+         * Configure numeric cost inputs.
+         */
+
+        const estimatedCostInput = document.querySelector(
+            '[name="estimated_cost"]'
+        );
+
+        const finalCostInput = document.querySelector(
+            '[name="final_cost"]'
+        );
+
+        [estimatedCostInput, finalCostInput].forEach(
+            function (input) {
+                if (!input) {
+                    return;
+                }
+
+                input.setAttribute("min", "0");
+                input.setAttribute("step", "0.01");
+                input.setAttribute("inputmode", "decimal");
+            }
+        );
+
+        function formatIndianCurrency(value) {
+            let amount = parseFloat(value || "0");
+
+            if (Number.isNaN(amount) || amount < 0) {
+                amount = 0;
+            }
+
+            return new Intl.NumberFormat("en-IN", {
+                style: "currency",
+                currency: "INR",
+                maximumFractionDigits: 2
+            }).format(amount);
+        }
+
+        /*
+         * Estimated cost preview.
+         */
+
+        const estimatedCostPreview = document.getElementById(
+            "estimatedCostPreview"
+        );
+
+        const estimatedCostValue = document.getElementById(
+            "estimatedCostValue"
+        );
+
+        function updateEstimatedCost() {
+            if (
+                !estimatedCostInput ||
+                !estimatedCostPreview ||
+                !estimatedCostValue
+            ) {
+                return;
+            }
+
+            estimatedCostPreview.classList.add("show");
+
+            estimatedCostValue.textContent =
+                formatIndianCurrency(estimatedCostInput.value);
+        }
+
+        if (estimatedCostInput) {
+            updateEstimatedCost();
+
+            estimatedCostInput.addEventListener(
+                "input",
+                updateEstimatedCost
+            );
+        }
+
+        /*
+         * Final cost preview.
+         */
+
+        const finalCostPreview = document.getElementById(
+            "finalCostPreview"
+        );
+
+        const finalCostValue = document.getElementById(
+            "finalCostValue"
+        );
+
+        function updateFinalCost() {
+            if (
+                !finalCostInput ||
+                !finalCostPreview ||
+                !finalCostValue
+            ) {
+                return;
+            }
+
+            finalCostPreview.classList.add("show");
+
+            finalCostValue.textContent =
+                formatIndianCurrency(finalCostInput.value);
+        }
+
+        if (finalCostInput) {
+            updateFinalCost();
+
+            finalCostInput.addEventListener(
+                "input",
+                updateFinalCost
+            );
+        }
+
+        /*
+         * Live status explanation.
+         */
+
+        const statusInput = document.querySelector(
+            '[name="status"]'
+        );
+
+        const statusPreview = document.getElementById(
+            "operationStatusPreview"
+        );
+
+        const statusIcon = document.getElementById(
+            "operationStatusIcon"
+        );
+
+        const statusTitle = document.getElementById(
+            "operationStatusTitle"
+        );
+
+        const statusDescription = document.getElementById(
+            "operationStatusDescription"
+        );
+
+        function updateStatusPreview() {
+            if (
+                !statusInput ||
+                !statusPreview ||
+                !statusIcon ||
+                !statusTitle ||
+                !statusDescription
+            ) {
+                return;
+            }
+
+            const status = String(
+                statusInput.value || ""
+            ).toUpperCase();
+
+            statusPreview.classList.add("show");
+
+            let title = "Status Selected";
+            let description =
+                "Review the selected operational status.";
+            let icon = "bi bi-activity";
+
+            let color = "#2563eb";
+            let iconBackground = "#dbeafe";
+            let previewBackground = "#eff6ff";
+            let borderColor = "#bfdbfe";
+
+            if (
+                status === "IN_PROGRESS" ||
+                status === "PENDING" ||
+                status === "DRAFT"
+            ) {
+                title =
+                    status === "DRAFT"
+                        ? "Draft"
+                        : status === "PENDING"
+                            ? "Pending"
+                            : "In Progress";
+
+                description =
+                    "This record is active and awaiting completion.";
+
+                icon = "bi bi-clock-history";
+
+                color = "#d97706";
+                iconBackground = "#ffedd5";
+                previewBackground = "#fff7ed";
+                borderColor = "#fed7aa";
+            } else if (
+                status === "COMPLETED" ||
+                status === "CLOSED" ||
+                status === "AVAILABLE"
+            ) {
+                title =
+                    status === "AVAILABLE"
+                        ? "Available"
+                        : "Completed";
+
+                description =
+                    status === "AVAILABLE"
+                        ? "This resource is available for operations."
+                        : "This record has completed its lifecycle.";
+
+                icon = "bi bi-check-circle-fill";
+
+                color = "#16a34a";
+                iconBackground = "#dcfce7";
+                previewBackground = "#f0fdf4";
+                borderColor = "#bbf7d0";
+            } else if (
+                status === "CANCELLED" ||
+                status === "SUSPENDED" ||
+                status === "RETIRED"
+            ) {
+                title =
+                    status === "SUSPENDED"
+                        ? "Suspended"
+                        : status === "RETIRED"
+                            ? "Retired"
+                            : "Cancelled";
+
+                description =
+                    "This record is unavailable for active operations.";
+
+                icon = "bi bi-x-circle-fill";
+
+                color = "#dc2626";
+                iconBackground = "#fee2e2";
+                previewBackground = "#fef2f2";
+                borderColor = "#fecaca";
+            } else if (
+                status === "ON_TRIP" ||
+                status === "DISPATCHED"
+            ) {
+                title =
+                    status === "ON_TRIP"
+                        ? "On Trip"
+                        : "Dispatched";
+
+                description =
+                    "This resource is currently assigned to an active trip.";
+
+                icon = "bi bi-signpost-split-fill";
+
+                color = "#2563eb";
+                iconBackground = "#dbeafe";
+                previewBackground = "#eff6ff";
+                borderColor = "#bfdbfe";
+            } else if (status === "IN_SHOP") {
+                title = "In Shop";
+
+                description =
+                    "The vehicle is unavailable while maintenance is active.";
+
+                icon = "bi bi-tools";
+
+                color = "#d97706";
+                iconBackground = "#ffedd5";
+                previewBackground = "#fff7ed";
+                borderColor = "#fed7aa";
+            }
+
+            statusTitle.textContent = title;
+            statusDescription.textContent = description;
+
+            statusIcon.innerHTML =
+                '<i class="' + icon + '"></i>';
+
+            statusIcon.style.color = color;
+            statusIcon.style.background = iconBackground;
+
+            statusPreview.style.background =
+                previewBackground;
+
+            statusPreview.style.borderColor =
+                borderColor;
+        }
+
+        if (statusInput) {
+            updateStatusPreview();
+
+            statusInput.addEventListener(
+                "change",
+                updateStatusPreview
+            );
+        }
+
+        /*
+         * Prevent duplicate submissions.
+         */
+
+        const operationForm = document.getElementById(
+            "operationForm"
+        );
+
+        const saveButton = document.getElementById(
+            "operationSaveButton"
+        );
+
+        if (operationForm && saveButton) {
+            operationForm.addEventListener(
+                "submit",
+                function () {
+                    saveButton.disabled = true;
+
+                    saveButton.innerHTML = `
+                        <span
+                            class="spinner-border spinner-border-sm"
+                            aria-hidden="true"
+                        ></span>
+
+                        <span>Saving Record...</span>
+                    `;
+                }
+            );
+        }
+    });
+</script>
 
 {% endblock %}

@@ -12,163 +12,2354 @@ Reports and Analytics
 Vehicle cost, efficiency, profitability and ROI analysis.
 {% endblock %}
 
+{% block extra_css %}
+
+<style>
+    .reports-page {
+        --report-primary: #2563eb;
+        --report-primary-dark: #1d4ed8;
+        --report-primary-soft: #eff6ff;
+
+        --report-success: #16a34a;
+        --report-success-dark: #15803d;
+        --report-success-soft: #f0fdf4;
+
+        --report-danger: #dc2626;
+        --report-danger-dark: #b91c1c;
+        --report-danger-soft: #fef2f2;
+
+        --report-warning: #d97706;
+        --report-warning-soft: #fff7ed;
+
+        --report-purple: #7c3aed;
+        --report-purple-soft: #f5f3ff;
+
+        --report-cyan: #0891b2;
+        --report-cyan-soft: #ecfeff;
+
+        --report-dark: #0f172a;
+        --report-text: #334155;
+        --report-muted: #64748b;
+        --report-border: #e2e8f0;
+        --report-surface: #ffffff;
+        --report-background: #f8fafc;
+
+        --report-radius: 18px;
+        --report-shadow:
+            0 14px 38px rgba(15, 23, 42, 0.07);
+    }
+
+    .reports-page * {
+        box-sizing: border-box;
+    }
+
+    .reports-wrapper {
+        width: 100%;
+        max-width: 1500px;
+        margin: 0 auto;
+    }
+
+    /* Breadcrumb */
+
+    .reports-breadcrumb {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        margin-bottom: 18px;
+
+        color: var(--report-muted);
+        font-size: 12px;
+    }
+
+    .reports-breadcrumb a {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        color: var(--report-muted);
+        font-weight: 600;
+        text-decoration: none;
+
+        transition: color 0.2s ease;
+    }
+
+    .reports-breadcrumb a:hover {
+        color: var(--report-primary);
+    }
+
+    .reports-breadcrumb > i {
+        color: #94a3b8;
+        font-size: 10px;
+    }
+
+    /* Hero */
+
+    .reports-hero {
+        position: relative;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 28px;
+
+        overflow: hidden;
+
+        margin-bottom: 22px;
+        padding: 29px 31px;
+
+        color: #ffffff;
+
+        background:
+            radial-gradient(
+                circle at 91% 10%,
+                rgba(255, 255, 255, 0.18),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 8% 115%,
+                rgba(34, 197, 94, 0.22),
+                transparent 36%
+            ),
+            linear-gradient(
+                135deg,
+                #0f172a 0%,
+                #1e3a8a 52%,
+                #2563eb 100%
+            );
+
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 22px;
+
+        box-shadow:
+            0 19px 45px rgba(37, 99, 235, 0.18);
+    }
+
+    .reports-hero::after {
+        position: absolute;
+        right: -72px;
+        bottom: -110px;
+
+        width: 255px;
+        height: 255px;
+
+        content: "";
+
+        border: 34px solid rgba(255, 255, 255, 0.055);
+        border-radius: 50%;
+    }
+
+    .reports-hero-content {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        gap: 17px;
+
+        max-width: 780px;
+    }
+
+    .reports-hero-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 58px;
+        height: 58px;
+
+        color: #ffffff;
+        font-size: 24px;
+
+        background: rgba(255, 255, 255, 0.13);
+        border: 1px solid rgba(255, 255, 255, 0.17);
+        border-radius: 17px;
+
+        backdrop-filter: blur(10px);
+    }
+
+    .reports-hero-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+
+        margin-bottom: 8px;
+        padding: 5px 9px;
+
+        color: #dbeafe;
+        font-size: 9px;
+        font-weight: 750;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 30px;
+    }
+
+    .reports-hero-eyebrow span {
+        width: 7px;
+        height: 7px;
+
+        background: #4ade80;
+        border-radius: 50%;
+
+        box-shadow:
+            0 0 0 5px rgba(74, 222, 128, 0.13);
+    }
+
+    .reports-hero h2 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: clamp(24px, 4vw, 32px);
+        font-weight: 760;
+        letter-spacing: -0.8px;
+    }
+
+    .reports-hero p {
+        max-width: 650px;
+
+        margin: 8px 0 0;
+
+        color: #dbeafe;
+        font-size: 12px;
+        line-height: 1.65;
+    }
+
+    .reports-hero-actions {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+        gap: 9px;
+    }
+
+    .report-export-button,
+    .report-print-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        min-height: 44px;
+        padding: 9px 14px;
+
+        font-size: 10px;
+        font-weight: 720;
+        text-decoration: none;
+
+        border-radius: 10px;
+
+        box-shadow:
+            0 8px 19px rgba(15, 23, 42, 0.14);
+
+        transition:
+            color 0.2s ease,
+            background 0.2s ease,
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .report-export-button.csv {
+        color: #166534;
+
+        background: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.72);
+    }
+
+    .report-export-button.pdf {
+        color: #991b1b;
+
+        background: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.72);
+    }
+
+    .report-print-button {
+        color: #1e3a8a;
+
+        background: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.72);
+    }
+
+    .report-export-button:hover,
+    .report-print-button:hover {
+        color: var(--report-primary);
+
+        background: var(--report-primary-soft);
+
+        box-shadow:
+            0 12px 24px rgba(15, 23, 42, 0.19);
+
+        transform: translateY(-2px);
+    }
+
+    /* KPI Cards */
+
+    .reports-kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 15px;
+
+        margin-bottom: 22px;
+    }
+
+    .report-kpi-card {
+        position: relative;
+
+        overflow: hidden;
+
+        min-height: 132px;
+        padding: 18px;
+
+        background: var(--report-surface);
+        border: 1px solid var(--report-border);
+        border-radius: 16px;
+
+        box-shadow:
+            0 8px 24px rgba(15, 23, 42, 0.05);
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .report-kpi-card:hover {
+        border-color: #bfdbfe;
+
+        box-shadow:
+            0 14px 30px rgba(15, 23, 42, 0.08);
+
+        transform: translateY(-3px);
+    }
+
+    .report-kpi-card::after {
+        position: absolute;
+        right: -28px;
+        bottom: -42px;
+
+        width: 125px;
+        height: 125px;
+
+        content: "";
+
+        background: var(--kpi-soft-color);
+        border-radius: 50%;
+
+        opacity: 0.7;
+    }
+
+    .report-kpi-card.revenue {
+        --kpi-color: var(--report-success);
+        --kpi-soft-color: var(--report-success-soft);
+    }
+
+    .report-kpi-card.fuel {
+        --kpi-color: var(--report-warning);
+        --kpi-soft-color: var(--report-warning-soft);
+    }
+
+    .report-kpi-card.cost {
+        --kpi-color: var(--report-purple);
+        --kpi-soft-color: var(--report-purple-soft);
+    }
+
+    .report-kpi-card.profit {
+        --kpi-color: var(--report-primary);
+        --kpi-soft-color: var(--report-primary-soft);
+    }
+
+    .report-kpi-top {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+
+        margin-bottom: 15px;
+    }
+
+    .report-kpi-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 42px;
+        height: 42px;
+
+        color: var(--kpi-color);
+        font-size: 18px;
+
+        background: var(--kpi-soft-color);
+        border-radius: 12px;
+    }
+
+    .report-kpi-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+
+        padding: 5px 8px;
+
+        color: var(--kpi-color);
+        font-size: 8px;
+        font-weight: 720;
+
+        background: var(--kpi-soft-color);
+        border-radius: 20px;
+    }
+
+    .report-kpi-value {
+        position: relative;
+        z-index: 2;
+
+        display: block;
+        overflow: hidden;
+
+        margin-bottom: 5px;
+
+        color: var(--report-dark);
+        font-size: clamp(20px, 2.5vw, 26px);
+        font-weight: 780;
+        letter-spacing: -0.7px;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .report-kpi-description {
+        position: relative;
+        z-index: 2;
+
+        display: block;
+
+        color: var(--report-muted);
+        font-size: 9px;
+        line-height: 1.45;
+    }
+
+    /* Insight Strip */
+
+    .reports-insight-strip {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1px;
+
+        overflow: hidden;
+
+        margin-bottom: 22px;
+
+        background: var(--report-border);
+        border: 1px solid var(--report-border);
+        border-radius: 15px;
+
+        box-shadow:
+            0 7px 22px rgba(15, 23, 42, 0.04);
+    }
+
+    .report-insight-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        min-height: 78px;
+        padding: 15px 17px;
+
+        background: #ffffff;
+    }
+
+    .report-insight-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 39px;
+        height: 39px;
+
+        color: var(--report-primary);
+        font-size: 16px;
+
+        background: var(--report-primary-soft);
+        border-radius: 11px;
+    }
+
+    .report-insight-content strong {
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: var(--report-dark);
+        font-size: 13px;
+        font-weight: 730;
+    }
+
+    .report-insight-content span {
+        display: block;
+
+        color: var(--report-muted);
+        font-size: 8px;
+        line-height: 1.45;
+    }
+
+    /* Chart Grid */
+
+    .reports-chart-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.8fr);
+        gap: 20px;
+
+        margin-bottom: 22px;
+    }
+
+    .report-panel {
+        overflow: hidden;
+
+        background: var(--report-surface);
+        border: 1px solid var(--report-border);
+        border-radius: var(--report-radius);
+
+        box-shadow: var(--report-shadow);
+    }
+
+    .report-panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+
+        padding: 18px 20px;
+
+        border-bottom: 1px solid #eef2f7;
+    }
+
+    .report-panel-heading {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+    }
+
+    .report-panel-heading-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 39px;
+        height: 39px;
+
+        color: var(--report-primary);
+        font-size: 17px;
+
+        background: var(--report-primary-soft);
+        border-radius: 11px;
+    }
+
+    .report-panel-heading h3 {
+        margin: 0;
+
+        color: var(--report-dark);
+        font-size: 14px;
+        font-weight: 720;
+    }
+
+    .report-panel-heading p {
+        margin: 3px 0 0;
+
+        color: var(--report-muted);
+        font-size: 9px;
+        line-height: 1.4;
+    }
+
+    .report-panel-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        padding: 6px 9px;
+
+        color: var(--report-primary);
+        font-size: 8px;
+        font-weight: 720;
+
+        background: var(--report-primary-soft);
+        border-radius: 20px;
+    }
+
+    .report-chart-body {
+        position: relative;
+
+        min-height: 330px;
+        padding: 20px;
+    }
+
+    .report-chart-body canvas {
+        width: 100% !important;
+        height: 290px !important;
+    }
+
+    /* Table Panel */
+
+    .report-table-panel {
+        overflow: hidden;
+
+        background: var(--report-surface);
+        border: 1px solid var(--report-border);
+        border-radius: var(--report-radius);
+
+        box-shadow: var(--report-shadow);
+    }
+
+    .report-table-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+
+        padding: 19px 21px;
+
+        border-bottom: 1px solid #eef2f7;
+    }
+
+    .report-table-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .report-table-title-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 40px;
+        height: 40px;
+
+        color: var(--report-primary);
+        font-size: 17px;
+
+        background: var(--report-primary-soft);
+        border-radius: 11px;
+    }
+
+    .report-table-title h3 {
+        margin: 0;
+
+        color: var(--report-dark);
+        font-size: 15px;
+        font-weight: 720;
+    }
+
+    .report-table-title p {
+        margin: 3px 0 0;
+
+        color: var(--report-muted);
+        font-size: 9px;
+    }
+
+    .report-row-count {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        padding: 7px 10px;
+
+        color: #475569;
+        font-size: 9px;
+        font-weight: 700;
+
+        background: #f8fafc;
+        border: 1px solid var(--report-border);
+        border-radius: 20px;
+    }
+
+    /* Desktop Table */
+
+    .vehicle-report-table {
+        width: 100%;
+        margin: 0;
+    }
+
+    .vehicle-report-table thead th {
+        padding: 13px 14px;
+
+        color: #64748b;
+        font-size: 8px;
+        font-weight: 760;
+        letter-spacing: 0.65px;
+        text-transform: uppercase;
+
+        background: #f8fafc;
+        border-bottom: 1px solid var(--report-border);
+
+        white-space: nowrap;
+    }
+
+    .vehicle-report-table tbody td {
+        padding: 14px;
+
+        color: var(--report-text);
+        font-size: 9px;
+        vertical-align: middle;
+
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .vehicle-report-table tbody tr {
+        transition: background 0.18s ease;
+    }
+
+    .vehicle-report-table tbody tr:hover {
+        background: #f8fbff;
+    }
+
+    .vehicle-report-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    /* Vehicle Cell */
+
+    .report-vehicle-profile {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+
+        min-width: 175px;
+    }
+
+    .report-vehicle-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 40px;
+        height: 40px;
+
+        color: var(--report-primary);
+        font-size: 17px;
+
+        background: var(--report-primary-soft);
+        border: 1px solid #dbeafe;
+        border-radius: 11px;
+    }
+
+    .report-vehicle-details {
+        min-width: 0;
+    }
+
+    .report-vehicle-registration {
+        display: block;
+        overflow: hidden;
+
+        max-width: 170px;
+
+        color: var(--report-dark);
+        font-size: 10px;
+        font-weight: 760;
+        letter-spacing: 0.2px;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .report-vehicle-name {
+        display: block;
+        overflow: hidden;
+
+        max-width: 170px;
+
+        margin-top: 3px;
+
+        color: var(--report-muted);
+        font-size: 8px;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Rank */
+
+    .report-rank {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 27px;
+        height: 27px;
+
+        color: var(--report-primary);
+        font-size: 8px;
+        font-weight: 760;
+
+        background: var(--report-primary-soft);
+        border-radius: 8px;
+    }
+
+    /* Metric */
+
+    .report-metric {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+
+        min-width: 82px;
+    }
+
+    .report-metric strong {
+        color: var(--report-dark);
+        font-size: 9px;
+        font-weight: 720;
+    }
+
+    .report-metric small {
+        color: var(--report-muted);
+        font-size: 7px;
+    }
+
+    .report-metric-icon {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        color: var(--report-text);
+        font-size: 9px;
+        font-weight: 650;
+
+        white-space: nowrap;
+    }
+
+    .report-metric-icon i {
+        color: var(--report-primary);
+    }
+
+    /* Profit */
+
+    .report-profit {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        padding: 6px 9px;
+
+        font-size: 8px;
+        font-weight: 720;
+
+        border-radius: 20px;
+        white-space: nowrap;
+    }
+
+    .report-profit.positive {
+        color: var(--report-success);
+        background: var(--report-success-soft);
+    }
+
+    .report-profit.negative {
+        color: var(--report-danger);
+        background: var(--report-danger-soft);
+    }
+
+    /* ROI */
+
+    .report-roi {
+        min-width: 105px;
+    }
+
+    .report-roi-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 7px;
+
+        margin-bottom: 6px;
+    }
+
+    .report-roi-value {
+        color: var(--report-dark);
+        font-size: 9px;
+        font-weight: 750;
+    }
+
+    .report-roi-label {
+        color: var(--report-muted);
+        font-size: 7px;
+    }
+
+    .report-roi-track {
+        width: 100%;
+        height: 6px;
+
+        overflow: hidden;
+
+        background: #e2e8f0;
+        border-radius: 20px;
+    }
+
+    .report-roi-bar {
+        width: 0;
+        height: 100%;
+
+        background:
+            linear-gradient(
+                90deg,
+                #2563eb,
+                #60a5fa
+            );
+
+        border-radius: 20px;
+
+        transition: width 0.7s ease;
+    }
+
+    .report-roi-bar.positive {
+        background:
+            linear-gradient(
+                90deg,
+                #16a34a,
+                #4ade80
+            );
+    }
+
+    .report-roi-bar.negative {
+        background:
+            linear-gradient(
+                90deg,
+                #dc2626,
+                #f87171
+            );
+    }
+
+    /* Mobile Cards */
+
+    .mobile-report-list {
+        display: none;
+        padding: 15px;
+    }
+
+    .mobile-report-card {
+        margin-bottom: 12px;
+        padding: 15px;
+
+        background: #ffffff;
+        border: 1px solid var(--report-border);
+        border-radius: 14px;
+
+        box-shadow:
+            0 5px 16px rgba(15, 23, 42, 0.035);
+    }
+
+    .mobile-report-card:last-child {
+        margin-bottom: 0;
+    }
+
+    .mobile-report-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+
+        margin-bottom: 14px;
+    }
+
+    .mobile-report-metrics {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+
+        margin-bottom: 14px;
+        padding: 12px;
+
+        background: #f8fafc;
+        border-radius: 11px;
+    }
+
+    .mobile-report-metric small {
+        display: block;
+
+        margin-bottom: 5px;
+
+        color: #94a3b8;
+        font-size: 7px;
+        font-weight: 720;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .mobile-report-value {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        color: var(--report-text);
+        font-size: 9px;
+        font-weight: 650;
+    }
+
+    .mobile-report-value i {
+        color: var(--report-primary);
+    }
+
+    .mobile-report-roi {
+        padding: 12px;
+
+        background: #f8fafc;
+        border-radius: 11px;
+    }
+
+    /* Empty State */
+
+    .report-empty-state {
+        padding: 58px 20px;
+
+        text-align: center;
+    }
+
+    .report-empty-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 66px;
+        height: 66px;
+
+        margin: 0 auto 15px;
+
+        color: var(--report-primary);
+        font-size: 28px;
+
+        background: var(--report-primary-soft);
+        border-radius: 19px;
+    }
+
+    .report-empty-state h4 {
+        margin: 0 0 6px;
+
+        color: var(--report-dark);
+        font-size: 16px;
+        font-weight: 720;
+    }
+
+    .report-empty-state p {
+        max-width: 390px;
+
+        margin: 0 auto;
+
+        color: var(--report-muted);
+        font-size: 10px;
+        line-height: 1.6;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 1199.98px) {
+        .reports-kpi-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .reports-chart-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 991.98px) {
+        .reports-hero {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .reports-hero-actions {
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .report-export-button,
+        .report-print-button {
+            flex: 1;
+        }
+
+        .reports-insight-strip {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .desktop-report-table {
+            display: none;
+        }
+
+        .mobile-report-list {
+            display: block;
+        }
+
+        .report-table-panel {
+            background: #f8fafc;
+        }
+
+        .report-table-header {
+            align-items: flex-start;
+            flex-direction: column;
+
+            background: #ffffff;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .reports-kpi-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .reports-hero {
+            padding: 21px;
+            border-radius: 17px;
+        }
+
+        .reports-hero-content {
+            align-items: flex-start;
+        }
+
+        .reports-hero-icon {
+            width: 47px;
+            height: 47px;
+
+            font-size: 20px;
+        }
+
+        .reports-hero-actions {
+            flex-direction: column;
+        }
+
+        .report-export-button,
+        .report-print-button {
+            width: 100%;
+        }
+
+        .report-panel,
+        .report-table-panel {
+            border-radius: 15px;
+        }
+
+        .report-chart-body {
+            min-height: 280px;
+            padding: 15px;
+        }
+
+        .report-chart-body canvas {
+            height: 250px !important;
+        }
+
+        .mobile-report-metrics {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Print */
+
+    @media print {
+        .reports-breadcrumb,
+        .reports-hero-actions,
+        .mobile-report-list {
+            display: none !important;
+        }
+
+        .reports-hero {
+            color: #000000;
+            background: #ffffff !important;
+            border: 1px solid #cbd5e1;
+            box-shadow: none;
+        }
+
+        .reports-hero h2,
+        .reports-hero p {
+            color: #000000;
+        }
+
+        .desktop-report-table {
+            display: block !important;
+        }
+
+        .report-panel,
+        .report-table-panel,
+        .report-kpi-card {
+            break-inside: avoid;
+            box-shadow: none;
+        }
+    }
+</style>
+
+{% endblock %}
+
 {% block content %}
 
-<div class="d-flex gap-2">
-    <a
-        href="{% url 'operations:export_vehicle_report_csv' %}"
-        class="btn btn-success"
-    >
-        Export CSV
-    </a>
+<div class="reports-page">
 
-    <a
-        href="{% url 'operations:export_vehicle_report_pdf' %}"
-        class="btn btn-danger"
-    >
-        Export PDF
-    </a>
-</div>
+    <div class="reports-wrapper">
 
-<div class="row g-3 mb-4">
+        <!-- Breadcrumb -->
+        <nav class="reports-breadcrumb">
 
-    <div class="col-lg-3 col-md-6">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <small class="text-muted">
-                    Revenue
-                </small>
+            <a href="{% url 'dashboard:home' %}">
+                <i class="bi bi-house-door"></i>
+                Dashboard
+            </a>
 
-                <h4 class="mt-2">
-                    ₹{{ totals.revenue|floatformat:2 }}
-                </h4>
+            <i class="bi bi-chevron-right"></i>
+
+            <span>Reports and Analytics</span>
+
+        </nav>
+
+        <!-- Hero -->
+        <section class="reports-hero">
+
+            <div class="reports-hero-content">
+
+                <div class="reports-hero-icon">
+                    <i class="bi bi-bar-chart-line-fill"></i>
+                </div>
+
+                <div>
+
+                    <div class="reports-hero-eyebrow">
+                        <span></span>
+                        Fleet Intelligence Dashboard
+                    </div>
+
+                    <h2>Reports and Analytics</h2>
+
+                    <p>
+                        Analyse fleet revenue, operating expenses, fuel
+                        performance, profitability and vehicle return on
+                        investment from one professional dashboard.
+                    </p>
+
+                </div>
+
             </div>
-        </div>
-    </div>
 
-    <div class="col-lg-3 col-md-6">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <small class="text-muted">
-                    Fuel Cost
-                </small>
+            <div class="reports-hero-actions">
 
-                <h4 class="mt-2">
-                    ₹{{ totals.fuel_cost|floatformat:2 }}
-                </h4>
+                <a
+                    href="{% url 'operations:export_vehicle_report_csv' %}"
+                    class="report-export-button csv"
+                    data-export-type="CSV"
+                >
+                    <i class="bi bi-filetype-csv"></i>
+                    Export CSV
+                </a>
+
+                <a
+                    href="{% url 'operations:export_vehicle_report_pdf' %}"
+                    class="report-export-button pdf"
+                    data-export-type="PDF"
+                >
+                    <i class="bi bi-file-earmark-pdf-fill"></i>
+                    Export PDF
+                </a>
+
+                <button
+                    type="button"
+                    class="report-print-button"
+                    id="printReportButton"
+                >
+                    <i class="bi bi-printer-fill"></i>
+                    Print
+                </button>
+
             </div>
-        </div>
-    </div>
 
-    <div class="col-lg-3 col-md-6">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <small class="text-muted">
-                    Operational Cost
-                </small>
+        </section>
 
-                <h4 class="mt-2">
-                    ₹{{ totals.operational_cost|floatformat:2 }}
-                </h4>
+        <!-- KPI Cards -->
+        <section class="reports-kpi-grid">
+
+            <article class="report-kpi-card revenue">
+
+                <div class="report-kpi-top">
+
+                    <div class="report-kpi-icon">
+                        <i class="bi bi-graph-up-arrow"></i>
+                    </div>
+
+                    <span class="report-kpi-label">
+                        <i class="bi bi-arrow-up-right"></i>
+                        Income
+                    </span>
+
+                </div>
+
+                <strong class="report-kpi-value">
+                    ₹{{ totals.revenue|default:0|floatformat:2 }}
+                </strong>
+
+                <span class="report-kpi-description">
+                    Total revenue generated by completed fleet trips
+                </span>
+
+            </article>
+
+            <article class="report-kpi-card fuel">
+
+                <div class="report-kpi-top">
+
+                    <div class="report-kpi-icon">
+                        <i class="bi bi-fuel-pump-fill"></i>
+                    </div>
+
+                    <span class="report-kpi-label">
+                        <i class="bi bi-droplet-fill"></i>
+                        Fuel
+                    </span>
+
+                </div>
+
+                <strong class="report-kpi-value">
+                    ₹{{ totals.fuel_cost|default:0|floatformat:2 }}
+                </strong>
+
+                <span class="report-kpi-description">
+                    Total fuel expenditure recorded across the fleet
+                </span>
+
+            </article>
+
+            <article class="report-kpi-card cost">
+
+                <div class="report-kpi-top">
+
+                    <div class="report-kpi-icon">
+                        <i class="bi bi-wallet2"></i>
+                    </div>
+
+                    <span class="report-kpi-label">
+                        <i class="bi bi-receipt"></i>
+                        Expenses
+                    </span>
+
+                </div>
+
+                <strong class="report-kpi-value">
+                    ₹{{ totals.operational_cost|default:0|floatformat:2 }}
+                </strong>
+
+                <span class="report-kpi-description">
+                    Total operating cost recorded for fleet vehicles
+                </span>
+
+            </article>
+
+            <article class="report-kpi-card profit">
+
+                <div class="report-kpi-top">
+
+                    <div class="report-kpi-icon">
+                        <i class="bi bi-cash-stack"></i>
+                    </div>
+
+                    <span class="report-kpi-label">
+                        <i class="bi bi-stars"></i>
+                        Net Result
+                    </span>
+
+                </div>
+
+                <strong class="report-kpi-value">
+                    ₹{{ totals.profit|default:0|floatformat:2 }}
+                </strong>
+
+                <span class="report-kpi-description">
+                    Revenue remaining after operational expenditure
+                </span>
+
+            </article>
+
+        </section>
+
+        <!-- Insight Strip -->
+        <section class="reports-insight-strip">
+
+            <article class="report-insight-item">
+
+                <div class="report-insight-icon">
+                    <i class="bi bi-truck-front-fill"></i>
+                </div>
+
+                <div class="report-insight-content">
+
+                    <strong>
+                        {{ rows|length }}
+                    </strong>
+
+                    <span>
+                        Vehicle{{ rows|length|pluralize }}
+                        included in this analysis
+                    </span>
+
+                </div>
+
+            </article>
+
+            <article class="report-insight-item">
+
+                <div class="report-insight-icon">
+                    <i class="bi bi-speedometer2"></i>
+                </div>
+
+                <div class="report-insight-content">
+
+                    <strong>Efficiency Tracking</strong>
+
+                    <span>
+                        Compare distance travelled with fuel consumption
+                    </span>
+
+                </div>
+
+            </article>
+
+            <article class="report-insight-item">
+
+                <div class="report-insight-icon">
+                    <i class="bi bi-bullseye"></i>
+                </div>
+
+                <div class="report-insight-content">
+
+                    <strong>ROI Analysis</strong>
+
+                    <span>
+                        Identify profitable and underperforming vehicles
+                    </span>
+
+                </div>
+
+            </article>
+
+        </section>
+
+        {% if rows %}
+
+            <!-- Charts -->
+            <section class="reports-chart-grid">
+
+                <!-- Financial Performance -->
+                <article class="report-panel">
+
+                    <header class="report-panel-header">
+
+                        <div class="report-panel-heading">
+
+                            <div class="report-panel-heading-icon">
+                                <i class="bi bi-bar-chart-fill"></i>
+                            </div>
+
+                            <div>
+
+                                <h3>Vehicle Financial Performance</h3>
+
+                                <p>
+                                    Revenue, operating cost and profit comparison
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        <span class="report-panel-badge">
+                            <i class="bi bi-currency-rupee"></i>
+                            Financial
+                        </span>
+
+                    </header>
+
+                    <div class="report-chart-body">
+
+                        <canvas
+                            id="financialPerformanceChart"
+                            aria-label="Vehicle financial performance chart"
+                        ></canvas>
+
+                    </div>
+
+                </article>
+
+                <!-- ROI -->
+                <article class="report-panel">
+
+                    <header class="report-panel-header">
+
+                        <div class="report-panel-heading">
+
+                            <div class="report-panel-heading-icon">
+                                <i class="bi bi-graph-up"></i>
+                            </div>
+
+                            <div>
+
+                                <h3>Vehicle ROI</h3>
+
+                                <p>
+                                    Return on investment by vehicle
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        <span class="report-panel-badge">
+                            <i class="bi bi-percent"></i>
+                            ROI
+                        </span>
+
+                    </header>
+
+                    <div class="report-chart-body">
+
+                        <canvas
+                            id="vehicleRoiChart"
+                            aria-label="Vehicle return on investment chart"
+                        ></canvas>
+
+                    </div>
+
+                </article>
+
+            </section>
+
+        {% endif %}
+
+        <!-- Detailed Report -->
+        <section class="report-table-panel">
+
+            <header class="report-table-header">
+
+                <div class="report-table-title">
+
+                    <div class="report-table-title-icon">
+                        <i class="bi bi-table"></i>
+                    </div>
+
+                    <div>
+
+                        <h3>Vehicle Performance Report</h3>
+
+                        <p>
+                            Detailed fleet efficiency, costs, profit and ROI
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <span class="report-row-count">
+
+                    <i class="bi bi-truck"></i>
+
+                    {{ rows|length }}
+                    vehicle{{ rows|length|pluralize }}
+
+                </span>
+
+            </header>
+
+            <!-- Desktop Table -->
+            <div class="table-responsive desktop-report-table">
+
+                <table class="vehicle-report-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>#</th>
+                            <th>Vehicle</th>
+                            <th>Trips</th>
+                            <th>Distance</th>
+                            <th>Fuel Efficiency</th>
+                            <th>Revenue</th>
+                            <th>Operational Cost</th>
+                            <th>Profit</th>
+                            <th>ROI</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for row in rows %}
+
+                            <tr>
+
+                                <!-- Rank -->
+                                <td>
+
+                                    <span class="report-rank">
+                                        {{ forloop.counter }}
+                                    </span>
+
+                                </td>
+
+                                <!-- Vehicle -->
+                                <td>
+
+                                    <div class="report-vehicle-profile">
+
+                                        <div class="report-vehicle-icon">
+                                            <i class="bi bi-truck-front-fill"></i>
+                                        </div>
+
+                                        <div class="report-vehicle-details">
+
+                                            <span class="report-vehicle-registration">
+                                                {{ row.vehicle.registration_number }}
+                                            </span>
+
+                                            <span class="report-vehicle-name">
+                                                {{ row.vehicle.vehicle_name }}
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+                                <!-- Trips -->
+                                <td>
+
+                                    <div class="report-metric">
+
+                                        <strong>
+                                            {{ row.completed_trips }}
+                                        </strong>
+
+                                        <small>
+                                            Completed trips
+                                        </small>
+
+                                    </div>
+
+                                </td>
+
+                                <!-- Distance -->
+                                <td>
+
+                                    <span class="report-metric-icon">
+
+                                        <i class="bi bi-signpost-2-fill"></i>
+
+                                        {{ row.total_distance|default:0|floatformat:2 }}
+                                        km
+
+                                    </span>
+
+                                </td>
+
+                                <!-- Fuel Efficiency -->
+                                <td>
+
+                                    <span class="report-metric-icon">
+
+                                        <i class="bi bi-fuel-pump-fill"></i>
+
+                                        {{ row.fuel_efficiency|default:0|floatformat:2 }}
+                                        km/L
+
+                                    </span>
+
+                                </td>
+
+                                <!-- Revenue -->
+                                <td>
+
+                                    <div class="report-metric">
+
+                                        <strong>
+                                            ₹{{ row.revenue|default:0|floatformat:2 }}
+                                        </strong>
+
+                                        <small>
+                                            Revenue
+                                        </small>
+
+                                    </div>
+
+                                </td>
+
+                                <!-- Operational Cost -->
+                                <td>
+
+                                    <div class="report-metric">
+
+                                        <strong>
+                                            ₹{{ row.operational_cost|default:0|floatformat:2 }}
+                                        </strong>
+
+                                        <small>
+                                            Total cost
+                                        </small>
+
+                                    </div>
+
+                                </td>
+
+                                <!-- Profit -->
+                                <td>
+
+                                    {% if row.profit < 0 %}
+
+                                        <span class="report-profit negative">
+                                            <i class="bi bi-arrow-down-right"></i>
+
+                                            ₹{{ row.profit|floatformat:2 }}
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="report-profit positive">
+                                            <i class="bi bi-arrow-up-right"></i>
+
+                                            ₹{{ row.profit|default:0|floatformat:2 }}
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <!-- ROI -->
+                                <td>
+
+                                    <div class="report-roi">
+
+                                        <div class="report-roi-header">
+
+                                            <span class="report-roi-value">
+                                                {{ row.roi|default:0|floatformat:2 }}%
+                                            </span>
+
+                                            <span class="report-roi-label">
+                                                ROI
+                                            </span>
+
+                                        </div>
+
+                                        <div class="report-roi-track">
+
+                                            <div
+                                                class="
+                                                    report-roi-bar
+
+                                                    {% if row.roi < 0 %}
+                                                        negative
+                                                    {% else %}
+                                                        positive
+                                                    {% endif %}
+                                                "
+                                                data-roi="{{ row.roi|default:0 }}"
+                                            ></div>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        {% empty %}
+
+                            <tr>
+
+                                <td colspan="9">
+
+                                    <div class="report-empty-state">
+
+                                        <div class="report-empty-icon">
+                                            <i class="bi bi-bar-chart-line"></i>
+                                        </div>
+
+                                        <h4>No Report Data Available</h4>
+
+                                        <p>
+                                            Vehicle analytics will appear after
+                                            trips, fuel logs, expenses and revenue
+                                            records have been added.
+                                        </p>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
             </div>
-        </div>
-    </div>
 
-    <div class="col-lg-3 col-md-6">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <small class="text-muted">
-                    Profit
-                </small>
-
-                <h4 class="mt-2">
-                    ₹{{ totals.profit|floatformat:2 }}
-                </h4>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<div class="card border-0 shadow-sm">
-    <div class="table-responsive">
-
-        <table class="table table-hover align-middle mb-0">
-
-            <thead class="table-light">
-                <tr>
-                    <th>Vehicle</th>
-                    <th>Trips</th>
-                    <th>Distance</th>
-                    <th>Fuel Efficiency</th>
-                    <th>Revenue</th>
-                    <th>Operational Cost</th>
-                    <th>Profit</th>
-                    <th>ROI</th>
-                </tr>
-            </thead>
-
-            <tbody>
+            <!-- Mobile Cards -->
+            <div class="mobile-report-list">
 
                 {% for row in rows %}
-                    <tr>
-                        <td>
-                            <strong>
-                                {{ row.vehicle.registration_number }}
-                            </strong>
 
-                            <small class="d-block text-muted">
-                                {{ row.vehicle.vehicle_name }}
-                            </small>
-                        </td>
+                    <article class="mobile-report-card">
 
-                        <td>
-                            {{ row.completed_trips }}
-                        </td>
+                        <div class="mobile-report-header">
 
-                        <td>
-                            {{ row.total_distance|floatformat:2 }}
-                            km
-                        </td>
+                            <div class="report-vehicle-profile">
 
-                        <td>
-                            {{ row.fuel_efficiency|floatformat:2 }}
-                            km/L
-                        </td>
+                                <div class="report-vehicle-icon">
+                                    <i class="bi bi-truck-front-fill"></i>
+                                </div>
 
-                        <td>
-                            ₹{{ row.revenue|floatformat:2 }}
-                        </td>
+                                <div class="report-vehicle-details">
 
-                        <td>
-                            ₹{{ row.operational_cost|floatformat:2 }}
-                        </td>
+                                    <span class="report-vehicle-registration">
+                                        {{ row.vehicle.registration_number }}
+                                    </span>
 
-                        <td>
-                            ₹{{ row.profit|floatformat:2 }}
-                        </td>
+                                    <span class="report-vehicle-name">
+                                        {{ row.vehicle.vehicle_name }}
+                                    </span>
 
-                        <td>
-                            {{ row.roi|floatformat:2 }}%
-                        </td>
-                    </tr>
+                                </div>
+
+                            </div>
+
+                            <span class="report-rank">
+                                #{{ forloop.counter }}
+                            </span>
+
+                        </div>
+
+                        <div class="mobile-report-metrics">
+
+                            <div class="mobile-report-metric">
+
+                                <small>Completed Trips</small>
+
+                                <span class="mobile-report-value">
+                                    <i class="bi bi-check2-circle"></i>
+
+                                    {{ row.completed_trips }}
+                                </span>
+
+                            </div>
+
+                            <div class="mobile-report-metric">
+
+                                <small>Total Distance</small>
+
+                                <span class="mobile-report-value">
+                                    <i class="bi bi-signpost-2-fill"></i>
+
+                                    {{ row.total_distance|default:0|floatformat:2 }}
+                                    km
+                                </span>
+
+                            </div>
+
+                            <div class="mobile-report-metric">
+
+                                <small>Fuel Efficiency</small>
+
+                                <span class="mobile-report-value">
+                                    <i class="bi bi-fuel-pump-fill"></i>
+
+                                    {{ row.fuel_efficiency|default:0|floatformat:2 }}
+                                    km/L
+                                </span>
+
+                            </div>
+
+                            <div class="mobile-report-metric">
+
+                                <small>Revenue</small>
+
+                                <span class="mobile-report-value">
+                                    <i class="bi bi-graph-up-arrow"></i>
+
+                                    ₹{{ row.revenue|default:0|floatformat:2 }}
+                                </span>
+
+                            </div>
+
+                            <div class="mobile-report-metric">
+
+                                <small>Operational Cost</small>
+
+                                <span class="mobile-report-value">
+                                    <i class="bi bi-wallet2"></i>
+
+                                    ₹{{ row.operational_cost|default:0|floatformat:2 }}
+                                </span>
+
+                            </div>
+
+                            <div class="mobile-report-metric">
+
+                                <small>Profit</small>
+
+                                {% if row.profit < 0 %}
+
+                                    <span class="report-profit negative">
+                                        <i class="bi bi-arrow-down-right"></i>
+
+                                        ₹{{ row.profit|floatformat:2 }}
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="report-profit positive">
+                                        <i class="bi bi-arrow-up-right"></i>
+
+                                        ₹{{ row.profit|default:0|floatformat:2 }}
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                        <div class="mobile-report-roi">
+
+                            <div class="report-roi">
+
+                                <div class="report-roi-header">
+
+                                    <span class="report-roi-value">
+                                        Return on Investment
+                                    </span>
+
+                                    <span class="report-roi-value">
+                                        {{ row.roi|default:0|floatformat:2 }}%
+                                    </span>
+
+                                </div>
+
+                                <div class="report-roi-track">
+
+                                    <div
+                                        class="
+                                            report-roi-bar
+
+                                            {% if row.roi < 0 %}
+                                                negative
+                                            {% else %}
+                                                positive
+                                            {% endif %}
+                                        "
+                                        data-roi="{{ row.roi|default:0 }}"
+                                    ></div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </article>
 
                 {% empty %}
-                    <tr>
-                        <td
-                            colspan="8"
-                            class="text-center text-muted py-5"
-                        >
-                            No vehicle report data available.
-                        </td>
-                    </tr>
+
+                    <div class="report-empty-state">
+
+                        <div class="report-empty-icon">
+                            <i class="bi bi-bar-chart-line"></i>
+                        </div>
+
+                        <h4>No Report Data Available</h4>
+
+                        <p>
+                            Add operational records to generate vehicle analytics.
+                        </p>
+
+                    </div>
+
                 {% endfor %}
 
-            </tbody>
+            </div>
 
-        </table>
+        </section>
 
     </div>
+
 </div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        /*
+         * Animate ROI bars.
+         */
+
+        const roiBars = document.querySelectorAll(
+            ".report-roi-bar"
+        );
+
+        roiBars.forEach(function (bar) {
+            let roi = parseFloat(
+                bar.dataset.roi || "0"
+            );
+
+            if (Number.isNaN(roi)) {
+                roi = 0;
+            }
+
+            /*
+             * The visual bar is limited to 100%.
+             * Negative ROI uses its absolute value.
+             */
+            const visualValue = Math.min(
+                100,
+                Math.abs(roi)
+            );
+
+            requestAnimationFrame(function () {
+                bar.style.width = visualValue + "%";
+            });
+        });
+
+        /*
+         * Print report.
+         */
+
+        const printButton = document.getElementById(
+            "printReportButton"
+        );
+
+        if (printButton) {
+            printButton.addEventListener(
+                "click",
+                function () {
+                    window.print();
+                }
+            );
+        }
+
+        /*
+         * Export loading feedback.
+         */
+
+        const exportButtons = document.querySelectorAll(
+            "[data-export-type]"
+        );
+
+        exportButtons.forEach(function (button) {
+            button.addEventListener("click", function () {
+                const exportType =
+                    button.dataset.exportType || "File";
+
+                const originalContent =
+                    button.innerHTML;
+
+                button.innerHTML = `
+                    <span
+                        class="spinner-border spinner-border-sm"
+                        aria-hidden="true"
+                    ></span>
+
+                    <span>
+                        Preparing ${exportType}...
+                    </span>
+                `;
+
+                setTimeout(function () {
+                    button.innerHTML = originalContent;
+                }, 3000);
+            });
+        });
+
+        {% if rows %}
+
+            /*
+             * Chart data generated from Django report rows.
+             */
+
+            const vehicleLabels = [
+                {% for row in rows %}
+                    "{{ row.vehicle.registration_number|escapejs }}"
+                    {% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ];
+
+            const revenueData = [
+                {% for row in rows %}
+                    Number("{{ row.revenue|default:0|escapejs }}") || 0
+                    {% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ];
+
+            const operationalCostData = [
+                {% for row in rows %}
+                    Number("{{ row.operational_cost|default:0|escapejs }}") || 0
+                    {% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ];
+
+            const profitData = [
+                {% for row in rows %}
+                    Number("{{ row.profit|default:0|escapejs }}") || 0
+                    {% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ];
+
+            const roiData = [
+                {% for row in rows %}
+                    Number("{{ row.roi|default:0|escapejs }}") || 0
+                    {% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ];
+
+            const currencyFormatter =
+                new Intl.NumberFormat("en-IN", {
+                    style: "currency",
+                    currency: "INR",
+                    maximumFractionDigits: 2
+                });
+
+            /*
+             * Financial performance bar chart.
+             */
+
+            const financialCanvas =
+                document.getElementById(
+                    "financialPerformanceChart"
+                );
+
+            if (financialCanvas) {
+                new Chart(financialCanvas, {
+                    type: "bar",
+
+                    data: {
+                        labels: vehicleLabels,
+
+                        datasets: [
+                            {
+                                label: "Revenue",
+                                data: revenueData,
+                                backgroundColor:
+                                    "rgba(22, 163, 74, 0.72)",
+                                borderColor:
+                                    "rgba(22, 163, 74, 1)",
+                                borderWidth: 1,
+                                borderRadius: 6,
+                                maxBarThickness: 34
+                            },
+                            {
+                                label: "Operational Cost",
+                                data: operationalCostData,
+                                backgroundColor:
+                                    "rgba(124, 58, 237, 0.68)",
+                                borderColor:
+                                    "rgba(124, 58, 237, 1)",
+                                borderWidth: 1,
+                                borderRadius: 6,
+                                maxBarThickness: 34
+                            },
+                            {
+                                label: "Profit",
+                                data: profitData,
+                                backgroundColor:
+                                    "rgba(37, 99, 235, 0.7)",
+                                borderColor:
+                                    "rgba(37, 99, 235, 1)",
+                                borderWidth: 1,
+                                borderRadius: 6,
+                                maxBarThickness: 34
+                            }
+                        ]
+                    },
+
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+
+                        interaction: {
+                            mode: "index",
+                            intersect: false
+                        },
+
+                        plugins: {
+                            legend: {
+                                position: "bottom",
+
+                                labels: {
+                                    usePointStyle: true,
+                                    boxWidth: 8,
+                                    padding: 18,
+                                    font: {
+                                        size: 10
+                                    }
+                                }
+                            },
+
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        return (
+                                            context.dataset.label +
+                                            ": " +
+                                            currencyFormatter.format(
+                                                context.parsed.y || 0
+                                            )
+                                        );
+                                    }
+                                }
+                            }
+                        },
+
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+
+                                ticks: {
+                                    font: {
+                                        size: 9
+                                    }
+                                }
+                            },
+
+                            y: {
+                                beginAtZero: true,
+
+                                grid: {
+                                    color: "rgba(148, 163, 184, 0.16)"
+                                },
+
+                                ticks: {
+                                    font: {
+                                        size: 9
+                                    },
+
+                                    callback: function (value) {
+                                        return "₹" +
+                                            new Intl.NumberFormat(
+                                                "en-IN",
+                                                {
+                                                    notation: "compact",
+                                                    maximumFractionDigits: 1
+                                                }
+                                            ).format(value);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            /*
+             * ROI line chart.
+             */
+
+            const roiCanvas =
+                document.getElementById(
+                    "vehicleRoiChart"
+                );
+
+            if (roiCanvas) {
+                new Chart(roiCanvas, {
+                    type: "line",
+
+                    data: {
+                        labels: vehicleLabels,
+
+                        datasets: [
+                            {
+                                label: "ROI",
+                                data: roiData,
+                                borderColor:
+                                    "rgba(37, 99, 235, 1)",
+                                backgroundColor:
+                                    "rgba(37, 99, 235, 0.12)",
+                                borderWidth: 2,
+                                pointRadius: 4,
+                                pointHoverRadius: 6,
+                                pointBackgroundColor:
+                                    "rgba(37, 99, 235, 1)",
+                                tension: 0.35,
+                                fill: true
+                            }
+                        ]
+                    },
+
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        return (
+                                            "ROI: " +
+                                            Number(
+                                                context.parsed.y || 0
+                                            ).toFixed(2) +
+                                            "%"
+                                        );
+                                    }
+                                }
+                            }
+                        },
+
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+
+                                ticks: {
+                                    font: {
+                                        size: 9
+                                    }
+                                }
+                            },
+
+                            y: {
+                                grid: {
+                                    color: "rgba(148, 163, 184, 0.16)"
+                                },
+
+                                ticks: {
+                                    font: {
+                                        size: 9
+                                    },
+
+                                    callback: function (value) {
+                                        return value + "%";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+        {% endif %}
+    });
+</script>
 
 {% endblock %}

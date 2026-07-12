@@ -13,170 +13,2602 @@ Maintenance #{{ record.pk }}
 {{ record.maintenance_type }}
 {% endblock %}
 
+{% block extra_css %}
+
+<style>
+    .maintenance-detail-page {
+        --md-primary: #2563eb;
+        --md-primary-dark: #1d4ed8;
+        --md-primary-soft: #eff6ff;
+
+        --md-success: #16a34a;
+        --md-success-soft: #f0fdf4;
+
+        --md-warning: #d97706;
+        --md-warning-soft: #fff7ed;
+
+        --md-danger: #dc2626;
+        --md-danger-soft: #fef2f2;
+
+        --md-purple: #7c3aed;
+        --md-purple-soft: #f5f3ff;
+
+        --md-cyan: #0891b2;
+        --md-cyan-soft: #ecfeff;
+
+        --md-grey: #64748b;
+        --md-grey-soft: #f1f5f9;
+
+        --md-dark: #0f172a;
+        --md-text: #334155;
+        --md-muted: #64748b;
+        --md-border: #e2e8f0;
+        --md-surface: #ffffff;
+
+        --md-radius: 18px;
+        --md-shadow: 0 14px 38px rgba(15, 23, 42, 0.07);
+    }
+
+    .maintenance-detail-page * {
+        box-sizing: border-box;
+    }
+
+    .maintenance-detail-wrapper {
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* Breadcrumb */
+
+    .maintenance-detail-breadcrumb {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        margin-bottom: 18px;
+
+        color: var(--md-muted);
+        font-size: 12px;
+    }
+
+    .maintenance-detail-breadcrumb a {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        color: var(--md-muted);
+        font-weight: 600;
+
+        transition: color 0.2s ease;
+    }
+
+    .maintenance-detail-breadcrumb a:hover {
+        color: var(--md-primary);
+    }
+
+    .maintenance-detail-breadcrumb > i {
+        color: #94a3b8;
+        font-size: 10px;
+    }
+
+    /* Hero */
+
+    .maintenance-detail-hero {
+        position: relative;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 26px;
+
+        overflow: hidden;
+
+        margin-bottom: 22px;
+        padding: 28px 30px;
+
+        color: #ffffff;
+
+        background:
+            radial-gradient(
+                circle at 90% 10%,
+                rgba(255, 255, 255, 0.18),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 8% 115%,
+                rgba(245, 158, 11, 0.24),
+                transparent 36%
+            ),
+            linear-gradient(
+                135deg,
+                #0f172a 0%,
+                #1e3a8a 52%,
+                #2563eb 100%
+            );
+
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 21px;
+
+        box-shadow255, 255, 255, 0.1);
+        border-radius: 21px;
+
+        box-shadow: 0 18px 42px rgba(37, 99, 235, 0.17);
+    }
+
+    .maintenance-detail-hero::after {
+        position: absolute;
+        right: -70px;
+        bottom: -110px;
+
+        width: 250px;
+        height: 250px;
+
+        content: "";
+
+        border: 34px solid rgba(255, 255, 255, 0.055);
+        border-radius: 50%;
+    }
+
+    .maintenance-detail-hero-content {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        max-width: 800px;
+    }
+
+    .maintenance-detail-hero-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 58px;
+        height: 58px;
+
+        color: #ffffff;
+        font-size: 24px;
+
+        background: rgba(255, 255, 255, 0.13);
+        border: 1px solid rgba(255, 255, 255, 0.17);
+        border-radius: 17px;
+
+        backdrop-filter: blur(10px);
+    }
+
+    .maintenance-detail-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+
+        margin-bottom: 8px;
+        padding: 5px 9px;
+
+        color: #dbeafe;
+        font-size: 9px;
+        font-weight: 750;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 30px;
+    }
+
+    .maintenance-detail-eyebrow span {
+        width: 7px;
+        height: 7px;
+
+        background: #fbbf24;
+        border-radius: 50%;
+
+        box-shadow: 0 0 0 5px rgba(251, 191, 36, 0.14);
+    }
+
+    .maintenance-detail-hero h2 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: clamp(24px, 4vw, 32px);
+        font-weight: 760;
+        letter-spacing: -0.8px;
+    }
+
+    .maintenance-detail-hero p {
+        max-width: 650px;
+
+        margin: 8px 0 0;
+
+        color: #dbeafe;
+        font-size: 12px;
+        line-height: 1.65;
+    }
+
+    .maintenance-detail-hero-actions {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+    .maintenance-back-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        min-height: 43px;
+        padding: 9px 15px;
+
+        color: #1e3a8a;
+        font-size: 11px;
+        font-weight: 700;
+
+        background: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        border-radius: 10px;
+
+        box-shadow: 0 9px 20px rgba(15, 23, 42, 0.13);
+
+        transition:
+            color 0.2s ease,
+            background 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .maintenance-back-button:hover {
+        color: var(--md-primary);
+        background: var(--md-primary-soft);
+        transform: translateY(-2px);
+    }
+
+    /* Summary Cards */
+
+    .maintenance-detail-summary {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 15px;
+
+        margin-bottom: 22px;
+    }
+
+    .maintenance-summary-card {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+
+        min-height: 92px;
+        padding: 16px;
+
+        background: var(--md-surface);
+        border: 1px solid var(--md-border);
+        border-radius: 15px;
+
+        box-shadow: 0 7px 22px rgba(15, 23, 42, 0.045);
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .maintenance-summary-card:hover {
+        border-color: #bfdbfe;
+        box-shadow: 0 12px 27px rgba(15, 23, 42, 0.07);
+        transform: translateY(-3px);
+    }
+
+    .maintenance-summary-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 44px;
+        height: 44px;
+
+        font-size: 18px;
+        border-radius: 13px;
+    }
+
+    .maintenance-summary-icon.blue {
+        color: var(--md-primary);
+        background: var(--md-primary-soft);
+    }
+
+    .maintenance-summary-icon.orange {
+        color: var(--md-warning);
+        background: var(--md-warning-soft);
+    }
+
+    .maintenance-summary-icon.green {
+        color: var(--md-success);
+        background: var(--md-success-soft);
+    }
+
+    .maintenance-summary-icon.purple {
+        color: var(--md-purple);
+        background: var(--md-purple-soft);
+    }
+
+    .maintenance-summary-content {
+        min-width: 0;
+    }
+
+    .maintenance-summary-content span {
+        display: block;
+
+        margin-bottom: 4px;
+
+        color: var(--md-muted);
+        font-size: 9px;
+        font-weight: 650;
+    }
+
+    .maintenance-summary-content strong {
+        display: block;
+        overflow: hidden;
+
+        color: var(--md-dark);
+        font-size: 15px;
+        font-weight: 750;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Main Layout */
+
+    .maintenance-detail-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 340px;
+        align-items: start;
+        gap: 22px;
+    }
+
+    /* Generic Panel */
+
+    .maintenance-panel {
+        overflow: hidden;
+
+        background: var(--md-surface);
+        border: 1px solid var(--md-border);
+        border-radius: var(--md-radius);
+
+        box-shadow: var(--md-shadow);
+    }
+
+    .maintenance-panel + .maintenance-panel {
+        margin-top: 20px;
+    }
+
+    .maintenance-panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+
+        padding: 19px 21px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(239, 246, 255, 0.72),
+                rgba(255, 255, 255, 0.98)
+            );
+
+        border-bottom: 1px solid var(--md-border);
+    }
+
+    .maintenance-panel-heading {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .maintenance-panel-heading-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 40px;
+        height: 40px;
+
+        color: var(--md-primary);
+        font-size: 17px;
+
+        background: #ffffff;
+        border: 1px solid #dbeafe;
+        border-radius: 11px;
+    }
+
+    .maintenance-panel-heading h3 {
+        margin: 0;
+
+        color: var(--md-dark);
+        font-size: 15px;
+        font-weight: 720;
+    }
+
+    .maintenance-panel-heading p {
+        margin: 3px 0 0;
+
+        color: var(--md-muted);
+        font-size: 9px;
+        line-height: 1.45;
+    }
+
+    .maintenance-panel-body {
+        padding: 22px;
+    }
+
+    /* Status and Priority Badges */
+
+    .maintenance-status-badge,
+    .maintenance-priority-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        padding: 7px 10px;
+
+        font-size: 9px;
+        font-weight: 720;
+
+        border-radius: 20px;
+
+        white-space: nowrap;
+    }
+
+    .maintenance-status-badge::before {
+        width: 6px;
+        height: 6px;
+
+        content: "";
+
+        background: currentColor;
+        border-radius: 50%;
+    }
+
+    .status-in-progress {
+        color: var(--md-warning);
+        background: var(--md-warning-soft);
+    }
+
+    .status-completed {
+        color: var(--md-success);
+        background: var(--md-success-soft);
+    }
+
+    .status-cancelled {
+        color: var(--md-grey);
+        background: var(--md-grey-soft);
+    }
+
+    .priority-low {
+        color: var(--md-success);
+        background: var(--md-success-soft);
+    }
+
+    .priority-medium {
+        color: var(--md-warning);
+        background: var(--md-warning-soft);
+    }
+
+    .priority-high {
+        color: var(--md-danger);
+        background: var(--md-danger-soft);
+    }
+
+    .priority-critical {
+        color: #9f1239;
+        background: #fff1f2;
+    }
+
+    .priority-default {
+        color: var(--md-purple);
+        background: var(--md-purple-soft);
+    }
+
+    /* Information Grid */
+
+    .maintenance-information-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 15px;
+    }
+
+    .maintenance-information-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+
+        min-height: 82px;
+        padding: 14px;
+
+        background: #f8fafc;
+        border: 1px solid #eef2f7;
+        border-radius: 13px;
+    }
+
+    .maintenance-information-item.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .maintenance-information-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 36px;
+        height: 36px;
+
+        color: var(--md-primary);
+        font-size: 15px;
+
+        background: var(--md-primary-soft);
+        border-radius: 10px;
+    }
+
+    .maintenance-information-content {
+        min-width: 0;
+    }
+
+    .maintenance-information-content small {
+        display: block;
+
+        margin-bottom: 5px;
+
+        color: var(--md-muted);
+        font-size: 8px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .maintenance-information-content strong {
+        display: block;
+
+        color: var(--md-dark);
+        font-size: 11px;
+        font-weight: 720;
+        line-height: 1.45;
+    }
+
+    .maintenance-information-content p {
+        margin: 0;
+
+        color: var(--md-text);
+        font-size: 10px;
+        line-height: 1.65;
+        white-space: pre-line;
+    }
+
+    /* Vehicle Box */
+
+    .maintenance-vehicle-box {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        min-width: 0;
+    }
+
+    .maintenance-vehicle-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 42px;
+        height: 42px;
+
+        color: var(--md-primary);
+        font-size: 18px;
+
+        background: var(--md-primary-soft);
+        border: 1px solid #dbeafe;
+        border-radius: 12px;
+    }
+
+    .maintenance-registration {
+        display: block;
+        overflow: hidden;
+
+        color: var(--md-dark);
+        font-size: 12px;
+        font-weight: 760;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .maintenance-vehicle-name {
+        display: block;
+        overflow: hidden;
+
+        margin-top: 3px;
+
+        color: var(--md-muted);
+        font-size: 9px;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Costs */
+
+    .maintenance-cost-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 15px;
+    }
+
+    .maintenance-cost-card {
+        position: relative;
+        overflow: hidden;
+
+        min-height: 120px;
+        padding: 18px;
+
+        background: #ffffff;
+        border: 1px solid var(--md-border);
+        border-radius: 14px;
+    }
+
+    .maintenance-cost-card::after {
+        position: absolute;
+        right: -25px;
+        bottom: -35px;
+
+        width: 105px;
+        height: 105px;
+
+        content: "";
+
+        background: var(--cost-background, #eff6ff);
+        border-radius: 50%;
+
+        opacity: 0.75;
+    }
+
+    .maintenance-cost-card.estimated {
+        --cost-background: #eff6ff;
+    }
+
+    .maintenance-cost-card.final {
+        --cost-background: #f0fdf4;
+    }
+
+    .maintenance-cost-label {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        gap: 7px;
+
+        margin-bottom: 15px;
+
+        color: var(--md-muted);
+        font-size: 9px;
+        font-weight: 700;
+    }
+
+    .maintenance-cost-label i {
+        color: var(--md-primary);
+        font-size: 14px;
+    }
+
+    .maintenance-cost-card.final .maintenance-cost-label i {
+        color: var(--md-success);
+    }
+
+    .maintenance-cost-value {
+        position: relative;
+        z-index: 2;
+
+        display: block;
+
+        color: var(--md-dark);
+        font-size: 24px;
+        font-weight: 780;
+        letter-spacing: -0.6px;
+    }
+
+    .maintenance-cost-note {
+        position: relative;
+        z-index: 2;
+
+        display: block;
+
+        margin-top: 5px;
+
+        color: var(--md-muted);
+        font-size: 8px;
+    }
+
+    .maintenance-cost-pending {
+        color: #94a3b8;
+        font-size: 15px;
+    }
+
+    /* Timeline */
+
+    .maintenance-timeline {
+        position: relative;
+
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .maintenance-timeline-item {
+        position: relative;
+
+        display: flex;
+        gap: 13px;
+
+        padding-bottom: 23px;
+    }
+
+    .maintenance-timeline-item:last-child {
+        padding-bottom: 0;
+    }
+
+    .maintenance-timeline-item:not(:last-child)::after {
+        position: absolute;
+        top: 34px;
+        left: 15px;
+
+        width: 2px;
+        height: calc(100% - 24px);
+
+        content: "";
+
+        background: #e2e8f0;
+    }
+
+    .timeline-marker {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 32px;
+        height: 32px;
+
+        color: var(--md-primary);
+        font-size: 13px;
+
+        background: var(--md-primary-soft);
+        border: 2px solid #dbeafe;
+        border-radius: 50%;
+    }
+
+    .timeline-marker.completed {
+        color: var(--md-success);
+        background: var(--md-success-soft);
+        border-color: #bbf7d0;
+    }
+
+    .timeline-marker.cancelled {
+        color: var(--md-grey);
+        background: var(--md-grey-soft);
+        border-color: #cbd5e1;
+    }
+
+    .timeline-content {
+        padding-top: 3px;
+    }
+
+    .timeline-content strong {
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: var(--md-dark);
+        font-size: 10px;
+        font-weight: 720;
+    }
+
+    .timeline-content span {
+        display: block;
+
+        color: var(--md-muted);
+        font-size: 8px;
+        line-height: 1.5;
+    }
+
+    /* Completion Form */
+
+    .completion-card {
+        overflow: hidden;
+
+        background: #ffffff;
+        border: 1px solid #bbf7d0;
+        border-radius: var(--md-radius);
+
+        box-shadow: 0 14px 34px rgba(22, 163, 74, 0.08);
+    }
+
+    .completion-card-header {
+        padding: 20px;
+
+        color: #ffffff;
+
+        background:
+            radial-gradient(
+                circle at top right,
+                rgba(255, 255, 255, 0.17),
+                transparent 35%
+            ),
+            linear-gradient(
+                135deg,
+                #14532d,
+                #16a34a
+            );
+    }
+
+    .completion-card-header-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 42px;
+        height: 42px;
+
+        margin-bottom: 13px;
+
+        color: #ffffff;
+        font-size: 18px;
+
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.17);
+        border-radius: 12px;
+    }
+
+    .completion-card-header h3 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: 15px;
+        font-weight: 730;
+    }
+
+    .completion-card-header p {
+        margin: 6px 0 0;
+
+        color: #dcfce7;
+        font-size: 9px;
+        line-height: 1.55;
+    }
+
+    .completion-card-body {
+        padding: 20px;
+    }
+
+    .completion-form-field {
+        margin-bottom: 17px;
+    }
+
+    .completion-form-field:last-of-type {
+        margin-bottom: 0;
+    }
+
+    .completion-form-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+
+        margin-bottom: 7px;
+
+        color: var(--md-text);
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+    .completion-form-label .required-mark {
+        color: var(--md-danger);
+    }
+
+    .completion-form-field input,
+    .completion-form-field select,
+    .completion-form-field textarea {
+        width: 100%;
+        min-height: 44px;
+
+        padding: 10px 12px;
+
+        color: var(--md-dark);
+        font-size: 11px;
+
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+
+        outline: none;
+        box-shadow: none;
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .completion-form-field textarea {
+        min-height: 105px;
+        resize: vertical;
+    }
+
+    .completion-form-field input:focus,
+    .completion-form-field select:focus,
+    .completion-form-field textarea:focus {
+        border-color: var(--md-success);
+        box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.1);
+    }
+
+    .completion-field-help {
+        display: flex;
+        align-items: flex-start;
+        gap: 5px;
+
+        margin-top: 6px;
+
+        color: var(--md-muted);
+        font-size: 8px;
+        line-height: 1.5;
+    }
+
+    .completion-field-error {
+        display: flex;
+        align-items: flex-start;
+        gap: 5px;
+
+        margin-top: 6px;
+
+        color: var(--md-danger);
+        font-size: 8px;
+        font-weight: 650;
+    }
+
+    .final-cost-preview {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        margin-top: 9px;
+        padding: 11px;
+
+        background: var(--md-success-soft);
+        border: 1px solid #bbf7d0;
+-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 32px;
+        height: 32px;
+
+        color: var(--md-success);
+
+        background: #dcfce7;
+        border-radius: 9px;
+    }
+
+    .final-cost-preview strong {
+        display: block;
+
+        color: var(--md-dark);
+        font-size: 11px;
+    }
+
+    .final-cost-preview small {
+        display: block;
+
+        margin-top: 2px;
+
+        color: var(--md-muted);
+        font-size: 8px;
+    }
+
+    .complete-maintenance-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        width: 100%;
+        min-height: 44px;
+        margin-top: 18px;
+        padding: 10px 15px;
+
+        color: #ffffff;
+        font-size: 10px;
+        font-weight: 720;
+
+        background:
+            linear-gradient(
+                135deg,
+                #16a34a,
+                #15803d
+            );
+
+        border: 1px solid #16a34a;
+        border-radius: 10px;
+
+        box-shadow: 0 8px 18px rgba(22, 163, 74, 0.2);
+
+        transition:
+            background 0.2s ease,
+            box-shadow 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .complete-maintenance-button:hover {
+        color: #ffffff;
+        background:
+            linear-gradient(
+                135deg,
+                #15803d,
+                #166534
+            );
+
+        box-shadow: 0 11px 23px rgba(22, 163, 74, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .complete-maintenance-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.7;
+        transform: none;
+    }
+
+    /* Cancel Action */
+
+    .cancel-maintenance-card {
+        margin-top: 15px;
+        padding: 16px;
+
+        background: var(--md-danger-soft);
+        border: 1px solid #fecaca;
+        border-radius: 14px;
+    }
+
+    .cancel-maintenance-card strong {
+        display: block;
+
+        margin-bottom: 4px;
+
+        color: #991b1b;
+        font-size: 10px;
+    }
+
+    .cancel-maintenance-card p {
+        margin: 0 0 12px;
+
+        color: #b91c1c;
+        font-size: 8px;
+        line-height: 1.5;
+    }
+
+    .cancel-maintenance-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+
+        width: 100%;
+        min-height: 40px;
+        padding: 8px 13px;
+
+        color: var(--md-danger);
+        font-size: 9px;
+        font-weight: 720;
+
+        background: #ffffff;
+        border: 1px solid #fca5a5;
+        border-radius: 9px;
+
+        transition:
+            color 0.2s ease,
+            background 0.2s ease,
+            border-color 0.2s ease;
+    }
+
+    .cancel-maintenance-button:hover {
+        color: #ffffff;
+        background: var(--md-danger);
+        border-color: var(--md-danger);
+    }
+
+    /* Read-only Status Card */
+
+    .maintenance-status-card {
+        overflow: hidden;
+
+        background: #ffffff;
+        border: 1px solid var(--md-border);
+        border-radius: var(--md-radius);
+
+        box-shadow: var(--md-shadow);
+    }
+
+    .maintenance-status-card-body {
+        padding: 20px;
+        text-align: center;
+    }
+
+    .maintenance-status-card-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 58px;
+        height: 58px;
+
+        margin: 0 auto 13px;
+
+        font-size: 24px;
+        border-radius: 17px;
+    }
+
+    .maintenance-status-card-icon.completed {
+        color: var(--md-success);
+        background: var(--md-success-soft);
+    }
+
+    .maintenance-status-card-icon.cancelled {
+        color: var(--md-grey);
+        background: var(--md-grey-soft);
+    }
+
+    .maintenance-status-card-body h3 {
+        margin: 0 0 6px;
+
+        color: var(--md-dark);
+        font-size: 15px;
+        font-weight: 730;
+    }
+
+    .maintenance-status-card-body p {
+        margin: 0;
+
+        color: var(--md-muted);
+        font-size: 9px;
+        line-height: 1.6;
+    }
+
+    /* Cancel Modal */
+
+    .maintenance-cancel-modal .modal-content {
+        overflow: hidden;
+
+        border: 0;
+        border-radius: 18px;
+
+        box-shadow: 0 25px 70px rgba(15, 23, 42, 0.25);
+    }
+
+    .cancel-modal-header {
+        position: relative;
+
+        padding: 23px;
+
+        text-align: center;
+
+        background:
+            radial-gradient(
+                circle at top right,
+                rgba(255, 255, 255, 0.15),
+                transparent 35%
+            ),
+            linear-gradient(
+                135deg,
+                #991b1b,
+                #dc2626
+            );
+    }
+
+    .cancel-modal-header .btn-close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+
+        filter: brightness(0) invert(1);
+        opacity: 0.8;
+    }
+
+    .cancel-modal-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 54px;
+        height: 54px;
+
+        margin: 0 auto 12px;
+
+        color: #ffffff;
+        font-size: 23px;
+
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 15px;
+    }
+
+    .cancel-modal-header h3 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: 17px;
+        font-weight: 730;
+    }
+
+    .cancel-modal-header p {
+        margin: 5px 0 0;
+
+        color: #fecaca;
+        font-size: 9px;
+    }
+
+    .cancel-modal-body {
+        padding: 22px;
+    }
+
+    .cancel-record-preview {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        margin: 14px 0;
+        padding: 13px;
+
+        background: #f8fafc;
+        border: 1px solid var(--md-border);
+        border-radius: 12px;
+    }
+
+    .cancel-record-preview strong {
+        display: block;
+
+        color: var(--md-dark);
+        font-size: 11px;
+    }
+
+    .cancel-record-preview small {
+        display: block;
+
+        margin-top: 3px;
+
+        color: var(--md-muted);
+        font-size: 9px;
+    }
+
+    .cancel-warning {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+
+        padding: 11px;
+
+        color: #9a3412;
+        font-size: 9px;
+        line-height: 1.5;
+
+        background: var(--md-warning-soft);
+        border: 1px solid #fed7aa;
+        border-radius: 10px;
+    }
+
+    .cancel-modal-footer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 9px;
+
+        padding: 15px 22px;
+
+        background: #f8fafc;
+        border-top: 1px solid var(--md-border);
+    }
+
+    .cancel-modal-back-button,
+    .cancel-modal-confirm-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+
+        min-height: 40px;
+        padding: 8px 13px;
+
+        font-size: 10px;
+        font-weight: 700;
+
+        border-radius: 9px;
+    }
+
+    .cancel-modal-back-button {
+        color: #475569;
+
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+    }
+
+    .cancel-modal-confirm-button {
+        color: #ffffff;
+
+        background: var(--md-danger);
+        border: 1px solid var(--md-danger);
+    }
+
+    .cancel-modal-confirm-button:hover {
+        color: #ffffff;
+        background: #b91c1c;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 1199.98px) {
+        .maintenance-detail-summary {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 991.98px) {
+        .maintenance-detail-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .maintenance-detail-hero {
+            align-items: stretch;
+            flex-direction: column;
+
+            padding: 23px;
+        }
+
+        .maintenance-detail-hero-actions {
+            width: 100%;
+        }
+
+        .maintenance-back-button {
+            width: 100%;
+        }
+
+        .maintenance-information-grid,
+        .maintenance-cost-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .maintenance-information-item.full-width {
+            grid-column: auto;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .maintenance-detail-summary {
+            grid-template-columns: 1fr;
+        }
+
+        .maintenance-detail-hero {
+            padding: 20px;
+            border-radius: 17px;
+        }
+
+        .maintenance-detail-hero-content {
+            align-items: flex-start;
+        }
+
+        .maintenance-detail-hero-icon {
+            width: 47px;
+            height: 47px;
+            font-size: 20px;
+        }
+
+        .maintenance-panel,
+        .completion-card,
+        .maintenance-status-card {
+            border-radius: 15px;
+        }
+
+        .maintenance-panel-header,
+        .maintenance-panel-body,
+        .completion-card-body {
+            padding: 17px;
+        }
+
+        .cancel-modal-footer {
+            align-items: stretch;
+            flex-direction: column-reverse;
+        }
+
+        .cancel-modal-footer form,
+        .cancel-modal-back-button,
+        .cancel-modal-confirm-button {
+            width: 100%;
+        }
+
+        .cancel-modal-footer form button {
+            width: 100%;
+        }
+    }
+</style>
+
+{% endblock %}
+
 {% block content %}
 
-<div class="row g-4">
+<div class="maintenance-detail-page">
 
-    <div class="col-lg-8">
+    <div class="maintenance-detail-wrapper">
 
-        <div class="card border-0 shadow-sm">
-            <div class="card-body p-4">
+        <!-- Breadcrumb -->
+        <nav class="maintenance-detail-breadcrumb">
 
-                <h5 class="mb-4">
-                    Maintenance Information
-                </h5>
+            <a href="{% url 'dashboard:home' %}">
+                <i class="bi bi-house-door"></i>
+                Dashboard
+            </a>
 
-                <div class="row g-4">
+            <i class="bi bi-chevron-right"></i>
 
-                    <div class="col-md-6">
-                        <small class="text-muted">
-                            Vehicle
-                        </small>
+            <a href="{% url 'operations:maintenance_list' %}">
+                Maintenance
+            </a>
 
-                        <div class="fw-semibold">
-                            {{ record.vehicle.registration_number }}
-                            — {{ record.vehicle.vehicle_name }}
-                        </div>
+            <i class="bi bi-chevron-right"></i>
+
+            <span>
+                Record #{{ record.pk }}
+            </span>
+
+        </nav>
+
+        <!-- Hero -->
+        <section class="maintenance-detail-hero">
+
+            <div class="maintenance-detail-hero-content">
+
+                <div class="maintenance-detail-hero-icon">
+                    <i class="bi bi-tools"></i>
+                </div>
+
+                <div>
+
+                    <div class="maintenance-detail-eyebrow">
+                        <span></span>
+                        Maintenance Record
                     </div>
 
-                    <div class="col-md-6">
-                        <small class="text-muted">
-                            Status
-                        </small>
+                    <h2>
+                        Maintenance #{{ record.pk }}
+                    </h2>
 
-                        <div class="fw-semibold">
-                            {{ record.get_status_display }}
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <small class="text-muted">
-                            Maintenance Type
-                        </small>
-
-                        <div class="fw-semibold">
-                            {{ record.maintenance_type }}
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <small class="text-muted">
-                            Priority
-                        </small>
-
-                        <div class="fw-semibold">
-                            {{ record.get_priority_display }}
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <small class="text-muted">
-                            Estimated Cost
-                        </small>
-
-                        <div class="fw-semibold">
-                            ₹{{ record.estimated_cost }}
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <small class="text-muted">
-                            Final Cost
-                        </small>
-
-                        <div class="fw-semibold">
-                            ₹{{ record.final_cost }}
-                        </div>
-                    </div>
-
-                    <div class="col-12">
-                        <small class="text-muted">
-                            Description
-                        </small>
-
-                        <p class="mb-0">
-                            {{ record.description }}
-                        </p>
-                    </div>
-
-                    {% if record.completion_notes %}
-                        <div class="col-12">
-                            <small class="text-muted">
-                                Completion Notes
-                            </small>
-
-                            <p class="mb-0">
-                                {{ record.completion_notes }}
-                            </p>
-                        </div>
-                    {% endif %}
+                    <p>
+                        {{ record.vehicle.registration_number }}
+                        — {{ record.maintenance_type }}.
+                        Review service information, priority, costs,
+                        notes and maintenance status.
+                    </p>
 
                 </div>
 
             </div>
+
+            <div class="maintenance-detail-hero-actions">
+
+                <a
+                    href="{% url 'operations:maintenance_list' %}"
+                    class="maintenance-back-button"
+                >
+                    <i class="bi bi-arrow-left"></i>
+                    Back to Maintenance
+                </a>
+
+            </div>
+
+        </section>
+
+        <!-- Summary -->
+        <section class="maintenance-detail-summary">
+
+            <article class="maintenance-summary-card">
+
+                <div class="maintenance-summary-icon blue">
+                    <i class="bi bi-truck-front-fill"></i>
+                </div>
+
+                <div class="maintenance-summary-content">
+                    <span>Vehicle</span>
+
+                    <strong>
+                        {{ record.vehicle.registration_number }}
+                    </strong>
+                </div>
+
+            </article>
+
+            <article class="maintenance-summary-card">
+
+                <div class="maintenance-summary-icon orange">
+                    <i class="bi bi-wrench-adjustable"></i>
+                </div>
+
+                <div class="maintenance-summary-content">
+                    <span>Maintenance Type</span>
+
+                    <strong>
+                        {{ record.maintenance_type }}
+                    </strong>
+                </div>
+
+            </article>
+
+            <article class="maintenance-summary-card">
+
+                <div class="maintenance-summary-icon purple">
+                    <i class="bi bi-flag-fill"></i>
+                </div>
+
+                <div class="maintenance-summary-content">
+                    <span>Priority</span>
+
+                    <strong>
+                        {{ record.get_priority_display }}
+                    </strong>
+                </div>
+
+            </article>
+
+            <article class="maintenance-summary-card">
+
+                <div class="maintenance-summary-icon green">
+                    <i class="bi bi-activity"></i>
+                </div>
+
+                <div class="maintenance-summary-content">
+                    <span>Current Status</span>
+
+                    <strong>
+                        {{ record.get_status_display }}
+                    </strong>
+                </div>
+
+            </article>
+
+        </section>
+
+        <div class="maintenance-detail-grid">
+
+            <!-- Main Content -->
+            <main>
+
+                <!-- Maintenance Information -->
+                <section class="maintenance-panel">
+
+                    <header class="maintenance-panel-header">
+
+                        <div class="maintenance-panel-heading">
+
+                            <div class="maintenance-panel-heading-icon">
+                                <i class="bi bi-clipboard2-data-fill"></i>
+                            </div>
+
+                            <div>
+                                <h3>Maintenance Information</h3>
+
+                                <p>
+                                    Complete service and vehicle information
+                                </p>
+                            </div>
+
+                        </div>
+
+                        {% if record.status == "IN_PROGRESS" %}
+
+                            <span
+                                class="
+                                    maintenance-status-badge
+                                    status-in-progress
+                                "
+                            >
+                                In Progress
+                            </span>
+
+                        {% elif record.status == "COMPLETED" %}
+
+                            <span
+                                class="
+                                    maintenance-status-badge
+                                    status-completed
+                                "
+                            >
+                                Completed
+                            </span>
+
+                        {% else %}
+
+                            <span
+                                class="
+                                    maintenance-status-badge
+                                    status-cancelled
+                                "
+                            >
+                                Cancelled
+                            </span>
+
+                        {% endif %}
+
+                    </header>
+
+                    <div class="maintenance-panel-body">
+
+                        <div class="maintenance-information-grid">
+
+                            <!-- Vehicle -->
+                            <article class="maintenance-information-item">
+
+                                <div class="maintenance-information-icon">
+                                    <i class="bi bi-truck-front-fill"></i>
+                                </div>
+
+                                <div class="maintenance-information-content">
+
+                                    <small>Vehicle</small>
+
+                                    <div class="maintenance-vehicle-box">
+
+                                        <div>
+
+                                            <span class="maintenance-registration">
+                                                {{ record.vehicle.registration_number }}
+                                            </span>
+
+                                            <span class="maintenance-vehicle-name">
+                                                {{ record.vehicle.vehicle_name }}
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </article>
+
+                            <!-- Status -->
+                            <article class="maintenance-information-item">
+
+                                <div class="maintenance-information-icon">
+                                    <i class="bi bi-activity"></i>
+                                </div>
+
+                                <div class="maintenance-information-content">
+
+                                    <small>Maintenance Status</small>
+
+                                    {% if record.status == "IN_PROGRESS" %}
+
+                                        <span
+                                            class="
+                                                maintenance-status-badge
+                                                status-in-progress
+                                            "
+                                        >
+                                            In Progress
+                                        </span>
+
+                                    {% elif record.status == "COMPLETED" %}
+
+                                        <span
+                                            class="
+                                                maintenance-status-badge
+                                                status-completed
+                                            "
+                                        >
+                                            Completed
+                                        </span>
+
+                                    {% else %}
+
+                                        <span
+                                            class="
+                                                maintenance-status-badge
+                                                status-cancelled
+                                            "
+                                        >
+                                            Cancelled
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </article>
+
+                            <!-- Maintenance Type -->
+                            <article class="maintenance-information-item">
+
+                                <div class="maintenance-information-icon">
+                                    <i class="bi bi-wrench-adjustable"></i>
+                                </div>
+
+                                <div class="maintenance-information-content">
+
+                                    <small>Maintenance Type</small>
+
+                                    <strong>
+                                        {{ record.maintenance_type }}
+                                    </strong>
+
+                                </div>
+
+                            </article>
+
+                            <!-- Priority -->
+                            <article class="maintenance-information-item">
+
+                                <div class="maintenance-information-icon">
+                                    <i class="bi bi-flag-fill"></i>
+                                </div>
+
+                                <div class="maintenance-information-content">
+
+                                    <small>Priority Level</small>
+
+                                    <span
+                                        class="
+                                            maintenance-priority-badge
+
+                                            {% if record.priority == 'LOW' %}
+                                                priority-low
+                                            {% elif record.priority == 'MEDIUM' %}
+                                                priority-medium
+                                            {% elif record.priority == 'HIGH' %}
+                                                priority-high
+                                            {% elif record.priority == 'CRITICAL' or record.priority == 'URGENT' %}
+                                                priority-critical
+                                            {% else %}
+                                                priority-default
+                                            {% endif %}
+                                        "
+                                    >
+
+                                        {% if record.priority == "LOW" %}
+                                            <i class="bi bi-arrow-down-circle-fill"></i>
+
+                                        {% elif record.priority == "MEDIUM" %}
+                                            <i class="bi bi-dash-circle-fill"></i>
+
+                                        {% elif record.priority == "HIGH" %}
+                                            <i class="bi bi-arrow-up-circle-fill"></i>
+
+                                        {% elif record.priority == "CRITICAL" or record.priority == "URGENT" %}
+                                            <i class="bi bi-exclamation-octagon-fill"></i>
+
+                                        {% else %}
+                                            <i class="bi bi-flag-fill"></i>
+                                        {% endif %}
+
+                                        {{ record.get_priority_display }}
+
+                                    </span>
+
+                                </div>
+
+                            </article>
+
+                            <!-- Created -->
+                            <article class="maintenance-information-item">
+
+                                <div class="maintenance-information-icon">
+                                    <i class="bi bi-calendar-event"></i>
+                                </div>
+
+                                <div class="maintenance-information-content">
+
+                                    <small>Created Date</small>
+
+                                    <strong>
+                                        {{ record.created_at|date:"d M Y" }}
+                                    </strong>
+
+                                </div>
+
+                            </article>
+
+                            <!-- Record Number -->
+                            <article class="maintenance-information-item">
+
+                                <div class="maintenance-information-icon">
+                                    <i class="bi bi-hash"></i>
+                                </div>
+
+                                <div class="maintenance-information-content">
+
+                                    <small>Record Number</small>
+
+                                    <strong>
+                                        MNT-{{ record.pk }}
+                                    </strong>
+
+                                </div>
+
+                            </article>
+
+                            <!-- Description -->
+                            <article
+                                class="
+                                    maintenance-information-item
+                                    full-width
+                                "
+                            >
+
+                                <div class="maintenance-information-icon">
+                                    <i class="bi bi-card-text"></i>
+                                </div>
+
+                                <div class="maintenance-information-content">
+
+                                    <small>Maintenance Description</small>
+
+                                    <p>
+                                        {{ record.description|default:"No maintenance description was provided." }}
+                                    </p>
+
+                                </div>
+
+                            </article>
+
+                            <!-- Completion Notes -->
+                            {% if record.completion_notes %}
+
+                                <article
+                                    class="
+                                        maintenance-information-item
+                                        full-width
+                                    "
+                                >
+
+                                    <div class="maintenance-information-icon">
+                                        <i class="bi bi-check2-square"></i>
+                                    </div>
+
+                                    <div class="maintenance-information-content">
+
+                                        <small>Completion Notes</small>
+
+                                        <p>
+                                            {{ record.completion_notes }}
+                                        </p>
+
+                                    </div>
+
+                                </article>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <!-- Cost Summary -->
+                <section class="maintenance-panel">
+
+                    <header class="maintenance-panel-header">
+
+                        <div class="maintenance-panel-heading">
+
+                            <div class="maintenance-panel-heading-icon">
+                                <i class="bi bi-cash-stack"></i>
+                            </div>
+
+                            <div>
+                                <h3>Maintenance Cost Summary</h3>
+
+                                <p>
+                                    Compare expected and actual service expenditure
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </header>
+
+                    <div class="maintenance-panel-body">
+
+                        <div class="maintenance-cost-grid">
+
+                            <article
+                                class="
+                                    maintenance-cost-card
+                                    estimated
+                                "
+                            >
+
+                                <div class="maintenance-cost-label">
+                                    <i class="bi bi-calculator"></i>
+                                    Estimated Cost
+                                </div>
+
+                                <strong class="maintenance-cost-value">
+                                    ₹{{ record.estimated_cost|default:0|floatformat:2 }}
+                                </strong>
+
+                                <span class="maintenance-cost-note">
+                                    Expected maintenance expense
+                                </span>
+
+                            </article>
+
+                            <article
+                                class="
+                                    maintenance-cost-card
+                                    final
+                                "
+                            >
+
+                                <div class="maintenance-cost-label">
+                                    <i class="bi bi-receipt"></i>
+                                    Final Cost
+                                </div>
+
+                                {% if record.final_cost %}
+
+                                    <strong class="maintenance-cost-value">
+                                        ₹{{ record.final_cost|floatformat:2 }}
+                                    </strong>
+
+                                    <span class="maintenance-cost-note">
+                                        Actual recorded expense
+                                    </span>
+
+                                {% else %}
+
+                                    <strong
+                                        class="
+                                            maintenance-cost-value
+                                            maintenance-cost-pending
+                                        "
+                                    >
+                                        Not recorded
+                                    </strong>
+
+                                    <span class="maintenance-cost-note">
+                                        Final cost will be added on completion
+                                    </span>
+
+                                {% endif %}
+
+                            </article>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </main>
+
+            <!-- Sidebar -->
+            <aside>
+
+                {% if can_manage and record.status == "IN_PROGRESS" %}
+
+                    <!-- Completion Form -->
+                    <section class="completion-card">
+
+                        <header class="completion-card-header">
+
+                            <div class="completion-card-header-icon">
+                                <i class="bi bi-check2-circle"></i>
+                            </div>
+
+                            <h3>Complete Maintenance</h3>
+
+                            <p>
+                                Enter the final cost and completion notes
+                                before returning the vehicle to operation.
+                            </p>
+
+                        </header>
+
+                        <div class="completion-card-body">
+
+                            <form
+                                method="post"
+                                action="{% url 'operations:maintenance_close' record.pk %}"
+                                id="completeMaintenanceForm"
+                                novalidate
+                            >
+                                {% csrf_token %}
+
+                                <!-- Final Cost -->
+                                <div class="completion-form-field">
+
+                                    <label
+                                        for="{{ close_form.final_cost.id_for_label }}"
+                                        class="completion-form-label"
+                                    >
+                                        <span>
+                                            Final Cost
+                                            <span class="required-mark">*</span>
+                                        </span>
+                                    </label>
+
+                                    {{ close_form.final_cost }}
+
+                                    <div class="completion-field-help">
+                                        <i class="bi bi-info-circle"></i>
+
+                                        <span>
+                                            Enter the complete amount paid
+                                            for this maintenance work.
+                                        </span>
+                                    </div>
+
+                                    <div class="final-cost-preview">
+
+                                        <div class="final-cost-preview-icon">
+                                            <i class="bi bi-currency-rupee"></i>
+                                        </div>
+
+                                        <div>
+                                            <strong id="finalCostPreview">
+                                                ₹0.00
+                                            </strong>
+
+                                            <small>
+                                                Final maintenance expense
+                                            </small>
+                                        </div>
+
+                                    </div>
+
+                                    {% for error in close_form.final_cost.errors %}
+
+                                        <div class="completion-field-error">
+                                            <i class="bi bi-exclamation-circle-fill"></i>
+                                            <span>{{ error }}</span>
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                                <!-- Completion Notes -->
+                                <div class="completion-form-field">
+
+                                    <label
+                                        for="{{ close_form.completion_notes.id_for_label }}"
+                                        class="completion-form-label"
+                                    >
+                                        <span>Completion Notes</span>
+                                    </label>
+
+                                    {{ close_form.completion_notes }}
+
+                                    <div class="completion-field-help">
+                                        <i class="bi bi-card-text"></i>
+
+                                        <span>
+                                            Mention work completed, replaced parts
+                                            and any future recommendations.
+                                        </span>
+                                    </div>
+
+                                    {% for error in close_form.completion_notes.errors %}
+
+                                        <div class="completion-field-error">
+                                            <i class="bi bi-exclamation-circle-fill"></i>
+                                            <span>{{ error }}</span>
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    class="complete-maintenance-button"
+                                    id="completeMaintenanceButton"
+                                >
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    Complete Maintenance
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </section>
+
+                    <!-- Cancel -->
+                    <section class="cancel-maintenance-card">
+
+                        <strong>
+                            Cancel this maintenance?
+                        </strong>
+
+                        <p>
+                            Use this only when the maintenance work is not
+                            continuing or was created by mistake.
+                        </p>
+
+                        <button
+                            type="button"
+                            class="cancel-maintenance-button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#cancelMaintenanceModal"
+                        >
+                            <i class="bi bi-x-circle"></i>
+                            Cancel Maintenance
+                        </button>
+
+                    </section>
+
+                {% else %}
+
+                    <!-- Read-only Status -->
+                    <section class="maintenance-status-card">
+
+                        <div class="maintenance-status-card-body">
+
+                            {% if record.status == "COMPLETED" %}
+
+                                <div
+                                    class="
+                                        maintenance-status-card-icon
+                                        completed
+                                    "
+                                >
+                                    <i class="bi bi-check-circle-fill"></i>
+                                </div>
+
+                                <h3>Maintenance Completed</h3>
+
+                                <p>
+                                    This maintenance job has been completed.
+                                    The final cost and completion details are
+                                    shown in this record.
+                                </p>
+
+                            {% else %}
+
+                                <div
+                                    class="
+                                        maintenance-status-card-icon
+                                        cancelled
+                                    "
+                                >
+                                    <i class="bi bi-x-circle-fill"></i>
+                                </div>
+
+                                <h3>Maintenance Cancelled</h3>
+
+                                <p>
+                                    This maintenance record is closed and
+                                    no further actions are currently available.
+                                </p>
+
+                            {% endif %}
+
+                        </div>
+
+                    </section>
+
+                {% endif %}
+
+                <!-- Timeline -->
+                <section class="maintenance-panel">
+
+                    <header class="maintenance-panel-header">
+
+                        <div class="maintenance-panel-heading">
+
+                            <div class="maintenance-panel-heading-icon">
+                                <i class="bi bi-clock-history"></i>
+                            </div>
+
+                            <div>
+                                <h3>Maintenance Lifecycle</h3>
+
+                                <p>
+                                    Current record progression
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </header>
+
+                    <div class="maintenance-panel-body">
+
+                        <div class="maintenance-timeline">
+
+                            <div class="maintenance-timeline-item">
+
+                                <div class="timeline-marker">
+                                    <i class="bi bi-plus-lg"></i>
+                                </div>
+
+                                <div class="timeline-content">
+
+                                    <strong>
+                                        Maintenance Created
+                                    </strong>
+
+                                    <span>
+                                        Record opened on
+                                        {{ record.created_at|date:"d M Y" }}.
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                            <div class="maintenance-timeline-item">
+
+                                <div
+                                    class="
+                                        timeline-marker
+
+                                        {% if record.status == 'COMPLETED' %}
+                                            completed
+                                        {% elif record.status == 'CANCELLED' %}
+                                            cancelled
+                                        {% endif %}
+                                    "
+                                >
+
+                                    {% if record.status == "COMPLETED" %}
+                                        <i class="bi bi-check-lg"></i>
+
+                                    {% elif record.status == "CANCELLED" %}
+                                        <i class="bi bi-x-lg"></i>
+
+                                    {% else %}
+                                        <i class="bi bi-tools"></i>
+                                    {% endif %}
+
+                                </div>
+
+                                <div class="timeline-content">
+
+                                    <strong>
+                                        {% if record.status == "COMPLETED" %}
+                                            Work Completed
+
+                                        {% elif record.status == "CANCELLED" %}
+                                            Maintenance Cancelled
+
+                                        {% else %}
+                                            Work In Progress
+                                        {% endif %}
+                                    </strong>
+
+                                    <span>
+                                        {% if record.status == "COMPLETED" %}
+                                            Maintenance work and final costs
+                                            have been recorded.
+
+                                        {% elif record.status == "CANCELLED" %}
+                                            This maintenance job was cancelled.
+
+                                        {% else %}
+                                            Vehicle remains unavailable while
+                                            maintenance is active.
+                                        {% endif %}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                            {% if record.status == "IN_PROGRESS" %}
+
+                                <div class="maintenance-timeline-item">
+
+                                    <div class="timeline-marker">
+                                        <i class="bi bi-flag"></i>
+                                    </div>
+
+                                    <div class="timeline-content">
+
+                                        <strong>
+                                            Awaiting Completion
+                                        </strong>
+
+                                        <span>
+                                            Enter final cost and completion notes
+                                            after the repair work is finished.
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </aside>
+
         </div>
 
     </div>
 
-    <div class="col-lg-4">
+</div>
 
-        {% if can_manage and record.status == "IN_PROGRESS" %}
+<!-- Cancel Confirmation Modal -->
+{% if can_manage and record.status == "IN_PROGRESS" %}
 
-            <div class="card border-0 shadow-sm mb-3">
-                <div class="card-body p-4">
+    <div
+        class="modal fade maintenance-cancel-modal"
+        id="cancelMaintenanceModal"
+        tabindex="-1"
+        aria-labelledby="cancelMaintenanceModalLabel"
+        aria-hidden="true"
+    >
 
-                    <h5 class="mb-3">
-                        Complete Maintenance
-                    </h5>
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content">
+
+                <div class="cancel-modal-header">
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
+
+                    <div class="cancel-modal-icon">
+                        <i class="bi bi-x-octagon-fill"></i>
+                    </div>
+
+                    <h3 id="cancelMaintenanceModalLabel">
+                        Cancel Maintenance?
+                    </h3>
+
+                    <p>
+                        Review the record before confirming.
+                    </p>
+
+                </div>
+
+                <div class="cancel-modal-body">
+
+                    <p class="mb-0 text-muted small">
+                        You are about to cancel the following maintenance record:
+                    </p>
+
+                    <div class="cancel-record-preview">
+
+                        <div class="maintenance-vehicle-icon">
+                            <i class="bi bi-truck-front-fill"></i>
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                {{ record.vehicle.registration_number }}
+                            </strong>
+
+                            <small>
+                                {{ record.maintenance_type }}
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <div class="cancel-warning">
+
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+
+                        <span>
+                            The maintenance record will be marked as cancelled.
+                            Confirm this action only when the maintenance work
+                            will not continue.
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="cancel-modal-footer">
+
+                    <button
+                        type="button"
+                        class="cancel-modal-back-button"
+                        data-bs-dismiss="modal"
+                    >
+                        <i class="bi bi-arrow-left"></i>
+                        Keep Maintenance
+                    </button>
 
                     <form
                         method="post"
-                        action="{% url 'operations:maintenance_close' record.pk %}"
+                        action="{% url 'operations:maintenance_cancel' record.pk %}"
+                        id="cancelMaintenanceForm"
                     >
                         {% csrf_token %}
 
-                        <div class="mb-3">
-                            <label class="form-label">
-                                Final Cost
-                            </label>
-
-                            {{ close_form.final_cost }}
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">
-                                Completion Notes
-                            </label>
-
-                            {{ close_form.completion_notes }}
-                        </div>
-
-                        <button class="btn btn-success w-100">
-                            Complete Maintenance
+                        <button
+                            type="submit"
+                            class="cancel-modal-confirm-button"
+                            id="cancelMaintenanceConfirmButton"
+                        >
+                            <i class="bi bi-x-circle-fill"></i>
+                            Confirm Cancellation
                         </button>
+
                     </form>
 
                 </div>
+
             </div>
 
-            <form
-                method="post"
-                action="{% url 'operations:maintenance_cancel' record.pk %}"
-            >
-                {% csrf_token %}
-
-                <button
-                    class="btn btn-outline-danger w-100"
-                    onclick="return confirm('Cancel this maintenance record?')"
-                >
-                    Cancel Maintenance
-                </button>
-            </form>
-
-        {% endif %}
+        </div>
 
     </div>
 
-</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        {% if can_manage and record.status == "IN_PROGRESS" %}
+
+            /*
+             * Final cost field preview.
+             */
+
+            const finalCostInput = document.getElementById(
+                "{{ close_form.final_cost.id_for_label }}"
+            );
+
+            const finalCostPreview = document.getElementById(
+                "finalCostPreview"
+            );
+
+            if (finalCostInput) {
+                finalCostInput.placeholder = "Example: 6500";
+                finalCostInput.setAttribute("min", "0");
+                finalCostInput.setAttribute("step", "0.01");
+                finalCostInput.setAttribute("inputmode", "decimal");
+            }
+
+            function updateFinalCostPreview() {
+                if (!finalCostInput || !finalCostPreview) {
+                    return;
+                }
+
+                let finalCost = parseFloat(
+                    finalCostInput.value || "0"
+                );
+
+                if (Number.isNaN(finalCost) || finalCost < 0) {
+                    finalCost = 0;
+                }
+
+                finalCostPreview.textContent =
+                    new Intl.NumberFormat("en-IN", {
+                        style: "currency",
+                        currency: "INR",
+                        maximumFractionDigits: 2
+                    }).format(finalCost);
+            }
+
+            if (finalCostInput) {
+                updateFinalCostPreview();
+
+                finalCostInput.addEventListener(
+                    "input",
+                    updateFinalCostPreview
+                );
+            }
+
+            /*
+             * Completion notes placeholder.
+             */
+
+            const completionNotesInput = document.getElementById(
+                "{{ close_form.completion_notes.id_for_label }}"
+            );
+
+            if (completionNotesInput) {
+                completionNotesInput.placeholder =
+                    "Describe completed work, replaced parts and recommendations...";
+            }
+
+            /*
+             * Prevent duplicate completion form submissions.
+             */
+
+            const completeForm = document.getElementById(
+                "completeMaintenanceForm"
+            );
+
+            const completeButton = document.getElementById(
+                "completeMaintenanceButton"
+            );
+
+            if (completeForm && completeButton) {
+                completeForm.addEventListener(
+                    "submit",
+                    function () {
+                        completeButton.disabled = true;
+
+                        completeButton.innerHTML = `
+                            <span
+                                class="spinner-border spinner-border-sm"
+                                aria-hidden="true"
+                            ></span>
+
+                            <span>Completing Maintenance...</span>
+                        `;
+                    }
+                );
+            }
+
+            /*
+             * Prevent duplicate cancellation requests.
+             */
+
+            const cancelForm = document.getElementById(
+                "cancelMaintenanceForm"
+            );
+
+            const cancelButton = document.getElementById(
+                "cancelMaintenanceConfirmButton"
+            );
+
+            if (cancelForm && cancelButton) {
+                cancelForm.addEventListener(
+                    "submit",
+                    function () {
+                        cancelButton.disabled = true;
+
+                        cancelButton.innerHTML = `
+                            <span
+                                class="spinner-border spinner-border-sm"
+                                aria-hidden="true"
+                            ></span>
+
+                            <span>Cancelling...</span>
+                        `;
+                    }
+                );
+            }
+
+        {% endif %}
+    });
+</script>
 
 {% endblock %}

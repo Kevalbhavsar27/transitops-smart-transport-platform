@@ -1,79 +1,2207 @@
 {% extends "base.html" %}
 
 {% block title %}
-    {{ page_heading }} | TransitOps
+{{ page_heading|default:"Vehicle Form" }} | TransitOps
 {% endblock %}
 
 {% block page_title %}
-    {{ page_heading }}
+{{ page_heading|default:"Vehicle Management" }}
 {% endblock %}
 
 {% block page_subtitle %}
-    Add or update fleet vehicle information.
+Add or update fleet vehicle information, capacity, costs and operational status.
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+    .vehicle-form-page {
+        --vf-primary: #2563eb;
+        --vf-primary-dark: #1d4ed8;
+        --vf-primary-soft: #eff6ff;
+
+        --vf-success: #16a34a;
+        --vf-success-soft: #f0fdf4;
+
+        --vf-warning: #d97706;
+        --vf-warning-soft: #fff7ed;
+
+        --vf-danger: #dc2626;
+        --vf-danger-soft: #fef2f2;
+
+        --vf-purple: #7c3aed;
+        --vf-purple-soft: #f5f3ff;
+
+        --vf-cyan: #0891b2;
+        --vf-cyan-soft: #ecfeff;
+
+        --vf-dark: #0f172a;
+        --vf-text: #334155;
+        --vf-muted: #64748b;
+        --vf-border: #e2e8f0;
+        --vf-surface: #ffffff;
+
+        --vf-radius: 18px;
+        --vf-shadow: 0 16px 42px rgba(15, 23, 42, 0.07);
+    }
+
+    .vehicle-form-page * {
+        box-sizing: border-box;
+    }
+
+    .vehicle-form-wrapper {
+        width: 100%;
+        max-width: 1180px;
+        margin: 0 auto;
+    }
+
+    /* Breadcrumb */
+
+    .vehicle-form-breadcrumb {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        margin-bottom: 18px;
+
+        color: var(--vf-muted);
+        font-size: 12px;
+    }
+
+    .vehicle-form-breadcrumb a {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        color: var(--vf-muted);
+        font-weight: 600;
+
+        transition: color 0.2s ease;
+    }
+
+    .vehicle-form-breadcrumb a:hover {
+        color: var(--vf-primary);
+    }
+
+    .vehicle-form-breadcrumb > i {
+        color: #94a3b8;
+        font-size: 10px;
+    }
+
+    /* Hero */
+
+    .vehicle-form-hero {
+        position: relative;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+
+        overflow: hidden;
+
+        margin-bottom: 22px;
+        padding: 27px 29px;
+
+        color: #ffffff;
+
+        background:
+            radial-gradient(
+                circle at 91% 10%,
+                rgba(255, 255, 255, 0.18),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 8% 115%,
+                rgba(14, 165, 233, 0.25),
+                transparent 36%
+            ),
+            linear-gradient(
+                135deg,
+                #0f172a 0%,
+                #1e3a8a 52%,
+                #2563eb 100%
+            );
+
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 21px;
+
+        box-shadow: 0 18px 42px rgba(37, 99, 235, 0.17);
+    }
+
+    .vehicle-form-hero::after {
+        position: absolute;
+        right: -65px;
+        bottom: -105px;
+
+        width: 240px;
+        height: 240px;
+
+        content: "";
+
+        border: 32px solid rgba(255, 255, 255, 0.055);
+        border-radius: 50%;
+    }
+
+    .vehicle-form-hero-content {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        gap: 15px;
+
+        max-width: 760px;
+    }
+
+    .vehicle-form-hero-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 55px;
+        height: 55px;
+
+        color: #ffffff;
+        font-size: 23px;
+
+        background: rgba(255, 255, 255, 0.13);
+        border: 1px solid rgba(255, 255, 255, 0.17);
+        border-radius: 16px;
+
+        backdrop-filter: blur(10px);
+    }
+
+    .vehicle-form-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+
+        margin-bottom: 8px;
+        padding: 5px 9px;
+
+        color: #dbeafe;
+        font-size: 9px;
+        font-weight: 750;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 30px;
+    }
+
+    .vehicle-form-eyebrow span {
+        width: 7px;
+        height: 7px;
+
+        background: #4ade80;
+        border-radius: 50%;
+
+        box-shadow: 0 0 0 5px rgba(74, 222, 128, 0.13);
+    }
+
+    .vehicle-form-hero h2 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: clamp(23px, 4vw, 31px);
+        font-weight: 760;
+        letter-spacing: -0.8px;
+    }
+
+    .vehicle-form-hero p {
+        max-width: 620px;
+
+        margin: 7px 0 0;
+
+        color: #dbeafe;
+        font-size: 12px;
+        line-height: 1.65;
+    }
+
+    .vehicle-back-button {
+        position: relative;
+        z-index: 2;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        gap: 8px;
+
+        min-height: 43px;
+        padding: 9px 15px;
+
+        color: #1e3a8a;
+        font-size: 11px;
+        font-weight: 700;
+
+        background: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        border-radius: 10px;
+
+        box-shadow: 0 9px 20px rgba(15, 23, 42, 0.13);
+
+        transition:
+            color 0.2s ease,
+            background 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .vehicle-back-button:hover {
+        color: var(--vf-primary);
+        background: var(--vf-primary-soft);
+        transform: translateY(-2px);
+    }
+
+    /* Layout */
+
+    .vehicle-form-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 285px;
+        align-items: start;
+        gap: 22px;
+    }
+
+    /* Main Card */
+
+    .vehicle-form-card {
+        overflow: hidden;
+
+        background: var(--vf-surface);
+        border: 1px solid var(--vf-border);
+        border-radius: var(--vf-radius);
+
+        box-shadow: var(--vf-shadow);
+    }
+
+    .vehicle-form-card-header {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+
+        padding: 20px 23px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(239, 246, 255, 0.95),
+                rgba(255, 255, 255, 0.98)
+            );
+
+        border-bottom: 1px solid var(--vf-border);
+    }
+
+    .vehicle-form-card-header-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 43px;
+        height: 43px;
+
+        color: var(--vf-primary);
+        font-size: 19px;
+
+        background: #ffffff;
+        border: 1px solid #dbeafe;
+        border-radius: 12px;
+
+        box-shadow: 0 7px 17px rgba(37, 99, 235, 0.09);
+    }
+
+    .vehicle-form-card-header h3 {
+        margin: 0;
+
+        color: var(--vf-dark);
+        font-size: 16px;
+        font-weight: 720;
+    }
+
+    .vehicle-form-card-header p {
+        margin: 4px 0 0;
+
+        color: var(--vf-muted);
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+    .vehicle-form-card-body {
+        padding: 24px;
+    }
+
+    /* General Errors */
+
+    .vehicle-general-errors {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+
+        margin-bottom: 22px;
+        padding: 14px 15px;
+
+        color: #991b1b;
+
+        background: var(--vf-danger-soft);
+        border: 1px solid #fecaca;
+        border-radius: 12px;
+    }
+
+    .vehicle-general-error-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 33px;
+        height: 33px;
+
+        color: var(--vf-danger);
+
+        background: #fee2e2;
+        border-radius: 9px;
+    }
+
+    .vehicle-general-errors strong {
+        display: block;
+
+        margin-bottom: 4px;
+
+        font-size: 11px;
+        font-weight: 750;
+    }
+
+    .vehicle-general-errors ul {
+        margin: 0;
+        padding-left: 17px;
+
+        font-size: 10px;
+        line-height: 1.55;
+    }
+
+    /* Form Sections */
+
+    .vehicle-form-section {
+        margin-bottom: 28px;
+    }
+
+    .vehicle-form-section:last-of-type {
+        margin-bottom: 0;
+    }
+
+    .vehicle-form-section-heading {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+
+        margin-bottom: 17px;
+        padding-bottom: 12px;
+
+        border-bottom: 1px solid #eef2f7;
+    }
+
+    .vehicle-form-section-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 36px;
+        height: 36px;
+
+        color: var(--vf-primary);
+        font-size: 15px;
+
+        background: var(--vf-primary-soft);
+        border-radius: 10px;
+    }
+
+    .vehicle-form-section-heading h4 {
+        margin: 0;
+
+        color: var(--vf-dark);
+        font-size: 13px;
+        font-weight: 720;
+    }
+
+    .vehicle-form-section-heading p {
+        margin: 3px 0 0;
+
+        color: var(--vf-muted);
+        font-size: 9px;
+        line-height: 1.45;
+    }
+
+    /* Form Fields */
+
+    .vehicle-field {
+        width: 100%;
+    }
+
+    .vehicle-field-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+
+        margin-bottom: 7px;
+
+        color: var(--vf-text);
+        font-size: 11px;
+        font-weight: 680;
+    }
+
+    .required-mark {
+        margin-left: 2px;
+
+        color: var(--vf-danger);
+    }
+
+    .optional-label {
+        color: #94a3b8;
+        font-size: 8px;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+    }
+
+    .vehicle-field input:not([type="checkbox"]),
+    .vehicle-field select,
+    .vehicle-field textarea {
+        width: 100%;
+        min-height: 46px;
+
+        padding: 10px 13px;
+
+        color: var(--vf-dark);
+        font-size: 12px;
+
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+
+        outline: none;
+        box-shadow: none;
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            background 0.2s ease;
+    }
+
+    .vehicle-field textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .vehicle-field select {
+        cursor: pointer;
+    }
+
+    .vehicle-field input:not([type="checkbox"]):hover,
+    .vehicle-field select:hover,
+    .vehicle-field textarea:hover {
+        border-color: #94a3b8;
+    }
+
+    .vehicle-field input:not([type="checkbox"]):focus,
+    .vehicle-field select:focus,
+    .vehicle-field textarea:focus {
+        background: #ffffff;
+        border-color: var(--vf-primary);
+
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+
+    .vehicle-field input::placeholder,
+    .vehicle-field textarea::placeholder {
+        color: #94a3b8;
+    }
+
+    .vehicle-field.has-error input:not([type="checkbox"]),
+    .vehicle-field.has-error select,
+    .vehicle-field.has-error textarea {
+        background: #fffafa;
+        border-color: #f87171;
+    }
+
+    .vehicle-field-help {
+        display: flex;
+        align-items: flex-start;
+        gap: 5px;
+
+        margin-top: 6px;
+
+        color: var(--vf-muted);
+        font-size: 9px;
+        line-height: 1.5;
+    }
+
+    .vehicle-field-help i {
+        margin-top: 1px;
+
+        color: #94a3b8;
+    }
+
+    .vehicle-field-errors {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        margin-top: 6px;
+    }
+
+    .vehicle-field-error {
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+
+        color: var(--vf-danger);
+        font-size: 9px;
+        font-weight: 650;
+        line-height: 1.45;
+    }
+
+    .vehicle-field-error i {
+        margin-top: 1px;
+    }
+
+    /* Status Preview */
+
+    .vehicle-status-preview {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        margin-top: 9px;
+        padding: 11px 12px;
+
+        background: var(--vf-success-soft);
+        border: 1px solid #bbf7d0;
+        border-radius: 10px;
+
+        transition:
+            background 0.2s ease,
+            border-color 0.2s ease;
+    }
+
+    .vehicle-status-preview-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 33px;
+        height: 33px;
+
+        color: var(--vf-success);
+
+        background: #dcfce7;
+        border-radius: 9px;
+    }
+
+    .vehicle-status-preview strong {
+        display: block;
+
+        color: var(--vf-dark);
+        font-size: 10px;
+        font-weight: 720;
+    }
+
+    .vehicle-status-preview small {
+        display: block;
+
+        margin-top: 2px;
+
+        color: var(--vf-muted);
+        font-size: 8px;
+        line-height: 1.4;
+    }
+
+    /* Capacity Preview */
+
+    .capacity-preview {
+        margin-top: 9px;
+        padding: 11px 12px;
+
+        background: var(--vf-cyan-soft);
+        border: 1px solid #a5f3fc;
+        border-radius: 10px;
+    }
+
+    .capacity-preview-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+
+        margin-bottom: 7px;
+    }
+
+    .capacity-preview-header strong {
+        color: var(--vf-dark);
+        font-size: 10px;
+    }
+
+    .capacity-preview-header span {
+        color: var(--vf-cyan);
+        font-size: 10px;
+        font-weight: 720;
+    }
+
+    .capacity-preview p {
+        margin: 0;
+
+        color: var(--vf-muted);
+        font-size: 8px;
+        line-height: 1.45;
+    }
+
+    /* Cost Preview */
+
+    .cost-preview {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        margin-top: 9px;
+        padding: 11px 12px;
+
+        background: var(--vf-purple-soft);
+        border: 1px solid #ddd6fe;
+        border-radius: 10px;
+    }
+
+    .cost-preview-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 32px;
+        height: 32px;
+
+        color: var(--vf-purple);
+
+        background: #ede9fe;
+        border-radius: 9px;
+    }
+
+    .cost-preview strong {
+        display: block;
+
+        color: var(--vf-dark);
+        font-size: 10px;
+    }
+
+    .cost-preview small {
+        display: block;
+
+        margin-top: 2px;
+
+        color: var(--vf-muted);
+        font-size: 8px;
+    }
+
+    /* Form Footer */
+
+    .vehicle-form-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+
+        margin-top: 28px;
+        padding-top: 20px;
+
+        border-top: 1px solid #eef2f7;
+    }
+
+    .vehicle-form-footer-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 7px;
+
+        color: var(--vf-muted);
+        font-size: 9px;
+        line-height: 1.5;
+    }
+
+    .vehicle-form-footer-note i {
+        margin-top: 1px;
+
+        color: var(--vf-primary);
+    }
+
+    .vehicle-form-actions {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+    .vehicle-cancel-button,
+    .vehicle-save-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+
+        min-height: 42px;
+        padding: 9px 15px;
+
+        font-size: 11px;
+        font-weight: 700;
+
+        border-radius: 10px;
+
+        transition:
+            color 0.2s ease,
+            background 0.2s ease,
+            border-color 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .vehicle-cancel-button {
+        color: #475569;
+
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+    }
+
+    .vehicle-cancel-button:hover {
+        color: var(--vf-dark);
+
+        background: #f8fafc;
+        border-color: #94a3b8;
+
+        transform: translateY(-1px);
+    }
+
+    .vehicle-save-button {
+        color: #ffffff;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--vf-primary),
+                var(--vf-primary-dark)
+            );
+
+        border: 1px solid var(--vf-primary);
+
+        box-shadow: 0 8px 18px rgba(37, 99, 235, 0.2);
+    }
+
+    .vehicle-save-button:hover {
+        color: #ffffff;
+
+        background:
+            linear-gradient(
+                135deg,
+                #1d4ed8,
+                #1e40af
+            );
+
+        border-color: #1d4ed8;
+
+        box-shadow: 0 11px 23px rgba(37, 99, 235, 0.26);
+
+        transform: translateY(-2px);
+    }
+
+    .vehicle-save-button:disabled {
+        cursor: not-allowed;
+
+        opacity: 0.7;
+        transform: none;
+    }
+
+    /* Sidebar */
+
+    .vehicle-form-sidebar {
+        position: sticky;
+        top: 115px;
+
+        overflow: hidden;
+
+        background: #ffffff;
+        border: 1px solid var(--vf-border);
+        border-radius: var(--vf-radius);
+
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
+    }
+
+    .vehicle-form-sidebar-header {
+        padding: 20px;
+
+        color: #ffffff;
+
+        background:
+            radial-gradient(
+                circle at top right,
+                rgba(255, 255, 255, 0.15),
+                transparent 35%
+            ),
+            linear-gradient(
+                135deg,
+                #0f172a,
+                #1e3a8a
+            );
+    }
+
+    .vehicle-form-sidebar-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 42px;
+        height: 42px;
+
+        margin-bottom: 13px;
+
+        color: #ffffff;
+        font-size: 18px;
+
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+    }
+
+    .vehicle-form-sidebar-header h4 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 720;
+    }
+
+    .vehicle-form-sidebar-header p {
+        margin: 6px 0 0;
+
+        color: #cbd5e1;
+        font-size: 9px;
+        line-height: 1.55;
+    }
+
+    .vehicle-form-sidebar-body {
+        padding: 18px;
+    }
+
+    .vehicle-guide-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+
+        margin: 0;
+        padding: 0;
+
+        list-style: none;
+    }
+
+    .vehicle-guide-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .vehicle-guide-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 31px;
+        height: 31px;
+
+        color: var(--vf-primary);
+        font-size: 13px;
+
+        background: var(--vf-primary-soft);
+        border-radius: 9px;
+    }
+
+    .vehicle-guide-list strong {
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: var(--vf-dark);
+        font-size: 10px;
+        font-weight: 720;
+    }
+
+    .vehicle-guide-list p {
+        margin: 0;
+
+        color: var(--vf-muted);
+        font-size: 8px;
+        line-height: 1.5;
+    }
+
+    .vehicle-rule-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+
+        margin-top: 17px;
+        padding: 11px;
+
+        color: #9a3412;
+        font-size: 8px;
+        line-height: 1.5;
+
+        background: var(--vf-warning-soft);
+        border: 1px solid #fed7aa;
+        border-radius: 10px;
+    }
+
+    .vehicle-rule-note i {
+        margin-top: 1px;
+
+        color: var(--vf-warning);
+        font-size: 12px;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 991.98px) {
+        .vehicle-form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .vehicle-form-sidebar {
+            position: static;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .vehicle-form-hero {
+            align-items: stretch;
+            flex-direction: column;
+
+            padding: 22px;
+        }
+
+        .vehicle-back-button {
+            width: 100%;
+        }
+
+        .vehicle-form-card-body {
+            padding: 20px;
+        }
+
+        .vehicle-form-footer {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .vehicle-form-footer-note {
+            justify-content: center;
+            text-align: center;
+        }
+
+        .vehicle-form-actions {
+            width: 100%;
+        }
+
+        .vehicle-cancel-button,
+        .vehicle-save-button {
+            flex: 1;
+        }
+    }
+
+    @media (max-width: 479.98px) {
+        .vehicle-form-hero {
+            padding: 19px;
+            border-radius: 16px;
+        }
+
+        .vehicle-form-hero-content {
+            align-items: flex-start;
+        }
+
+        .vehicle-form-hero-icon {
+            width: 45px;
+            height: 45px;
+
+            font-size: 19px;
+        }
+
+        .vehicle-form-card,
+        .vehicle-form-sidebar {
+            border-radius: 15px;
+        }
+
+        .vehicle-form-card-header,
+        .vehicle-form-card-body {
+            padding: 17px;
+        }
+
+        .vehicle-form-actions {
+            flex-direction: column-reverse;
+        }
+
+        .vehicle-cancel-button,
+        .vehicle-save-button {
+            width: 100%;
+        }
+    }
+</style>
+
 {% endblock %}
 
 {% block content %}
 
-<div class="card border-0 shadow-sm">
-    <div class="card-body p-4">
+<div class="vehicle-form-page">
 
-        <form method="post" novalidate>
-            {% csrf_token %}
+    <div class="vehicle-form-wrapper">
 
-            {% if form.non_field_errors %}
-                <div class="alert alert-danger">
-                    {{ form.non_field_errors }}
+        <!-- Breadcrumb -->
+        <nav class="vehicle-form-breadcrumb">
+
+            <a href="{% url 'dashboard:home' %}">
+                <i class="bi bi-house-door"></i>
+                Dashboard
+            </a>
+
+            <i class="bi bi-chevron-right"></i>
+
+            <a href="{% url 'fleet:vehicle_list' %}">
+                Vehicles
+            </a>
+
+            <i class="bi bi-chevron-right"></i>
+
+            <span>
+                {{ page_heading|default:"Vehicle Form" }}
+            </span>
+
+        </nav>
+
+        <!-- Hero -->
+        <section class="vehicle-form-hero">
+
+            <div class="vehicle-form-hero-content">
+
+                <div class="vehicle-form-hero-icon">
+                    <i class="bi bi-truck-front-fill"></i>
                 </div>
-            {% endif %}
 
-            <div class="row g-3">
+                <div>
 
-                {% for field in form %}
-                    <div class="col-md-6">
+                    <div class="vehicle-form-eyebrow">
+                        <span></span>
+                        Fleet Registry Management
+                    </div>
 
-                        <label class="form-label fw-semibold">
-                            {{ field.label }}
+                    <h2>
+                        {{ page_heading|default:"Vehicle Form" }}
+                    </h2>
 
-                            {% if field.field.required %}
-                                <span class="text-danger">*</span>
-                            {% endif %}
-                        </label>
+                    <p>
+                        Add or update vehicle identity, type, load capacity,
+                        odometer, acquisition cost, region and operational status.
+                    </p>
 
-                        {{ field }}
+                </div>
 
-                        {% if field.help_text %}
-                            <small class="text-muted">
-                                {{ field.help_text }}
-                            </small>
-                        {% endif %}
+            </div>
 
-                        {% for error in field.errors %}
-                            <div class="text-danger small mt-1">
-                                {{ error }}
-                            </div>
+            <a
+                href="{% url 'fleet:vehicle_list' %}"
+                class="vehicle-back-button"
+            >
+                <i class="bi bi-arrow-left"></i>
+                Back to Vehicles
+            </a>
+
+        </section>
+
+        <div class="vehicle-form-grid">
+
+            <!-- Main Form -->
+            <section class="vehicle-form-card">
+
+                <header class="vehicle-form-card-header">
+
+                    <div class="vehicle-form-card-header-icon">
+                        <i class="bi bi-card-checklist"></i>
+                    </div>
+
+                    <div>
+                        <h3>Vehicle Information</h3>
+
+                        <p>
+                            Complete all required fleet details and verify
+                            operational information before saving.
+                        </p>
+                    </div>
+
+                </header>
+
+                <div class="vehicle-form-card-body">
+
+                    <form
+                        method="post"
+                        id="vehicleForm"
+                        novalidate
+                    >
+                        {% csrf_token %}
+
+                        {% for hidden_field in form.hidden_fields %}
+                            {{ hidden_field }}
                         {% endfor %}
 
+                        <!-- General Errors -->
+                        {% if form.non_field_errors %}
+
+                            <div class="vehicle-general-errors">
+
+                                <div class="vehicle-general-error-icon">
+                                    <i class="bi bi-exclamation-octagon-fill"></i>
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        Please correct the following errors
+                                    </strong>
+
+                                    <ul>
+                                        {% for error in form.non_field_errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+
+                                </div>
+
+                            </div>
+
+                        {% endif %}
+
+                        <!-- Vehicle Identity -->
+                        <section class="vehicle-form-section">
+
+                            <div class="vehicle-form-section-heading">
+
+                                <div class="vehicle-form-section-icon">
+                                    <i class="bi bi-truck-front-fill"></i>
+                                </div>
+
+                                <div>
+                                    <h4>Vehicle Identity</h4>
+
+                                    <p>
+                                        Registration number, vehicle name,
+                                        model and classification.
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <div class="row g-3">
+
+                                {% for field in form.visible_fields %}
+
+                                    {% if field.name == "registration_number" or field.name == "vehicle_name" or field.name == "model" or field.name == "vehicle_type" %}
+
+                                        <div class="col-md-6">
+
+                                            <div
+                                                class="
+                                                    vehicle-field
+                                                    {% if field.errors %}
+                                                        has-error
+                                                    {% endif %}
+                                                "
+                                            >
+
+                                                <label
+                                                    for="{{ field.id_for_label }}"
+                                                    class="vehicle-field-label"
+                                                >
+                                                    <span>
+                                                        {{ field.label }}
+
+                                                        {% if field.field.required %}
+                                                            <span class="required-mark">*</span>
+                                                        {% else %}
+                                                            <span class="optional-label">
+                                                                Optional
+                                                            </span>
+                                                        {% endif %}
+                                                    </span>
+                                                </label>
+
+                                                {{ field }}
+
+                                                {% if field.name == "registration_number" %}
+
+                                                    <div class="vehicle-field-help">
+                                                        <i class="bi bi-card-text"></i>
+
+                                                        <span>
+                                                            Registration number must be unique,
+                                                            such as GJ05AB1205.
+                                                        </span>
+                                                    </div>
+
+                                                {% elif field.name == "vehicle_name" %}
+
+                                                    <div class="vehicle-field-help">
+                                                        <i class="bi bi-info-circle"></i>
+
+                                                        <span>
+                                                            Use a recognisable internal fleet name,
+                                                            such as Van-05.
+                                                        </span>
+                                                    </div>
+
+                                                {% elif field.name == "model" %}
+
+                                                    <div class="vehicle-field-help">
+                                                        <i class="bi bi-truck"></i>
+
+                                                        <span>
+                                                            Enter the manufacturer and model,
+                                                            such as Tata Ace Gold.
+                                                        </span>
+                                                    </div>
+
+                                                {% elif field.name == "vehicle_type" %}
+
+                                                    <div class="vehicle-field-help">
+                                                        <i class="bi bi-ui-checks-grid"></i>
+
+                                                        <span>
+                                                            Select the correct vehicle
+                                                            classification.
+                                                        </span>
+                                                    </div>
+
+                                                {% elif field.help_text %}
+
+                                                    <div class="vehicle-field-help">
+                                                        <i class="bi bi-info-circle"></i>
+                                                        <span>{{ field.help_text }}</span>
+                                                    </div>
+
+                                                {% endif %}
+
+                                                {% if field.errors %}
+
+                                                    <div class="vehicle-field-errors">
+
+                                                        {% for error in field.errors %}
+
+                                                            <div class="vehicle-field-error">
+                                                                <i class="bi bi-exclamation-circle-fill"></i>
+                                                                <span>{{ error }}</span>
+                                                            </div>
+
+                                                        {% endfor %}
+
+                                                    </div>
+
+                                                {% endif %}
+
+                                            </div>
+
+                                        </div>
+
+                                    {% endif %}
+
+                                {% endfor %}
+
+                            </div>
+
+                        </section>
+
+                        <!-- Capacity and Financial Information -->
+                        <section class="vehicle-form-section">
+
+                            <div class="vehicle-form-section-heading">
+
+                                <div class="vehicle-form-section-icon">
+                                    <i class="bi bi-box-seam-fill"></i>
+                                </div>
+
+                                <div>
+                                    <h4>Capacity and Financial Details</h4>
+
+                                    <p>
+                                        Load capacity, odometer and vehicle
+                                        acquisition information.
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <div class="row g-3">
+
+                                {% for field in form.visible_fields %}
+
+                                    {% if field.name == "maximum_load_capacity" or field.name == "odometer" or field.name == "acquisition_cost" %}
+
+                                        <div class="col-md-6">
+
+                                            <div
+                                                class="
+                                                    vehicle-field
+                                                    {% if field.errors %}
+                                                        has-error
+                                                    {% endif %}
+                                                "
+                                            >
+
+                                                <label
+                                                    for="{{ field.id_for_label }}"
+                                                    class="vehicle-field-label"
+                                                >
+                                                    <span>
+                                                        {{ field.label }}
+
+                                                        {% if field.field.required %}
+                                                            <span class="required-mark">*</span>
+                                                        {% else %}
+                                                            <span class="optional-label">
+                                                                Optional
+                                                            </span>
+                                                        {% endif %}
+                                                    </span>
+                                                </label>
+
+                                                {{ field }}
+
+                                                {% if field.name == "maximum_load_capacity" %}
+
+                                                    <div class="vehicle-field-help">
+                                                        <i class="bi bi-box-seam"></i>
+
+                                                        <span>
+                                                            Enter the maximum safe cargo
+                                                            capacity in kilograms.
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="capacity-preview">
+
+                                                        <div class="capacity-preview-header">
+
+                                                            <strong>
+                                                                Maximum cargo limit
+                                                            </strong>
+
+                                                            <span id="capacityPreviewValue">
+                                                                0 kg
+                                                            </span>
+
+                                                        </div>
+
+                                                        <p>
+                                                            Trip cargo weight must never
+                                                            exceed this amount.
+                                                        </p>
+
+                                                    </div>
+
+                                                {% elif field.name == "odometer" %}
+
+                                                    <div class="vehicle-field-help">
+                                                        <i class="bi bi-speedometer2"></i>
+
+                                                        <span>
+                                                            Enter the vehicle's current
+                                                            odometer reading in kilometres.
+                                                        </span>
+                                                    </div>
+
+                                                {% elif field.name == "acquisition_cost" %}
+
+                                                    <div class="vehicle-field-help">
+                                                        <i class="bi bi-currency-rupee"></i>
+
+                                                        <span>
+                                                            This cost is used for vehicle
+                                                            ROI calculations.
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="cost-preview">
+
+                                                        <div class="cost-preview-icon">
+                                                            <i class="bi bi-cash-stack"></i>
+                                                        </div>
+
+                                                        <div>
+                                                            <strong id="costPreviewValue">
+                                                                ₹0
+                                                            </strong>
+
+                                                            <small>
+                                                                Vehicle acquisition value
+                                                            </small>
+                                                        </div>
+
+                                                    </div>
+
+                                                {% elif field.help_text %}
+
+                                                    <div class="vehicle-field-help">
+                                                        <i class="bi bi-info-circle"></i>
+                                                        <span>{{ field.help_text }}</span>
+                                                    </div>
+
+                                                {% endif %}
+
+                                                {% if field.errors %}
+
+                                                    <div class="vehicle-field-errors">
+
+                                                        {% for error in field.errors %}
+
+                                                            <div class="vehicle-field-error">
+                                                                <i class="bi bi-exclamation-circle-fill"></i>
+                                                                <span>{{ error }}</span>
+                                                            </div>
+
+                                                        {% endfor %}
+
+                                                    </div>
+
+                                                {% endif %}
+
+                                            </div>
+
+                                        </div>
+
+                                    {% endif %}
+
+                                {% endfor %}
+
+                            </div>
+
+                        </section>
+
+                        <!-- Operational Information -->
+                        <section class="vehicle-form-section">
+
+                            <div class="vehicle-form-section-heading">
+
+                                <div class="vehicle-form-section-icon">
+                                    <i class="bi bi-activity"></i>
+                                </div>
+
+                                <div>
+                                    <h4>Operational Information</h4>
+
+                                    <p>
+                                        Region assignment and current
+                                        fleet availability.
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <div class="row g-3">
+
+                                {% for field in form.visible_fields %}
+
+                                    {% if field.name == "region" or field.name == "status" %}
+
+                                        <div class="col-md-6">
+
+                                            <div
+                                                class="
+                                                    vehicle-field
+                                                    {% if field.errors %}
+                                                        has-error
+                                                    {% endif %}
+                                                "
+                                            >
+
+                                                <label
+                                                    for="{{ field.id_for_label }}"
+                                                    class="vehicle-field-label"
+                                                >
+                                                    <span>
+                                                        {{ field.label }}
+
+                                                        {% if field.field.required %}
+                                                            <span class="required-mark">*</span>
+                                                        {% else %}
+                                                            <span class="optional-label">
+                                                                Optional
+                                                            </span>
+                                                        {% endif %}
+                                                    </span>
+                                                </label>
+
+                                                {{ field }}
+
+                                                {% if field.name == "region" %}
+
+                                                    <div class="vehicle-field-help">
+                                                        <i class="bi bi-geo-alt-fill"></i>
+
+                                                        <span>
+                                                            Enter the primary operating
+                                                            region, such as Surat.
+                                                        </span>
+                                                    </div>
+
+                                                {% elif field.name == "status" %}
+
+                                                    <div class="vehicle-field-help">
+                                                        <i class="bi bi-info-circle"></i>
+
+                                                        <span>
+                                                            The selected status controls
+                                                            trip dispatch availability.
+                                                        </span>
+                                                    </div>
+
+                                                    <div
+                                                        class="vehicle-status-preview"
+                                                        id="vehicleStatusPreview"
+                                                    >
+
+                                                        <div
+                                                            class="vehicle-status-preview-icon"
+                                                            id="vehicleStatusIcon"
+                                                        >
+                                                            <i class="bi bi-check-circle-fill"></i>
+                                                        </div>
+
+                                                        <div>
+
+                                                            <strong id="vehicleStatusTitle">
+                                                                Available
+                                                            </strong>
+
+                                                            <small id="vehicleStatusDescription">
+                                                                Vehicle can be assigned to a new trip.
+                                                            </small>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                {% elif field.help_text %}
+
+                                                    <div class="vehicle-field-help">
+                                                        <i class="bi bi-info-circle"></i>
+                                                        <span>{{ field.help_text }}</span>
+                                                    </div>
+
+                                                {% endif %}
+
+                                                {% if field.errors %}
+
+                                                    <div class="vehicle-field-errors">
+
+                                                        {% for error in field.errors %}
+
+                                                            <div class="vehicle-field-error">
+                                                                <i class="bi bi-exclamation-circle-fill"></i>
+                                                                <span>{{ error }}</span>
+                                                            </div>
+
+                                                        {% endfor %}
+
+                                                    </div>
+
+                                                {% endif %}
+
+                                            </div>
+
+                                        </div>
+
+                                    {% endif %}
+
+                                {% endfor %}
+
+                            </div>
+
+                        </section>
+
+                        <!-- Additional Fields -->
+                        {% with has_extra_fields=False %}
+
+                            <section class="vehicle-form-section">
+
+                                <div class="vehicle-form-section-heading">
+
+                                    <div class="vehicle-form-section-icon">
+                                        <i class="bi bi-list-check"></i>
+                                    </div>
+
+                                    <div>
+                                        <h4>Additional Information</h4>
+
+                                        <p>
+                                            Other vehicle fields configured in
+                                            your TransitOps form.
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                                <div class="row g-3">
+
+                                    {% for field in form.visible_fields %}
+
+                                        {% if field.name != "registration_number" and field.name != "vehicle_name" and field.name != "model" and field.name != "vehicle_type" and field.name != "maximum_load_capacity" and field.name != "odometer" and field.name != "acquisition_cost" and field.name != "region" and field.name != "status" %}
+
+                                            <div class="col-md-6">
+
+                                                <div
+                                                    class="
+                                                        vehicle-field
+                                                        {% if field.errors %}
+                                                            has-error
+                                                        {% endif %}
+                                                    "
+                                                >
+
+                                                    <label
+                                                        for="{{ field.id_for_label }}"
+                                                        class="vehicle-field-label"
+                                                    >
+                                                        <span>
+                                                            {{ field.label }}
+
+                                                            {% if field.field.required %}
+                                                                <span class="required-mark">*</span>
+                                                            {% else %}
+                                                                <span class="optional-label">
+                                                                    Optional
+                                                                </span>
+                                                            {% endif %}
+                                                        </span>
+                                                    </label>
+
+                                                    {{ field }}
+
+                                                    {% if field.help_text %}
+
+                                                        <div class="vehicle-field-help">
+                                                            <i class="bi bi-info-circle"></i>
+
+                                                            <span>
+                                                                {{ field.help_text }}
+                                                            </span>
+                                                        </div>
+
+                                                    {% endif %}
+
+                                                    {% if field.errors %}
+
+                                                        <div class="vehicle-field-errors">
+
+                                                            {% for error in field.errors %}
+
+                                                                <div class="vehicle-field-error">
+                                                                    <i class="bi bi-exclamation-circle-fill"></i>
+                                                                    <span>{{ error }}</span>
+                                                                </div>
+
+                                                            {% endfor %}
+
+                                                        </div>
+
+                                                    {% endif %}
+
+                                                </div>
+
+                                            </div>
+
+                                        {% endif %}
+
+                                    {% endfor %}
+
+                                </div>
+
+                            </section>
+
+                        {% endwith %}
+
+                        <!-- Actions -->
+                        <footer class="vehicle-form-footer">
+
+                            <div class="vehicle-form-footer-note">
+
+                                <i class="bi bi-shield-check"></i>
+
+                                <span>
+                                    Review registration, capacity and status
+                                    information before saving.
+                                </span>
+
+                            </div>
+
+                            <div class="vehicle-form-actions">
+
+                                <a
+                                    href="{% url 'fleet:vehicle_list' %}"
+                                    class="vehicle-cancel-button"
+                                >
+                                    <i class="bi bi-x-lg"></i>
+                                    Cancel
+                                </a>
+
+                                <button
+                                    type="submit"
+                                    class="vehicle-save-button"
+                                    id="vehicleSaveButton"
+                                >
+                                    <i class="bi bi-check2-circle"></i>
+
+                                    <span>
+                                        {{ button_text|default:"Save Vehicle" }}
+                                    </span>
+                                </button>
+
+                            </div>
+
+                        </footer>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+            <!-- Sidebar -->
+            <aside class="vehicle-form-sidebar">
+
+                <header class="vehicle-form-sidebar-header">
+
+                    <div class="vehicle-form-sidebar-icon">
+                        <i class="bi bi-info-circle-fill"></i>
                     </div>
-                {% endfor %}
 
-            </div>
+                    <h4>Vehicle Registration Guide</h4>
 
-            <div class="mt-4 d-flex gap-2">
-                <button class="btn btn-primary">
-                    {{ button_text }}
-                </button>
+                    <p>
+                        Follow these checks to maintain accurate and safe
+                        fleet records.
+                    </p>
 
-                <a
-                    href="{% url 'fleet:vehicle_list' %}"
-                    class="btn btn-light"
-                >
-                    Cancel
-                </a>
-            </div>
+                </header>
 
-        </form>
+                <div class="vehicle-form-sidebar-body">
+
+                    <ul class="vehicle-guide-list">
+
+                        <li>
+
+                            <span class="vehicle-guide-icon">
+                                <i class="bi bi-card-text"></i>
+                            </span>
+
+                            <div>
+                                <strong>Unique Registration</strong>
+
+                                <p>
+                                    Every vehicle must have a unique
+                                    registration number.
+                                </p>
+                            </div>
+
+                        </li>
+
+                        <li>
+
+                            <span class="vehicle-guide-icon">
+                                <i class="bi bi-box-seam"></i>
+                            </span>
+
+                            <div>
+                                <strong>Correct Load Capacity</strong>
+
+                                <p>
+                                    Enter the manufacturer-approved maximum
+                                    cargo weight.
+                                </p>
+                            </div>
+
+                        </li>
+
+                        <li>
+
+                            <span class="vehicle-guide-icon">
+                                <i class="bi bi-speedometer2"></i>
+                            </span>
+
+                            <div>
+                                <strong>Current Odometer</strong>
+
+                                <p>
+                                    Use the latest kilometre reading from
+                                    the vehicle dashboard.
+                                </p>
+                            </div>
+
+                        </li>
+
+                        <li>
+
+                            <span class="vehicle-guide-icon">
+                                <i class="bi bi-geo-alt"></i>
+                            </span>
+
+                            <div>
+                                <strong>Assign a Region</strong>
+
+                                <p>
+                                    Region information helps with fleet
+                                    filtering and planning.
+                                </p>
+                            </div>
+
+                        </li>
+
+                        <li>
+
+                            <span class="vehicle-guide-icon">
+                                <i class="bi bi-activity"></i>
+                            </span>
+
+                            <div>
+                                <strong>Operational Status</strong>
+
+                                <p>
+                                    Only available vehicles should appear
+                                    in trip dispatch selection.
+                                </p>
+                            </div>
+
+                        </li>
+
+                    </ul>
+
+                    <div class="vehicle-rule-note">
+
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+
+                        <span>
+                            In Shop, Retired and On Trip vehicles must not
+                            be assigned to another trip.
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </div>
 
     </div>
+
 </div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        /*
+         * Find common vehicle form inputs.
+         */
+
+        const registrationInput = document.getElementById(
+            "{{ form.registration_number.id_for_label }}"
+        );
+
+        const vehicleNameInput = document.getElementById(
+            "{{ form.vehicle_name.id_for_label }}"
+        );
+
+        const modelInput = document.getElementById(
+            "{{ form.model.id_for_label }}"
+        );
+
+        const capacityInput = document.getElementById(
+            "{{ form.maximum_load_capacity.id_for_label }}"
+        );
+
+        const odometerInput = document.getElementById(
+            "{{ form.odometer.id_for_label }}"
+        );
+
+        const acquisitionCostInput = document.getElementById(
+            "{{ form.acquisition_cost.id_for_label }}"
+        );
+
+        const regionInput = document.getElementById(
+            "{{ form.region.id_for_label }}"
+        );
+
+        const statusInput = document.getElementById(
+            "{{ form.status.id_for_label }}"
+        );
+
+        /*
+         * Add placeholders and useful browser attributes.
+         */
+
+        if (registrationInput) {
+            registrationInput.placeholder = "Example: GJ05AB1205";
+            registrationInput.setAttribute("autocomplete", "off");
+
+            registrationInput.addEventListener(
+                "input",
+                function () {
+                    registrationInput.value =
+                        registrationInput.value.toUpperCase();
+                }
+            );
+        }
+
+        if (vehicleNameInput) {
+            vehicleNameInput.placeholder = "Example: Van-05";
+            vehicleNameInput.setAttribute("autocomplete", "off");
+        }
+
+        if (modelInput) {
+            modelInput.placeholder = "Example: Tata Ace Gold";
+            modelInput.setAttribute("autocomplete", "off");
+        }
+
+        if (capacityInput) {
+            capacityInput.placeholder = "Example: 750";
+            capacityInput.setAttribute("min", "0");
+            capacityInput.setAttribute("step", "0.01");
+            capacityInput.setAttribute("inputmode", "decimal");
+        }
+
+        if (odometerInput) {
+            odometerInput.placeholder = "Example: 62350";
+            odometerInput.setAttribute("min", "0");
+            odometerInput.setAttribute("step", "0.01");
+            odometerInput.setAttribute("inputmode", "decimal");
+        }
+
+        if (acquisitionCostInput) {
+            acquisitionCostInput.placeholder = "Example: 680000";
+            acquisitionCostInput.setAttribute("min", "0");
+            acquisitionCostInput.setAttribute("step", "0.01");
+            acquisitionCostInput.setAttribute("inputmode", "decimal");
+        }
+
+        if (regionInput) {
+            regionInput.placeholder = "Example: Surat";
+            regionInput.setAttribute("autocomplete", "address-level2");
+        }
+
+        /*
+         * Live capacity preview.
+         */
+
+        const capacityPreviewValue = document.getElementById(
+            "capacityPreviewValue"
+        );
+
+        function updateCapacityPreview() {
+            if (!capacityInput || !capacityPreviewValue) {
+                return;
+            }
+
+            let capacity = parseFloat(
+                capacityInput.value || "0"
+            );
+
+            if (Number.isNaN(capacity) || capacity < 0) {
+                capacity = 0;
+            }
+
+            capacityPreviewValue.textContent =
+                new Intl.NumberFormat("en-IN", {
+                    maximumFractionDigits: 2
+                }).format(capacity) + " kg";
+        }
+
+        if (capacityInput) {
+            updateCapacityPreview();
+
+            capacityInput.addEventListener(
+                "input",
+                updateCapacityPreview
+            );
+        }
+
+        /*
+         * Live acquisition-cost preview in Indian currency.
+         */
+
+        const costPreviewValue = document.getElementById(
+            "costPreviewValue"
+        );
+
+        function updateCostPreview() {
+            if (!acquisitionCostInput || !costPreviewValue) {
+                return;
+            }
+
+            let cost = parseFloat(
+                acquisitionCostInput.value || "0"
+            );
+
+            if (Number.isNaN(cost) || cost < 0) {
+                cost = 0;
+            }
+
+            costPreviewValue.textContent =
+                new Intl.NumberFormat("en-IN", {
+                    style: "currency",
+                    currency: "INR",
+                    maximumFractionDigits: 2
+                }).format(cost);
+        }
+
+        if (acquisitionCostInput) {
+            updateCostPreview();
+
+            acquisitionCostInput.addEventListener(
+                "input",
+                updateCostPreview
+            );
+        }
+
+        /*
+         * Live vehicle status explanation.
+         */
+
+        const statusPreview = document.getElementById(
+            "vehicleStatusPreview"
+        );
+
+        const statusIcon = document.getElementById(
+            "vehicleStatusIcon"
+        );
+
+        const statusTitle = document.getElementById(
+            "vehicleStatusTitle"
+        );
+
+        const statusDescription = document.getElementById(
+            "vehicleStatusDescription"
+        );
+
+        function updateVehicleStatus() {
+            if (
+                !statusInput ||
+                !statusPreview ||
+                !statusIcon ||
+                !statusTitle ||
+                !statusDescription
+            ) {
+                return;
+            }
+
+            const status = statusInput.value;
+
+            let title = "Available";
+            let description =
+                "Vehicle can be assigned to a new trip.";
+            let iconClass = "bi bi-check-circle-fill";
+            let color = "#16a34a";
+            let iconBackground = "#dcfce7";
+            let previewBackground = "#f0fdf4";
+            let borderColor = "#bbf7d0";
+
+            if (status === "ON_TRIP") {
+                title = "On Trip";
+                description =
+                    "Vehicle is currently assigned to an active trip.";
+                iconClass = "bi bi-signpost-split-fill";
+                color = "#2563eb";
+                iconBackground = "#dbeafe";
+                previewBackground = "#eff6ff";
+                borderColor = "#bfdbfe";
+            } else if (status === "IN_SHOP") {
+                title = "In Shop";
+                description =
+                    "Vehicle is under maintenance and unavailable for dispatch.";
+                iconClass = "bi bi-tools";
+                color = "#d97706";
+                iconBackground = "#ffedd5";
+                previewBackground = "#fff7ed";
+                borderColor = "#fed7aa";
+            } else if (status === "RETIRED") {
+                title = "Retired";
+                description =
+                    "Vehicle is permanently unavailable for future trips.";
+                iconClass = "bi bi-archive-fill";
+                color = "#64748b";
+                iconBackground = "#e2e8f0";
+                previewBackground = "#f1f5f9";
+                borderColor = "#cbd5e1";
+            }
+
+            statusTitle.textContent = title;
+            statusDescription.textContent = description;
+
+            statusIcon.innerHTML =
+                '<i class="' + iconClass + '"></i>';
+
+            statusIcon.style.color = color;
+            statusIcon.style.background = iconBackground;
+
+            statusPreview.style.background =
+                previewBackground;
+
+            statusPreview.style.borderColor =
+                borderColor;
+        }
+
+        if (statusInput) {
+            updateVehicleStatus();
+
+            statusInput.addEventListener(
+                "change",
+                updateVehicleStatus
+            );
+        }
+
+        /*
+         * Prevent duplicate form submissions.
+         */
+
+        const vehicleForm = document.getElementById(
+            "vehicleForm"
+        );
+
+        const saveButton = document.getElementById(
+            "vehicleSaveButton"
+        );
+
+        if (vehicleForm && saveButton) {
+            vehicleForm.addEventListener(
+                "submit",
+                function () {
+                    saveButton.disabled = true;
+
+                    saveButton.innerHTML = `
+                        <span
+                            class="spinner-border spinner-border-sm"
+                            aria-hidden="true"
+                        ></span>
+
+                        <span>Saving Vehicle...</span>
+                    `;
+                }
+            );
+        }
+    });
+</script>
 
 {% endblock %}

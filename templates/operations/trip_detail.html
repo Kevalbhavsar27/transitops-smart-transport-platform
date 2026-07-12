@@ -12,302 +12,3324 @@ Trip #{{ trip.pk }}
 {{ trip.source }} → {{ trip.destination }}
 {% endblock %}
 
+{% block extra_css %}
+
+<style>
+    .trip-detail-page {
+        --trip-primary: #2563eb;
+        --trip-primary-dark: #1d4ed8;
+        --trip-primary-soft: #eff6ff;
+
+        --trip-success: #16a34a;
+        --trip-success-dark: #15803d;
+        --trip-success-soft: #f0fdf4;
+
+        --trip-warning: #d97706;
+        --trip-warning-soft: #fff7ed;
+
+        --trip-danger: #dc2626;
+        --trip-danger-soft: #fef2f2;
+
+        --trip-purple: #7c3aed;
+        --trip-purple-soft: #f5f3ff;
+
+        --trip-cyan: #0891b2;
+        --trip-cyan-soft: #ecfeff;
+
+        --trip-grey: #64748b;
+        --trip-grey-soft: #f1f5f9;
+
+        --trip-dark: #0f172a;
+        --trip-text: #334155;
+        --trip-muted: #64748b;
+        --trip-border: #e2e8f0;
+        --trip-surface: #ffffff;
+
+        --trip-radius: 18px;
+        --trip-shadow: 0 14px 38px rgba(15, 23, 42, 0.07);
+    }
+
+    .trip-detail-page * {
+        box-sizing: border-box;
+    }
+
+    .trip-detail-wrapper {
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* Breadcrumb */
+
+    .trip-detail-breadcrumb {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        margin-bottom: 18px;
+
+        color: var(--trip-muted);
+        font-size: 12px;
+    }
+
+    .trip-detail-breadcrumb a {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        color: var(--trip-muted);
+        font-weight: 600;
+        text-decoration: none;
+
+        transition: color 0.2s ease;
+    }
+
+    .trip-detail-breadcrumb a:hover {
+        color: var(--trip-primary);
+    }
+
+    .trip-detail-breadcrumb > i {
+        color: #94a3b8;
+        font-size: 10px;
+    }
+
+    /* Hero */
+
+    .trip-detail-hero {
+        position: relative;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 25px;
+
+        overflow: hidden;
+
+        margin-bottom: 22px;
+        padding: 28px 30px;
+
+        color: #ffffff;
+
+        background:
+            radial-gradient(
+                circle at 91% 10%,
+                rgba(255, 255, 255, 0.18),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 8% 115%,
+                rgba(14, 165, 233, 0.24),
+                transparent 36%
+            ),
+            linear-gradient(
+                135deg,
+                #0f172a 0%,
+                #1e3a8a 52%,
+                #2563eb 100%
+            );
+
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 22px;
+
+        box-shadow: 0 19px 45px rgba(37, 99, 235, 0.18);
+    }
+
+    .trip-detail-hero::after {
+        position: absolute;
+        right: -72px;
+        bottom: -110px;
+
+        width: 255px;
+        height: 255px;
+
+        content: "";
+
+        border: 34px solid rgba(255, 255, 255, 0.055);
+        border-radius: 50%;
+    }
+
+    .trip-detail-hero-content {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        min-width: 0;
+        max-width: 820px;
+    }
+
+    .trip-detail-hero-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 58px;
+        height: 58px;
+
+        color: #ffffff;
+        font-size: 24px;
+
+        background: rgba(255, 255, 255, 0.13);
+        border: 1px solid rgba(255, 255, 255, 0.17);
+        border-radius: 17px;
+
+        backdrop-filter: blur(10px);
+    }
+
+    .trip-detail-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+
+        margin-bottom: 8px;
+        padding: 5px 9px;
+
+        color: #dbeafe;
+        font-size: 9px;
+        font-weight: 750;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 30px;
+    }
+
+    .trip-detail-eyebrow span {
+        width: 7px;
+        height: 7px;
+
+        background: #4ade80;
+        border-radius: 50%;
+
+        box-shadow: 0 0 0 5px rgba(74, 222, 128, 0.13);
+    }
+
+    .trip-detail-hero h2 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: clamp(24px, 4vw, 32px);
+        font-weight: 760;
+        letter-spacing: -0.8px;
+    }
+
+    .trip-detail-hero p {
+        max-width: 670px;
+
+        margin: 8px 0 0;
+
+        color: #dbeafe;
+        font-size: 12px;
+        line-height: 1.65;
+    }
+
+    .trip-hero-actions {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+        gap: 9px;
+    }
+
+    .trip-back-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        min-height: 43px;
+        padding: 9px 15px;
+
+        color: #1e3a8a;
+        font-size: 11px;
+        font-weight: 700;
+        text-decoration: none;
+
+        background: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        border-radius: 10px;
+
+        box-shadow: 0 9px 20px rgba(15, 23, 42, 0.13);
+
+        transition:
+            color 0.2s ease,
+            background 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .trip-back-button:hover {
+        color: var(--trip-primary);
+        background: var(--trip-primary-soft);
+        transform: translateY(-2px);
+    }
+
+    /* Status Badge */
+
+    .trip-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+
+        padding: 7px 11px;
+
+        font-size: 9px;
+        font-weight: 750;
+
+        border-radius: 30px;
+        white-space: nowrap;
+    }
+
+    .trip-status-badge::before {
+        width: 7px;
+        height: 7px;
+
+        content: "";
+
+        background: currentColor;
+        border-radius: 50%;
+    }
+
+    .trip-status-draft {
+        color: #475569;
+        background: #f1f5f9;
+    }
+
+    .trip-status-dispatched {
+        color: var(--trip-primary);
+        background: var(--trip-primary-soft);
+    }
+
+    .trip-status-completed {
+        color: var(--trip-success);
+        background: var(--trip-success-soft);
+    }
+
+    .trip-status-cancelled {
+        color: var(--trip-danger);
+        background: var(--trip-danger-soft);
+    }
+
+    /* Summary Cards */
+
+    .trip-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 15px;
+
+        margin-bottom: 22px;
+    }
+
+    .trip-summary-card {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+
+        min-height: 93px;
+        padding: 16px;
+
+        background: var(--trip-surface);
+        border: 1px solid var(--trip-border);
+        border-radius: 15px;
+
+        box-shadow: 0 7px 22px rgba(15, 23, 42, 0.045);
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .trip-summary-card:hover {
+        border-color: #bfdbfe;
+        box-shadow: 0 12px 27px rgba(15, 23, 42, 0.07);
+        transform: translateY(-3px);
+    }
+
+    .trip-summary-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 44px;
+        height: 44px;
+
+        font-size: 18px;
+        border-radius: 13px;
+    }
+
+    .trip-summary-icon.blue {
+        color: var(--trip-primary);
+        background: var(--trip-primary-soft);
+    }
+
+    .trip-summary-icon.orange {
+        color: var(--trip-warning);
+        background: var(--trip-warning-soft);
+    }
+
+    .trip-summary-icon.green {
+        color: var(--trip-success);
+        background: var(--trip-success-soft);
+    }
+
+    .trip-summary-icon.purple {
+        color: var(--trip-purple);
+        background: var(--trip-purple-soft);
+    }
+
+    .trip-summary-content {
+        min-width: 0;
+    }
+
+    .trip-summary-content span {
+        display: block;
+
+        margin-bottom: 4px;
+
+        color: var(--trip-muted);
+        font-size: 8px;
+        font-weight: 700;
+        letter-spacing: 0.35px;
+        text-transform: uppercase;
+    }
+
+    .trip-summary-content strong {
+        display: block;
+        overflow: hidden;
+
+        color: var(--trip-dark);
+        font-size: 14px;
+        font-weight: 750;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Main Layout */
+
+    .trip-detail-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 340px;
+        align-items: start;
+        gap: 22px;
+    }
+
+    /* Generic Panel */
+
+    .trip-panel {
+        overflow: hidden;
+
+        background: var(--trip-surface);
+        border: 1px solid var(--trip-border);
+        border-radius: var(--trip-radius);
+
+        box-shadow: var(--trip-shadow);
+    }
+
+    .trip-panel + .trip-panel {
+        margin-top: 20px;
+    }
+
+    .trip-panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+
+        padding: 19px 21px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(239, 246, 255, 0.72),
+                rgba(255, 255, 255, 0.98)
+            );
+
+        border-bottom: 1px solid var(--trip-border);
+    }
+
+    .trip-panel-heading {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .trip-panel-heading-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 40px;
+        height: 40px;
+
+        color: var(--trip-primary);
+        font-size: 17px;
+
+        background: #ffffff;
+        border: 1px solid #dbeafe;
+        border-radius: 11px;
+    }
+
+    .trip-panel-heading h3 {
+        margin: 0;
+
+        color: var(--trip-dark);
+        font-size: 15px;
+        font-weight: 720;
+    }
+
+    .trip-panel-heading p {
+        margin: 3px 0 0;
+
+        color: var(--trip-muted);
+        font-size: 9px;
+        line-height: 1.45;
+    }
+
+    .trip-panel-body {
+        padding: 22px;
+    }
+
+    /* Route Visual */
+
+    .trip-route-card {
+        position: relative;
+
+        overflow: hidden;
+
+        margin-bottom: 20px;
+        padding: 20px;
+
+        background:
+            radial-gradient(
+                circle at top right,
+                rgba(37, 99, 235, 0.08),
+                transparent 35%
+            ),
+            #f8fafc;
+
+        border: 1px solid var(--trip-border);
+        border-radius: 15px;
+    }
+
+    .trip-route-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 120px minmax(0, 1fr);
+        align-items: center;
+        gap: 18px;
+    }
+
+    .trip-route-location {
+        min-width: 0;
+    }
+
+    .trip-route-location.destination {
+        text-align: right;
+    }
+
+    .trip-route-label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        margin-bottom: 7px;
+
+        color: var(--trip-muted);
+        font-size: 8px;
+        font-weight: 750;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+    }
+
+    .trip-route-location.destination .trip-route-label {
+        justify-content: flex-end;
+    }
+
+    .trip-route-label.source i {
+        color: var(--trip-success);
+    }
+
+    .trip-route-label.destination i {
+        color: var(--trip-danger);
+    }
+
+    .trip-route-place {
+        display: block;
+        overflow: hidden;
+
+        color: var(--trip-dark);
+        font-size: 16px;
+        font-weight: 750;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .trip-route-line {
+        position: relative;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .trip-route-line::before {
+        position: absolute;
+        right: 0;
+        left: 0;
+
+        height: 2px;
+
+        content: "";
+
+        background:
+            linear-gradient(
+                90deg,
+                var(--trip-success),
+                var(--trip-primary),
+                var(--trip-danger)
+            );
+    }
+
+    .trip-route-vehicle {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 42px;
+        height: 42px;
+
+        color: var(--trip-primary);
+        font-size: 18px;
+
+        background: #ffffff;
+        border: 2px solid #bfdbfe;
+        border-radius: 50%;
+
+        box-shadow: 0 5px 14px rgba(37, 99, 235, 0.14);
+    }
+
+    /* Information Grid */
+
+    .trip-information-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .trip-information-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+
+        min-height: 80px;
+        padding: 14px;
+
+        background: #f8fafc;
+        border: 1px solid #eef2f7;
+        border-radius: 13px;
+    }
+
+    .trip-information-item.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .trip-information-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 36px;
+        height: 36px;
+
+        color: var(--trip-primary);
+        font-size: 15px;
+
+        background: var(--trip-primary-soft);
+        border-radius: 10px;
+    }
+
+    .trip-information-content {
+        min-width: 0;
+    }
+
+    .trip-information-content small {
+        display: block;
+
+        margin-bottom: 5px;
+
+        color: var(--trip-muted);
+        font-size: 8px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .trip-information-content strong {
+        display: block;
+
+        color: var(--trip-dark);
+        font-size: 11px;
+        font-weight: 720;
+        line-height: 1.45;
+    }
+
+    .trip-information-content span {
+        display: block;
+
+        margin-top: 3px;
+
+        color: var(--trip-muted);
+        font-size: 8px;
+        line-height: 1.4;
+    }
+
+    .trip-information-content p {
+        margin: 0;
+
+        color: var(--trip-text);
+        font-size: 10px;
+        line-height: 1.65;
+        white-space: pre-line;
+    }
+
+    /* Vehicle and Driver */
+
+    .trip-entity {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        min-width: 0;
+    }
+
+    .trip-entity-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 38px;
+        height: 38px;
+
+        color: var(--trip-primary);
+        font-size: 15px;
+
+        background: var(--trip-primary-soft);
+        border-radius: 10px;
+    }
+
+    .trip-entity-details {
+        min-width: 0;
+    }
+
+    .trip-entity-details strong,
+    .trip-entity-details span {
+        overflow: hidden;
+
+        max-width: 220px;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Performance */
+
+    .trip-performance-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .trip-performance-card {
+        position: relative;
+
+        overflow: hidden;
+
+        min-height: 115px;
+        padding: 16px;
+
+        background: #ffffff;
+        border: 1px solid var(--trip-border);
+        border-radius: 14px;
+    }
+
+    .trip-performance-card::after {
+        position: absolute;
+        right: -28px;
+        bottom: -40px;
+
+        width: 115px;
+        height: 115px;
+
+        content: "";
+
+        background: var(--performance-soft);
+        border-radius: 50%;
+
+        opacity: 0.75;
+    }
+
+    .trip-performance-card.distance {
+        --performance-color: var(--trip-primary);
+        --performance-soft: var(--trip-primary-soft);
+    }
+
+    .trip-performance-card.fuel {
+        --performance-color: var(--trip-warning);
+        --performance-soft: var(--trip-warning-soft);
+    }
+
+    .trip-performance-card.efficiency {
+        --performance-color: var(--trip-success);
+        --performance-soft: var(--trip-success-soft);
+    }
+
+    .trip-performance-label {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        gap: 7px;
+
+        margin-bottom: 14px;
+
+        color: var(--trip-muted);
+        font-size: 8px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .trip-performance-label i {
+        color: var(--performance-color);
+        font-size: 14px;
+    }
+
+    .trip-performance-value {
+        position: relative;
+        z-index: 2;
+
+        display: block;
+
+        color: var(--trip-dark);
+        font-size: 21px;
+        font-weight: 780;
+        letter-spacing: -0.5px;
+    }
+
+    .trip-performance-note {
+        position: relative;
+        z-index: 2;
+
+        display: block;
+
+        margin-top: 5px;
+
+        color: var(--trip-muted);
+        font-size: 8px;
+    }
+
+    /* Sidebar */
+
+    .trip-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    /* Action Card */
+
+    .trip-action-card {
+        overflow: hidden;
+
+        background: #ffffff;
+        border: 1px solid var(--trip-border);
+        border-radius: var(--trip-radius);
+
+        box-shadow: var(--trip-shadow);
+    }
+
+    .trip-action-card-header {
+        padding: 20px;
+
+        color: #ffffff;
+
+        background:
+            radial-gradient(
+                circle at top right,
+                rgba(255, 255, 255, 0.15),
+                transparent 35%
+            ),
+            linear-gradient(
+                135deg,
+                #0f172a,
+                #1e3a8a
+            );
+    }
+
+    .trip-action-card-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 42px;
+        height: 42px;
+
+        margin-bottom: 13px;
+
+        color: #ffffff;
+        font-size: 18px;
+
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+    }
+
+    .trip-action-card-header h3 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: 15px;
+        font-weight: 730;
+    }
+
+    .trip-action-card-header p {
+        margin: 6px 0 0;
+
+        color: #cbd5e1;
+        font-size: 9px;
+        line-height: 1.55;
+    }
+
+    .trip-action-card-body {
+        padding: 18px;
+    }
+
+    .trip-action-list {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+    }
+
+    .trip-action-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        width: 100%;
+        min-height: 42px;
+        padding: 9px 14px;
+
+        font-size: 10px;
+        font-weight: 720;
+        text-decoration: none;
+
+        border-radius: 10px;
+
+        transition:
+            color 0.2s ease,
+            background 0.2s ease,
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .trip-action-button.edit {
+        color: var(--trip-primary);
+
+        background: var(--trip-primary-soft);
+        border: 1px solid #bfdbfe;
+    }
+
+    .trip-action-button.edit:hover {
+        color: #ffffff;
+
+        background: var(--trip-primary);
+        border-color: var(--trip-primary);
+
+        transform: translateY(-1px);
+    }
+
+    .trip-action-button.dispatch {
+        color: #ffffff;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--trip-primary),
+                var(--trip-primary-dark)
+            );
+
+        border: 1px solid var(--trip-primary);
+
+        box-shadow: 0 8px 18px rgba(37, 99, 235, 0.2);
+    }
+
+    .trip-action-button.dispatch:hover {
+        color: #ffffff;
+        background: linear-gradient(135deg, #1d4ed8, #1e40af);
+        transform: translateY(-2px);
+    }
+
+    .trip-action-button.cancel {
+        color: var(--trip-danger);
+
+        background: var(--trip-danger-soft);
+        border: 1px solid #fecaca;
+    }
+
+    .trip-action-button.cancel:hover {
+        color: #ffffff;
+
+        background: var(--trip-danger);
+        border-color: var(--trip-danger);
+    }
+
+    /* Completion Card */
+
+    .trip-completion-card {
+        overflow: hidden;
+
+        background: #ffffff;
+        border: 1px solid #bbf7d0;
+        border-radius: var(--trip-radius);
+
+        box-shadow: 0 14px 34px rgba(22, 163, 74, 0.08);
+    }
+
+    .trip-completion-header {
+        padding: 20px;
+
+        color: #ffffff;
+
+        background:
+            radial-gradient(
+                circle at top right,
+                rgba(255, 255, 255, 0.16),
+                transparent 35%
+            ),
+            linear-gradient(
+                135deg,
+                #14532d,
+                #16a34a
+            );
+    }
+
+    .trip-completion-header-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 42px;
+        height: 42px;
+
+        margin-bottom: 13px;
+
+        color: #ffffff;
+        font-size: 18px;
+
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.17);
+        border-radius: 12px;
+    }
+
+    .trip-completion-header h3 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: 15px;
+        font-weight: 730;
+    }
+
+    .trip-completion-header p {
+        margin: 6px 0 0;
+
+        color: #dcfce7;
+        font-size: 9px;
+        line-height: 1.55;
+    }
+
+    .trip-completion-body {
+        padding: 19px;
+    }
+
+    .trip-form-field {
+        margin-bottom: 17px;
+    }
+
+    .trip-form-field:last-of-type {
+        margin-bottom: 0;
+    }
+
+    .trip-form-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+
+        margin-bottom: 7px;
+
+        color: var(--trip-text);
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+    .required-mark {
+        color: var(--trip-danger);
+    }
+
+    .trip-form-field input,
+    .trip-form-field select,
+    .trip-form-field textarea {
+        width: 100%;
+        min-height: 44px;
+
+        padding: 10px 12px;
+
+        color: var(--trip-dark);
+        font-size: 11px;
+
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+
+        outline: none;
+        box-shadow: none;
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .trip-form-field input:focus,
+    .trip-form-field select:focus,
+    .trip-form-field textarea:focus {
+        border-color: var(--trip-success);
+        box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.1);
+    }
+
+    .trip-field-help {
+        display: flex;
+        align-items: flex-start;
+        gap: 5px;
+
+        margin-top: 6px;
+
+        color: var(--trip-muted);
+        font-size: 8px;
+        line-height: 1.5;
+    }
+
+    .trip-field-error {
+        display: flex;
+        align-items: flex-start;
+        gap: 5px;
+
+        margin-top: 6px;
+
+        color: var(--trip-danger);
+        font-size: 8px;
+        font-weight: 650;
+    }
+
+    /* Completion Preview */
+
+    .trip-completion-preview {
+        margin: 16px 0 0;
+        padding: 13px;
+
+        background: #f8fafc;
+        border: 1px solid var(--trip-border);
+        border-radius: 12px;
+    }
+
+    .trip-completion-preview-title {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+
+        margin-bottom: 11px;
+
+        color: var(--trip-dark);
+        font-size: 10px;
+        font-weight: 720;
+    }
+
+    .trip-completion-preview-title i {
+        color: var(--trip-success);
+    }
+
+    .trip-preview-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+    }
+
+    .trip-preview-item {
+        padding: 9px;
+
+        background: #ffffff;
+        border: 1px solid #eef2f7;
+        border-radius: 9px;
+    }
+
+    .trip-preview-item small {
+        display: block;
+
+        margin-bottom: 4px;
+
+        color: var(--trip-muted);
+        font-size: 7px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .trip-preview-item strong {
+        color: var(--trip-dark);
+        font-size: 10px;
+        font-weight: 730;
+    }
+
+    .complete-trip-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        width: 100%;
+        min-height: 44px;
+        margin-top: 18px;
+        padding: 10px 15px;
+
+        color: #ffffff;
+        font-size: 10px;
+        font-weight: 720;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--trip-success),
+                var(--trip-success-dark)
+            );
+
+        border: 1px solid var(--trip-success);
+        border-radius: 10px;
+
+        box-shadow: 0 8px 18px rgba(22, 163, 74, 0.2);
+
+        transition:
+            background 0.2s ease,
+            box-shadow 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .complete-trip-button:hover {
+        color: #ffffff;
+
+        background:
+            linear-gradient(
+                135deg,
+                #15803d,
+                #166534
+            );
+
+        box-shadow: 0 11px 23px rgba(22, 163, 74, 0.25);
+        transform: translateY(-2px);
+    }
+
+    .complete-trip-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.7;
+        transform: none;
+    }
+
+    /* Read-only State */
+
+    .trip-readonly-card {
+        padding: 22px;
+
+        text-align: center;
+
+        background: #ffffff;
+        border: 1px solid var(--trip-border);
+        border-radius: var(--trip-radius);
+
+        box-shadow: var(--trip-shadow);
+    }
+
+    .trip-readonly-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 60px;
+        height: 60px;
+
+        margin: 0 auto 13px;
+
+        font-size: 25px;
+        border-radius: 17px;
+    }
+
+    .trip-readonly-icon.completed {
+        color: var(--trip-success);
+        background: var(--trip-success-soft);
+    }
+
+    .trip-readonly-icon.cancelled {
+        color: var(--trip-danger);
+        background: var(--trip-danger-soft);
+    }
+
+    .trip-readonly-card h3 {
+        margin: 0 0 6px;
+
+        color: var(--trip-dark);
+        font-size: 15px;
+        font-weight: 730;
+    }
+
+    .trip-readonly-card p {
+        margin: 0;
+
+        color: var(--trip-muted);
+        font-size: 9px;
+        line-height: 1.6;
+    }
+
+    /* Lifecycle */
+
+    .trip-lifecycle {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .trip-lifecycle-item {
+        position: relative;
+
+        display: flex;
+        gap: 13px;
+
+        padding-bottom: 23px;
+    }
+
+    .trip-lifecycle-item:last-child {
+        padding-bottom: 0;
+    }
+
+    .trip-lifecycle-item:not(:last-child)::after {
+        position: absolute;
+        top: 34px;
+        left: 15px;
+
+        width: 2px;
+        height: calc(100% - 24px);
+
+        content: "";
+
+        background: #e2e8f0;
+    }
+
+    .trip-lifecycle-marker {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 32px;
+        height: 32px;
+
+        color: var(--trip-primary);
+        font-size: 13px;
+
+        background: var(--trip-primary-soft);
+        border: 2px solid #dbeafe;
+        border-radius: 50%;
+    }
+
+    .trip-lifecycle-marker.success {
+        color: var(--trip-success);
+        background: var(--trip-success-soft);
+        border-color: #bbf7d0;
+    }
+
+    .trip-lifecycle-marker.danger {
+        color: var(--trip-danger);
+        background: var(--trip-danger-soft);
+        border-color: #fecaca;
+    }
+
+    .trip-lifecycle-content {
+        padding-top: 3px;
+    }
+
+    .trip-lifecycle-content strong {
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: var(--trip-dark);
+        font-size: 10px;
+        font-weight: 720;
+    }
+
+    .trip-lifecycle-content span {
+        display: block;
+
+        color: var(--trip-muted);
+        font-size: 8px;
+        line-height: 1.5;
+    }
+
+    /* Modals */
+
+    .trip-action-modal .modal-content {
+        overflow: hidden;
+
+        border: 0;
+        border-radius: 18px;
+
+        box-shadow: 0 25px 70px rgba(15, 23, 42, 0.25);
+    }
+
+    .trip-modal-header {
+        position: relative;
+
+        padding: 23px;
+
+        text-align: center;
+
+        color: #ffffff;
+    }
+
+    .trip-modal-header.dispatch {
+        background:
+            radial-gradient(
+                circle at top right,
+                rgba(255, 255, 255, 0.15),
+                transparent 35%
+            ),
+            linear-gradient(
+                135deg,
+                #1e3a8a,
+                #2563eb
+            );
+    }
+
+    .trip-modal-header.cancel {
+        background:
+            radial-gradient(
+                circle at top right,
+                rgba(255, 255, 255, 0.15),
+                transparent 35%
+            ),
+            linear-gradient(
+                135deg,
+                #991b1b,
+                #dc2626
+            );
+    }
+
+    .trip-modal-header .btn-close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+
+        filter: brightness(0) invert(1);
+        opacity: 0.8;
+    }
+
+    .trip-modal-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 54px;
+        height: 54px;
+
+        margin: 0 auto 12px;
+
+        color: #ffffff;
+        font-size: 23px;
+
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 15px;
+    }
+
+    .trip-modal-header h3 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: 17px;
+        font-weight: 730;
+    }
+
+    .trip-modal-header p {
+        margin: 5px 0 0;
+
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 9px;
+    }
+
+    .trip-modal-body {
+        padding: 22px;
+    }
+
+    .trip-modal-route {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+
+        margin: 14px 0;
+        padding: 13px;
+
+        background: #f8fafc;
+        border: 1px solid var(--trip-border);
+        border-radius: 12px;
+    }
+
+    .trip-modal-route-point {
+        min-width: 0;
+    }
+
+    .trip-modal-route-point:last-child {
+        text-align: right;
+    }
+
+    .trip-modal-route-point small {
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: var(--trip-muted);
+        font-size: 7px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .trip-modal-route-point strong {
+        display: block;
+        overflow: hidden;
+
+        max-width: 155px;
+
+        color: var(--trip-dark);
+        font-size: 10px;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .trip-modal-route-arrow {
+        flex-shrink: 0;
+        color: var(--trip-primary);
+    }
+
+    .trip-modal-warning {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+
+        padding: 11px;
+
+        color: #9a3412;
+        font-size: 9px;
+        line-height: 1.5;
+
+        background: var(--trip-warning-soft);
+        border: 1px solid #fed7aa;
+        border-radius: 10px;
+    }
+
+    .trip-modal-footer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 9px;
+
+        padding: 15px 22px;
+
+        background: #f8fafc;
+        border-top: 1px solid var(--trip-border);
+    }
+
+    .trip-modal-back-button,
+    .trip-modal-confirm-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+
+        min-height: 40px;
+        padding: 8px 13px;
+
+        font-size: 10px;
+        font-weight: 700;
+
+        border-radius: 9px;
+    }
+
+    .trip-modal-back-button {
+        color: #475569;
+
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+    }
+
+    .trip-modal-confirm-button.dispatch {
+        color: #ffffff;
+
+        background: var(--trip-primary);
+        border: 1px solid var(--trip-primary);
+    }
+
+    .trip-modal-confirm-button.cancel {
+        color: #ffffff;
+
+        background: var(--trip-danger);
+        border: 1px solid var(--trip-danger);
+    }
+
+    /* Responsive */
+
+    @media (max-width: 1199.98px) {
+        .trip-summary-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 991.98px) {
+        .trip-detail-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .trip-detail-hero {
+            align-items: stretch;
+            flex-direction: column;
+
+            padding: 23px;
+        }
+
+        .trip-hero-actions,
+        .trip-back-button {
+            width: 100%;
+        }
+
+        .trip-route-grid {
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        .trip-route-location,
+        .trip-route-location.destination {
+            text-align: left;
+        }
+
+        .trip-route-location.destination .trip-route-label {
+            justify-content: flex-start;
+        }
+
+        .trip-route-line {
+            min-height: 45px;
+        }
+
+        .trip-route-line::before {
+            top: 0;
+            bottom: 0;
+            left: 50%;
+
+            width: 2px;
+            height: auto;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    var(--trip-success),
+                    var(--trip-primary),
+                    var(--trip-danger)
+                );
+        }
+
+        .trip-information-grid,
+        .trip-performance-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .trip-information-item.full-width {
+            grid-column: auto;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .trip-summary-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .trip-detail-hero {
+            padding: 20px;
+            border-radius: 17px;
+        }
+
+        .trip-detail-hero-content {
+            align-items: flex-start;
+        }
+
+        .trip-detail-hero-icon {
+            width: 47px;
+            height: 47px;
+            font-size: 20px;
+        }
+
+        .trip-panel,
+        .trip-action-card,
+        .trip-completion-card,
+        .trip-readonly-card {
+            border-radius: 15px;
+        }
+
+        .trip-panel-header,
+        .trip-panel-body,
+        .trip-action-card-body,
+        .trip-completion-body {
+            padding: 17px;
+        }
+
+        .trip-preview-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .trip-modal-footer {
+            align-items: stretch;
+            flex-direction: column-reverse;
+        }
+
+        .trip-modal-footer form,
+        .trip-modal-back-button,
+        .trip-modal-confirm-button {
+            width: 100%;
+        }
+
+        .trip-modal-footer form button {
+            width: 100%;
+        }
+    }
+</style>
+
+{% endblock %}
+
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="trip-detail-page">
 
-    <div>
-        {% if trip.status == "DRAFT" %}
-            <span class="badge text-bg-secondary fs-6">
-                Draft
+    <div class="trip-detail-wrapper">
+
+        <!-- Breadcrumb -->
+        <nav class="trip-detail-breadcrumb">
+
+            <a href="{% url 'dashboard:home' %}">
+                <i class="bi bi-house-door"></i>
+                Dashboard
+            </a>
+
+            <i class="bi bi-chevron-right"></i>
+
+            <a href="{% url 'operations:trip_list' %}">
+                Trips
+            </a>
+
+            <i class="bi bi-chevron-right"></i>
+
+            <span>
+                Trip #{{ trip.pk }}
             </span>
 
-        {% elif trip.status == "DISPATCHED" %}
-            <span class="badge text-bg-primary fs-6">
-                Dispatched
-            </span>
+        </nav>
 
-        {% elif trip.status == "COMPLETED" %}
-            <span class="badge text-bg-success fs-6">
-                Completed
-            </span>
+        <!-- Hero -->
+        <section class="trip-detail-hero">
 
-        {% else %}
-            <span class="badge text-bg-danger fs-6">
-                Cancelled
-            </span>
-        {% endif %}
-    </div>
+            <div class="trip-detail-hero-content">
 
-    <a
-        href="{% url 'operations:trip_list' %}"
-        class="btn btn-light"
-    >
-        Back to Trips
-    </a>
+                <div class="trip-detail-hero-icon">
+                    <i class="bi bi-signpost-split-fill"></i>
+                </div>
 
-</div>
+                <div>
 
-<div class="row g-4">
-
-    <div class="col-lg-8">
-
-        <div class="card border-0 shadow-sm">
-            <div class="card-body p-4">
-
-                <h5 class="mb-4">
-                    Trip Information
-                </h5>
-
-                <div class="row g-4">
-
-                    <div class="col-md-6">
-                        <small class="text-muted">
-                            Source
-                        </small>
-                        <div class="fw-semibold">
-                            {{ trip.source }}
-                        </div>
+                    <div class="trip-detail-eyebrow">
+                        <span></span>
+                        Fleet Trip Record
                     </div>
 
-                    <div class="col-md-6">
-                        <small class="text-muted">
-                            Destination
-                        </small>
-                        <div class="fw-semibold">
-                            {{ trip.destination }}
-                        </div>
-                    </div>
+                    <h2>
+                        Trip #{{ trip.pk }}
+                    </h2>
 
-                    <div class="col-md-6">
-                        <small class="text-muted">
-                            Vehicle
-                        </small>
-                        <div class="fw-semibold">
-                            {{ trip.vehicle.registration_number }}
-                            — {{ trip.vehicle.vehicle_name }}
-                        </div>
-                    </div>
+                    <p>
+                        {{ trip.source }} to {{ trip.destination }}.
+                        Review vehicle, driver, cargo, revenue and trip
+                        performance information.
+                    </p>
 
-                    <div class="col-md-6">
-                        <small class="text-muted">
-                            Driver
-                        </small>
-                        <div class="fw-semibold">
-                            {{ trip.driver.name }}
-                        </div>
-                    </div>
+                </div>
 
-                    <div class="col-md-4">
-                        <small class="text-muted">
-                            Cargo Weight
-                        </small>
-                        <div class="fw-semibold">
-                            {{ trip.cargo_weight }} kg
-                        </div>
-                    </div>
+            </div>
 
-                    <div class="col-md-4">
-                        <small class="text-muted">
-                            Planned Distance
-                        </small>
-                        <div class="fw-semibold">
-                            {{ trip.planned_distance }} km
-                        </div>
-                    </div>
+            <div class="trip-hero-actions">
 
-                    <div class="col-md-4">
-                        <small class="text-muted">
-                            Revenue
-                        </small>
-                        <div class="fw-semibold">
-                            ₹{{ trip.revenue }}
-                        </div>
-                    </div>
+                <a
+                    href="{% url 'operations:trip_list' %}"
+                    class="trip-back-button"
+                >
+                    <i class="bi bi-arrow-left"></i>
+                    Back to Trips
+                </a>
 
-                    {% if trip.start_odometer %}
-                        <div class="col-md-4">
-                            <small class="text-muted">
-                                Start Odometer
-                            </small>
-                            <div class="fw-semibold">
-                                {{ trip.start_odometer }} km
-                            </div>
-                        </div>
-                    {% endif %}
+            </div>
 
-                    {% if trip.final_odometer %}
-                        <div class="col-md-4">
-                            <small class="text-muted">
-                                Final Odometer
-                            </small>
-                            <div class="fw-semibold">
-                                {{ trip.final_odometer }} km
-                            </div>
-                        </div>
-                    {% endif %}
+        </section>
 
-                    {% if trip.fuel_consumed %}
-                        <div class="col-md-4">
-                            <small class="text-muted">
-                                Fuel Consumed
-                            </small>
-                            <div class="fw-semibold">
-                                {{ trip.fuel_consumed }} litres
-                            </div>
-                        </div>
-                    {% endif %}
+        <!-- Summary -->
+        <section class="trip-summary-grid">
 
-                    {% if trip.actual_distance %}
-                        <div class="col-md-4">
-                            <small class="text-muted">
-                                Actual Distance
-                            </small>
-                            <div class="fw-semibold">
-                                {{ trip.actual_distance }} km
-                            </div>
-                        </div>
-                    {% endif %}
+            <article class="trip-summary-card">
 
-                    {% if trip.fuel_efficiency %}
-                        <div class="col-md-4">
-                            <small class="text-muted">
-                                Fuel Efficiency
-                            </small>
-                            <div class="fw-semibold">
-                                {{ trip.fuel_efficiency|floatformat:2 }}
-                                km/l
-                            </div>
+                <div class="trip-summary-icon blue">
+                    <i class="bi bi-activity"></i>
+                </div>
+
+                <div class="trip-summary-content">
+
+                    <span>Current Status</span>
+
+                    {% if trip.status == "DRAFT" %}
+
+                        <div class="trip-status-badge trip-status-draft">
+                            Draft
                         </div>
+
+                    {% elif trip.status == "DISPATCHED" %}
+
+                        <div class="trip-status-badge trip-status-dispatched">
+                            Dispatched
+                        </div>
+
+                    {% elif trip.status == "COMPLETED" %}
+
+                        <div class="trip-status-badge trip-status-completed">
+                            Completed
+                        </div>
+
+                    {% else %}
+
+                        <div class="trip-status-badge trip-status-cancelled">
+                            Cancelled
+                        </div>
+
                     {% endif %}
 
                 </div>
 
-                {% if trip.notes %}
-                    <hr>
+            </article>
 
-                    <small class="text-muted">
-                        Notes
-                    </small>
+            <article class="trip-summary-card">
 
-                    <p class="mb-0">
-                        {{ trip.notes }}
-                    </p>
+                <div class="trip-summary-icon orange">
+                    <i class="bi bi-box-seam-fill"></i>
+                </div>
+
+                <div class="trip-summary-content">
+
+                    <span>Cargo Weight</span>
+
+                    <strong>
+                        {{ trip.cargo_weight|default:0 }}
+                        kg
+                    </strong>
+
+                </div>
+
+            </article>
+
+            <article class="trip-summary-card">
+
+                <div class="trip-summary-icon purple">
+                    <i class="bi bi-signpost-2-fill"></i>
+                </div>
+
+                <div class="trip-summary-content">
+
+                    <span>Planned Distance</span>
+
+                    <strong>
+                        {{ trip.planned_distance|default:0 }}
+                        km
+                    </strong>
+
+                </div>
+
+            </article>
+
+            <article class="trip-summary-card">
+
+                <div class="trip-summary-icon green">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+
+                <div class="trip-summary-content">
+
+                    <span>Trip Revenue</span>
+
+                    <strong>
+                        ₹{{ trip.revenue|default:0|floatformat:2 }}
+                    </strong>
+
+                </div>
+
+            </article>
+
+        </section>
+
+        <div class="trip-detail-grid">
+
+            <!-- Main Information -->
+            <main>
+
+                <section class="trip-panel">
+
+                    <header class="trip-panel-header">
+
+                        <div class="trip-panel-heading">
+
+                            <div class="trip-panel-heading-icon">
+                                <i class="bi bi-map-fill"></i>
+                            </div>
+
+                            <div>
+
+                                <h3>Trip Information</h3>
+
+                                <p>
+                                    Route, vehicle, driver and cargo details
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                        {% if trip.status == "DRAFT" %}
+
+                            <span class="trip-status-badge trip-status-draft">
+                                Draft
+                            </span>
+
+                        {% elif trip.status == "DISPATCHED" %}
+
+                            <span
+                                class="
+                                    trip-status-badge
+                                    trip-status-dispatched
+                                "
+                            >
+                                Dispatched
+                            </span>
+
+                        {% elif trip.status == "COMPLETED" %}
+
+                            <span
+                                class="
+                                    trip-status-badge
+                                    trip-status-completed
+                                "
+                            >
+                                Completed
+                            </span>
+
+                        {% else %}
+
+                            <span
+                                class="
+                                    trip-status-badge
+                                    trip-status-cancelled
+                                "
+                            >
+                                Cancelled
+                            </span>
+
+                        {% endif %}
+
+                    </header>
+
+                    <div class="trip-panel-body">
+
+                        <!-- Route -->
+                        <div class="trip-route-card">
+
+                            <div class="trip-route-grid">
+
+                                <div class="trip-route-location">
+
+                                    <div class="trip-route-label source">
+                                        <i class="bi bi-geo-alt-fill"></i>
+                                        Starting Point
+                                    </div>
+
+                                    <span class="trip-route-place">
+                                        {{ trip.source }}
+                                    </span>
+
+                                </div>
+
+                                <div class="trip-route-line">
+
+                                    <div class="trip-route-vehicle">
+                                        <i class="bi bi-truck-front-fill"></i>
+                                    </div>
+
+                                </div>
+
+                                <div
+                                    class="
+                                        trip-route-location
+                                        destination
+                                    "
+                                >
+
+                                    <div class="trip-route-label destination">
+                                        <i class="bi bi-geo-alt-fill"></i>
+                                        Destination
+                                    </div>
+
+                                    <span class="trip-route-place">
+                                        {{ trip.destination }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Information -->
+                        <div class="trip-information-grid">
+
+                            <!-- Vehicle -->
+                            <article class="trip-information-item">
+
+                                <div class="trip-information-icon">
+                                    <i class="bi bi-truck-front-fill"></i>
+                                </div>
+
+                                <div class="trip-information-content">
+
+                                    <small>Assigned Vehicle</small>
+
+                                    <div class="trip-entity">
+
+                                        <div class="trip-entity-details">
+
+                                            <strong>
+                                                {{ trip.vehicle.registration_number }}
+                                            </strong>
+
+                                            <span>
+                                                {{ trip.vehicle.vehicle_name }}
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </article>
+
+                            <!-- Driver -->
+                            <article class="trip-information-item">
+
+                                <div class="trip-information-icon">
+                                    <i class="bi bi-person-badge-fill"></i>
+                                </div>
+
+                                <div class="trip-information-content">
+
+                                    <small>Assigned Driver</small>
+
+                                    <div class="trip-entity">
+
+                                        <div class="trip-entity-details">
+
+                                            <strong>
+                                                {{ trip.driver.name }}
+                                            </strong>
+
+                                            <span>
+                                                Trip driver
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </article>
+
+                            <!-- Cargo -->
+                            <article class="trip-information-item">
+
+                                <div class="trip-information-icon">
+                                    <i class="bi bi-box-seam-fill"></i>
+                                </div>
+
+                                <div class="trip-information-content">
+
+                                    <small>Cargo Weight</small>
+
+                                    <strong>
+                                        {{ trip.cargo_weight|default:0 }}
+                                        kg
+                                    </strong>
+
+                                    <span>
+                                        Assigned trip load
+                                    </span>
+
+                                </div>
+
+                            </article>
+
+                            <!-- Planned Distance -->
+                            <article class="trip-information-item">
+
+                                <div class="trip-information-icon">
+                                    <i class="bi bi-signpost-2-fill"></i>
+                                </div>
+
+                                <div class="trip-information-content">
+
+                                    <small>Planned Distance</small>
+
+                                    <strong>
+                                        {{ trip.planned_distance|default:0 }}
+                                        km
+                                    </strong>
+
+                                    <span>
+                                        Expected travel distance
+                                    </span>
+
+                                </div>
+
+                            </article>
+
+                            <!-- Revenue -->
+                            <article class="trip-information-item">
+
+                                <div class="trip-information-icon">
+                                    <i class="bi bi-currency-rupee"></i>
+                                </div>
+
+                                <div class="trip-information-content">
+
+                                    <small>Trip Revenue</small>
+
+                                    <strong>
+                                        ₹{{ trip.revenue|default:0|floatformat:2 }}
+                                    </strong>
+
+                                    <span>
+                                        Expected trip income
+                                    </span>
+
+                                </div>
+
+                            </article>
+
+                            <!-- Record -->
+                            <article class="trip-information-item">
+
+                                <div class="trip-information-icon">
+                                    <i class="bi bi-hash"></i>
+                                </div>
+
+                                <div class="trip-information-content">
+
+                                    <small>Trip Record</small>
+
+                                    <strong>
+                                        TRIP-{{ trip.pk }}
+                                    </strong>
+
+                                    <span>
+                                        TransitOps trip identifier
+                                    </span>
+
+                                </div>
+
+                            </article>
+
+                            {% if trip.notes %}
+
+                                <article
+                                    class="
+                                        trip-information-item
+                                        full-width
+                                    "
+                                >
+
+                                    <div class="trip-information-icon">
+                                        <i class="bi bi-card-text"></i>
+                                    </div>
+
+                                    <div class="trip-information-content">
+
+                                        <small>Trip Notes</small>
+
+                                        <p>
+                                            {{ trip.notes }}
+                                        </p>
+
+                                    </div>
+
+                                </article>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <!-- Performance -->
+                {% if trip.start_odometer or trip.final_odometer or trip.fuel_consumed or trip.actual_distance or trip.fuel_efficiency %}
+
+                    <section class="trip-panel">
+
+                        <header class="trip-panel-header">
+
+                            <div class="trip-panel-heading">
+
+                                <div class="trip-panel-heading-icon">
+                                    <i class="bi bi-speedometer2"></i>
+                                </div>
+
+                                <div>
+
+                                    <h3>Trip Performance</h3>
+
+                                    <p>
+                                        Odometer, distance and fuel information
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </header>
+
+                        <div class="trip-panel-body">
+
+                            <div class="trip-information-grid mb-3">
+
+                                {% if trip.start_odometer %}
+
+                                    <article class="trip-information-item">
+
+                                        <div class="trip-information-icon">
+                                            <i class="bi bi-play-circle-fill"></i>
+                                        </div>
+
+                                        <div class="trip-information-content">
+
+                                            <small>Start Odometer</small>
+
+                                            <strong>
+                                                {{ trip.start_odometer }}
+                                                km
+                                            </strong>
+
+                                        </div>
+
+                                    </article>
+
+                                {% endif %}
+
+                                {% if trip.final_odometer %}
+
+                                    <article class="trip-information-item">
+
+                                        <div class="trip-information-icon">
+                                            <i class="bi bi-stop-circle-fill"></i>
+                                        </div>
+
+                                        <div class="trip-information-content">
+
+                                            <small>Final Odometer</small>
+
+                                            <strong>
+                                                {{ trip.final_odometer }}
+                                                km
+                                            </strong>
+
+                                        </div>
+
+                                    </article>
+
+                                {% endif %}
+
+                            </div>
+
+                            <div class="trip-performance-grid">
+
+                                <article
+                                    class="
+                                        trip-performance-card
+                                        distance
+                                    "
+                                >
+
+                                    <div class="trip-performance-label">
+                                        <i class="bi bi-signpost-2-fill"></i>
+                                        Actual Distance
+                                    </div>
+
+                                    <strong class="trip-performance-value">
+
+                                        {% if trip.actual_distance %}
+                                            {{ trip.actual_distance }}
+                                        {% else %}
+                                            0
+                                        {% endif %}
+
+                                        km
+                                    </strong>
+
+                                    <span class="trip-performance-note">
+                                        Total completed travel distance
+                                    </span>
+
+                                </article>
+
+                                <article
+                                    class="
+                                        trip-performance-card
+                                        fuel
+                                    "
+                                >
+
+                                    <div class="trip-performance-label">
+                                        <i class="bi bi-fuel-pump-fill"></i>
+                                        Fuel Consumed
+                                    </div>
+
+                                    <strong class="trip-performance-value">
+
+                                        {% if trip.fuel_consumed %}
+                                            {{ trip.fuel_consumed }}
+                                        {% else %}
+                                            0
+                                        {% endif %}
+
+                                        L
+                                    </strong>
+
+                                    <span class="trip-performance-note">
+                                        Fuel used during this trip
+                                    </span>
+
+                                </article>
+
+                                <article
+                                    class="
+                                        trip-performance-card
+                                        efficiency
+                                    "
+                                >
+
+                                    <div class="trip-performance-label">
+                                        <i class="bi bi-graph-up-arrow"></i>
+                                        Fuel Efficiency
+                                    </div>
+
+                                    <strong class="trip-performance-value">
+
+                                        {% if trip.fuel_efficiency %}
+                                            {{ trip.fuel_efficiency|floatformat:2 }}
+                                        {% else %}
+                                            0.00
+                                        {% endif %}
+
+                                        km/L
+                                    </strong>
+
+                                    <span class="trip-performance-note">
+                                        Recorded vehicle efficiency
+                                    </span>
+
+                                </article>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
                 {% endif %}
 
-            </div>
+            </main>
+
+            <!-- Sidebar -->
+            <aside class="trip-sidebar">
+
+                {% if can_manage %}
+
+                    {% if trip.status == "DRAFT" %}
+
+                        <section class="trip-action-card">
+
+                            <header class="trip-action-card-header">
+
+                                <div class="trip-action-card-icon">
+                                    <i class="bi bi-lightning-charge-fill"></i>
+                                </div>
+
+                                <h3>Trip Actions</h3>
+
+                                <p>
+                                    Review, edit or dispatch this draft trip.
+                                </p>
+
+                            </header>
+
+                            <div class="trip-action-card-body">
+
+                                <div class="trip-action-list">
+
+                                    <a
+                                        href="{% url 'operations:trip_update' trip.pk %}"
+                                        class="trip-action-button edit"
+                                    >
+                                        <i class="bi bi-pencil-square"></i>
+                                        Edit Trip Details
+                                    </a>
+
+                                    <button
+                                        type="button"
+                                        class="trip-action-button dispatch"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#dispatchTripModal"
+                                    >
+                                        <i class="bi bi-send-fill"></i>
+                                        Dispatch Trip
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        class="trip-action-button cancel"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#cancelTripModal"
+                                    >
+                                        <i class="bi bi-x-circle-fill"></i>
+                                        Cancel Trip
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </section>
+
+                    {% elif trip.status == "DISPATCHED" %}
+
+                        <section class="trip-completion-card">
+
+                            <header class="trip-completion-header">
+
+                                <div class="trip-completion-header-icon">
+                                    <i class="bi bi-check2-circle"></i>
+                                </div>
+
+                                <h3>Complete Trip</h3>
+
+                                <p>
+                                    Enter the final odometer and fuel consumed
+                                    to calculate trip performance.
+                                </p>
+
+                            </header>
+
+                            <div class="trip-completion-body">
+
+                                <form
+                                    method="post"
+                                    action="{% url 'operations:trip_complete' trip.pk %}"
+                                    id="completeTripForm"
+                                    novalidate
+                                >
+                                    {% csrf_token %}
+
+                                    {% if complete_form.non_field_errors %}
+
+                                        <div class="alert alert-danger small">
+                                            {{ complete_form.non_field_errors }}
+                                        </div>
+
+                                    {% endif %}
+
+                                    <!-- Final Odometer -->
+                                    <div class="trip-form-field">
+
+                                        <label
+                                            for="{{ complete_form.final_odometer.id_for_label }}"
+                                            class="trip-form-label"
+                                        >
+                                            <span>
+                                                Final Odometer
+                                                <span class="required-mark">*</span>
+                                            </span>
+
+                                            <span>km</span>
+                                        </label>
+
+                                        {{ complete_form.final_odometer }}
+
+                                        <div class="trip-field-help">
+                                            <i class="bi bi-speedometer2"></i>
+
+                                            <span>
+                                                Enter the vehicle's current
+                                                odometer reading.
+                                            </span>
+                                        </div>
+
+                                        {% for error in complete_form.final_odometer.errors %}
+
+                                            <div class="trip-field-error">
+                                                <i class="bi bi-exclamation-circle-fill"></i>
+                                                <span>{{ error }}</span>
+                                            </div>
+
+                                        {% endfor %}
+
+                                    </div>
+
+                                    <!-- Fuel -->
+                                    <div class="trip-form-field">
+
+                                        <label
+                                            for="{{ complete_form.fuel_consumed.id_for_label }}"
+                                            class="trip-form-label"
+                                        >
+                                            <span>
+                                                Fuel Consumed
+                                                <span class="required-mark">*</span>
+                                            </span>
+
+                                            <span>litres</span>
+                                        </label>
+
+                                        {{ complete_form.fuel_consumed }}
+
+                                        <div class="trip-field-help">
+                                            <i class="bi bi-fuel-pump"></i>
+
+                                            <span>
+                                                Enter total fuel used during
+                                                this trip.
+                                            </span>
+                                        </div>
+
+                                        {% for error in complete_form.fuel_consumed.errors %}
+
+                                            <div class="trip-field-error">
+                                                <i class="bi bi-exclamation-circle-fill"></i>
+                                                <span>{{ error }}</span>
+                                            </div>
+
+                                        {% endfor %}
+
+                                    </div>
+
+                                    <!-- Live Preview -->
+                                    <div class="trip-completion-preview">
+
+                                        <div class="trip-completion-preview-title">
+                                            <i class="bi bi-calculator-fill"></i>
+                                            Performance Preview
+                                        </div>
+
+                                        <div class="trip-preview-grid">
+
+                                            <div class="trip-preview-item">
+
+                                                <small>Actual Distance</small>
+
+                                                <strong id="actualDistancePreview">
+                                                    0.00 km
+                                                </strong>
+
+                                            </div>
+
+                                            <div class="trip-preview-item">
+
+                                                <small>Fuel Efficiency</small>
+
+                                                <strong id="fuelEfficiencyPreview">
+                                                    0.00 km/L
+                                                </strong>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        class="complete-trip-button"
+                                        id="completeTripButton"
+                                    >
+                                        <i class="bi bi-check-circle-fill"></i>
+                                        Complete Trip
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </section>
+
+                        <section class="trip-action-card">
+
+                            <div class="trip-action-card-body">
+
+                                <button
+                                    type="button"
+                                    class="trip-action-button cancel"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#cancelTripModal"
+                                >
+                                    <i class="bi bi-x-circle-fill"></i>
+                                    Cancel Dispatched Trip
+                                </button>
+
+                            </div>
+
+                        </section>
+
+                    {% elif trip.status == "COMPLETED" %}
+
+                        <section class="trip-readonly-card">
+
+                            <div class="trip-readonly-icon completed">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </div>
+
+                            <h3>Trip Completed</h3>
+
+                            <p>
+                                This trip has been completed. Final distance,
+                                fuel usage and efficiency are displayed in the
+                                trip performance section.
+                            </p>
+
+                        </section>
+
+                    {% else %}
+
+                        <section class="trip-readonly-card">
+
+                            <div class="trip-readonly-icon cancelled">
+                                <i class="bi bi-x-circle-fill"></i>
+                            </div>
+
+                            <h3>Trip Cancelled</h3>
+
+                            <p>
+                                This trip is closed and no further operational
+                                actions are available.
+                            </p>
+
+                        </section>
+
+                    {% endif %}
+
+                {% endif %}
+
+                <!-- Lifecycle -->
+                <section class="trip-panel">
+
+                    <header class="trip-panel-header">
+
+                        <div class="trip-panel-heading">
+
+                            <div class="trip-panel-heading-icon">
+                                <i class="bi bi-clock-history"></i>
+                            </div>
+
+                            <div>
+
+                                <h3>Trip Lifecycle</h3>
+
+                                <p>
+                                    Current operational progress
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </header>
+
+                    <div class="trip-panel-body">
+
+                        <div class="trip-lifecycle">
+
+                            <!-- Draft -->
+                            <div class="trip-lifecycle-item">
+
+                                <div
+                                    class="
+                                        trip-lifecycle-marker
+
+                                        {% if trip.status != 'CANCELLED' %}
+                                            success
+                                        {% else %}
+                                            danger
+                                        {% endif %}
+                                    "
+                                >
+
+                                    {% if trip.status == "CANCELLED" %}
+                                        <i class="bi bi-x-lg"></i>
+                                    {% else %}
+                                        <i class="bi bi-check-lg"></i>
+                                    {% endif %}
+
+                                </div>
+
+                                <div class="trip-lifecycle-content">
+
+                                    <strong>
+                                        Trip Created
+                                    </strong>
+
+                                    <span>
+                                        Route, cargo, vehicle and driver
+                                        information was recorded.
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                            <!-- Dispatch -->
+                            <div class="trip-lifecycle-item">
+
+                                <div
+                                    class="
+                                        trip-lifecycle-marker
+
+                                        {% if trip.status == 'DISPATCHED' or trip.status == 'COMPLETED' %}
+                                            success
+                                        {% elif trip.status == 'CANCELLED' %}
+                                            danger
+                                        {% endif %}
+                                    "
+                                >
+
+                                    {% if trip.status == "DISPATCHED" or trip.status == "COMPLETED" %}
+                                        <i class="bi bi-check-lg"></i>
+
+                                    {% elif trip.status == "CANCELLED" %}
+                                        <i class="bi bi-x-lg"></i>
+
+                                    {% else %}
+                                        <i class="bi bi-send"></i>
+                                    {% endif %}
+
+                                </div>
+
+                                <div class="trip-lifecycle-content">
+
+                                    <strong>
+                                        {% if trip.status == "DRAFT" %}
+                                            Awaiting Dispatch
+
+                                        {% elif trip.status == "CANCELLED" %}
+                                            Dispatch Cancelled
+
+                                        {% else %}
+                                            Trip Dispatched
+                                        {% endif %}
+                                    </strong>
+
+                                    <span>
+                                        {% if trip.status == "DRAFT" %}
+                                            Review the trip and dispatch when ready.
+
+                                        {% elif trip.status == "CANCELLED" %}
+                                            The trip was cancelled before completion.
+
+                                        {% else %}
+                                            Vehicle and driver were assigned to the route.
+                                        {% endif %}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                            <!-- Completion -->
+                            <div class="trip-lifecycle-item">
+
+                                <div
+                                    class="
+                                        trip-lifecycle-marker
+
+                                        {% if trip.status == 'COMPLETED' %}
+                                            success
+                                        {% elif trip.status == 'CANCELLED' %}
+                                            danger
+                                        {% endif %}
+                                    "
+                                >
+
+                                    {% if trip.status == "COMPLETED" %}
+                                        <i class="bi bi-check-lg"></i>
+
+                                    {% elif trip.status == "CANCELLED" %}
+                                        <i class="bi bi-x-lg"></i>
+
+                                    {% else %}
+                                        <i class="bi bi-flag"></i>
+                                    {% endif %}
+
+                                </div>
+
+                                <div class="trip-lifecycle-content">
+
+                                    <strong>
+                                        {% if trip.status == "COMPLETED" %}
+                                            Trip Completed
+
+                                        {% elif trip.status == "CANCELLED" %}
+                                            Trip Closed
+
+                                        {% else %}
+                                            Awaiting Completion
+                                        {% endif %}
+                                    </strong>
+
+                                    <span>
+                                        {% if trip.status == "COMPLETED" %}
+                                            Final distance and fuel data were recorded.
+
+                                        {% elif trip.status == "CANCELLED" %}
+                                            No further trip actions are available.
+
+                                        {% else %}
+                                            Complete the trip after reaching the destination.
+                                        {% endif %}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </aside>
+
         </div>
 
     </div>
 
-    <div class="col-lg-4">
+</div>
 
-        {% if can_manage %}
+<!-- Dispatch Confirmation Modal -->
+{% if can_manage and trip.status == "DRAFT" %}
 
-            <div class="card border-0 shadow-sm">
-                <div class="card-body p-4">
+    <div
+        class="modal fade trip-action-modal"
+        id="dispatchTripModal"
+        tabindex="-1"
+        aria-labelledby="dispatchTripModalLabel"
+        aria-hidden="true"
+    >
 
-                    <h5 class="mb-3">
-                        Trip Actions
-                    </h5>
+        <div class="modal-dialog modal-dialog-centered">
 
-                    {% if trip.status == "DRAFT" %}
+            <div class="modal-content">
 
-                        <a
-                            href="{% url 'operations:trip_update' trip.pk %}"
-                            class="btn btn-outline-primary w-100 mb-2"
-                        >
-                            Edit Trip
-                        </a>
+                <div class="trip-modal-header dispatch">
 
-                        <form
-                            method="post"
-                            action="{% url 'operations:trip_dispatch' trip.pk %}"
-                        >
-                            {% csrf_token %}
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
 
-                            <button
-                                class="btn btn-primary w-100 mb-2"
-                                onclick="return confirm('Dispatch this trip?')"
-                            >
-                                Dispatch Trip
-                            </button>
-                        </form>
+                    <div class="trip-modal-icon">
+                        <i class="bi bi-send-fill"></i>
+                    </div>
 
-                        <form
-                            method="post"
-                            action="{% url 'operations:trip_cancel' trip.pk %}"
-                        >
-                            {% csrf_token %}
+                    <h3 id="dispatchTripModalLabel">
+                        Dispatch Trip?
+                    </h3>
 
-                            <button
-                                class="btn btn-outline-danger w-100"
-                                onclick="return confirm('Cancel this trip?')"
-                            >
-                                Cancel Trip
-                            </button>
-                        </form>
-
-                    {% elif trip.status == "DISPATCHED" %}
-
-                        <form
-                            method="post"
-                            action="{% url 'operations:trip_complete' trip.pk %}"
-                        >
-                            {% csrf_token %}
-
-                            <div class="mb-3">
-                                <label class="form-label">
-                                    Final Odometer
-                                </label>
-
-                                {{ complete_form.final_odometer }}
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">
-                                    Fuel Consumed
-                                </label>
-
-                                {{ complete_form.fuel_consumed }}
-                            </div>
-
-                            <button
-                                class="btn btn-success w-100 mb-2"
-                            >
-                                Complete Trip
-                            </button>
-                        </form>
-
-                        <form
-                            method="post"
-                            action="{% url 'operations:trip_cancel' trip.pk %}"
-                        >
-                            {% csrf_token %}
-
-                            <button
-                                class="btn btn-outline-danger w-100"
-                                onclick="return confirm('Cancel this dispatched trip?')"
-                            >
-                                Cancel Trip
-                            </button>
-                        </form>
-
-                    {% else %}
-
-                        <p class="text-muted mb-0">
-                            No further actions are available.
-                        </p>
-
-                    {% endif %}
+                    <p>
+                        Confirm the route and assigned resources.
+                    </p>
 
                 </div>
+
+                <div class="trip-modal-body">
+
+                    <p class="mb-0 text-muted small">
+                        This trip will be marked as dispatched and the
+                        assigned vehicle and driver will become unavailable.
+                    </p>
+
+                    <div class="trip-modal-route">
+
+                        <div class="trip-modal-route-point">
+                            <small>Source</small>
+                            <strong>{{ trip.source }}</strong>
+                        </div>
+
+                        <i class="bi bi-arrow-right trip-modal-route-arrow"></i>
+
+                        <div class="trip-modal-route-point">
+                            <small>Destination</small>
+                            <strong>{{ trip.destination }}</strong>
+                        </div>
+
+                    </div>
+
+                    <div class="trip-modal-warning">
+
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+
+                        <span>
+                            Confirm the vehicle, driver, cargo weight and route
+                            before dispatching this trip.
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="trip-modal-footer">
+
+                    <button
+                        type="button"
+                        class="trip-modal-back-button"
+                        data-bs-dismiss="modal"
+                    >
+                        <i class="bi bi-arrow-left"></i>
+                        Review Again
+                    </button>
+
+                    <form
+                        method="post"
+                        action="{% url 'operations:trip_dispatch' trip.pk %}"
+                        id="dispatchTripForm"
+                    >
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="trip-modal-confirm-button dispatch"
+                            id="dispatchTripConfirmButton"
+                        >
+                            <i class="bi bi-send-fill"></i>
+                            Confirm Dispatch
+                        </button>
+
+                    </form>
+
+                </div>
+
             </div>
 
-        {% endif %}
+        </div>
 
     </div>
 
-</div>
+{% endif %}
+
+<!-- Cancel Confirmation Modal -->
+{% if can_manage and trip.status == "DRAFT" or can_manage and trip.status == "DISPATCHED" %}
+
+    <div
+        class="modal fade trip-action-modal"
+        id="cancelTripModal"
+        tabindex="-1"
+        aria-labelledby="cancelTripModalLabel"
+        aria-hidden="true"
+    >
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content">
+
+                <div class="trip-modal-header cancel">
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
+
+                    <div class="trip-modal-icon">
+                        <i class="bi bi-x-octagon-fill"></i>
+                    </div>
+
+                    <h3 id="cancelTripModalLabel">
+                        Cancel Trip?
+                    </h3>
+
+                    <p>
+                        This action will close the trip record.
+                    </p>
+
+                </div>
+
+                <div class="trip-modal-body">
+
+                    <p class="mb-0 text-muted small">
+                        You are about to cancel this trip:
+                    </p>
+
+                    <div class="trip-modal-route">
+
+                        <div class="trip-modal-route-point">
+                            <small>Source</small>
+                            <strong>{{ trip.source }}</strong>
+                        </div>
+
+                        <i class="bi bi-arrow-right trip-modal-route-arrow"></i>
+
+                        <div class="trip-modal-route-point">
+                            <small>Destination</small>
+                            <strong>{{ trip.destination }}</strong>
+                        </div>
+
+                    </div>
+
+                    <div class="trip-modal-warning">
+
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+
+                        <span>
+                            The trip will be marked as cancelled. Confirm this
+                            action only when the trip will not continue.
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="trip-modal-footer">
+
+                    <button
+                        type="button"
+                        class="trip-modal-back-button"
+                        data-bs-dismiss="modal"
+                    >
+                        <i class="bi bi-arrow-left"></i>
+                        Keep Trip
+                    </button>
+
+                    <form
+                        method="post"
+                        action="{% url 'operations:trip_cancel' trip.pk %}"
+                        id="cancelTripForm"
+                    >
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="trip-modal-confirm-button cancel"
+                            id="cancelTripConfirmButton"
+                        >
+                            <i class="bi bi-x-circle-fill"></i>
+                            Confirm Cancellation
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        {% if can_manage and trip.status == "DISPATCHED" %}
+
+            /*
+             * Trip completion inputs.
+             */
+
+            const finalOdometerInput = document.getElementById(
+                "{{ complete_form.final_odometer.id_for_label }}"
+            );
+
+            const fuelConsumedInput = document.getElementById(
+                "{{ complete_form.fuel_consumed.id_for_label }}"
+            );
+
+            const actualDistancePreview = document.getElementById(
+                "actualDistancePreview"
+            );
+
+            const fuelEfficiencyPreview = document.getElementById(
+                "fuelEfficiencyPreview"
+            );
+
+            const startOdometer = Number(
+                "{{ trip.start_odometer|default:0|escapejs }}"
+            ) || 0;
+
+            if (finalOdometerInput) {
+                finalOdometerInput.placeholder =
+                    "Example: 65840";
+
+                finalOdometerInput.setAttribute(
+                    "min",
+                    startOdometer
+                );
+
+                finalOdometerInput.setAttribute(
+                    "step",
+                    "0.01"
+                );
+
+                finalOdometerInput.setAttribute(
+                    "inputmode",
+                    "decimal"
+                );
+            }
+
+            if (fuelConsumedInput) {
+                fuelConsumedInput.placeholder =
+                    "Example: 42.5";
+
+                fuelConsumedInput.setAttribute(
+                    "min",
+                    "0.01"
+                );
+
+                fuelConsumedInput.setAttribute(
+                    "step",
+                    "0.01"
+                );
+
+                fuelConsumedInput.setAttribute(
+                    "inputmode",
+                    "decimal"
+                );
+            }
+
+            function updateTripPerformancePreview() {
+                if (
+                    !finalOdometerInput ||
+                    !fuelConsumedInput ||
+                    !actualDistancePreview ||
+                    !fuelEfficiencyPreview
+                ) {
+                    return;
+                }
+
+                let finalOdometer = Number(
+                    finalOdometerInput.value || "0"
+                );
+
+                let fuelConsumed = Number(
+                    fuelConsumedInput.value || "0"
+                );
+
+                if (Number.isNaN(finalOdometer)) {
+                    finalOdometer = 0;
+                }
+
+                if (Number.isNaN(fuelConsumed)) {
+                    fuelConsumed = 0;
+                }
+
+                let actualDistance =
+                    finalOdometer - startOdometer;
+
+                if (actualDistance < 0) {
+                    actualDistance = 0;
+                }
+
+                let fuelEfficiency = 0;
+
+                if (
+                    actualDistance > 0 &&
+                    fuelConsumed > 0
+                ) {
+                    fuelEfficiency =
+                        actualDistance / fuelConsumed;
+                }
+
+                actualDistancePreview.textContent =
+                    actualDistance.toFixed(2) + " km";
+
+                fuelEfficiencyPreview.textContent =
+                    fuelEfficiency.toFixed(2) + " km/L";
+            }
+
+            if (finalOdometerInput) {
+                finalOdometerInput.addEventListener(
+                    "input",
+                    updateTripPerformancePreview
+                );
+            }
+
+            if (fuelConsumedInput) {
+                fuelConsumedInput.addEventListener(
+                    "input",
+                    updateTripPerformancePreview
+                );
+            }
+
+            updateTripPerformancePreview();
+
+            /*
+             * Prevent duplicate completion submissions.
+             */
+
+            const completeTripForm = document.getElementById(
+                "completeTripForm"
+            );
+
+            const completeTripButton = document.getElementById(
+                "completeTripButton"
+            );
+
+            if (completeTripForm && completeTripButton) {
+                completeTripForm.addEventListener(
+                    "submit",
+                    function () {
+                        completeTripButton.disabled = true;
+
+                        completeTripButton.innerHTML = `
+                            <span
+                                class="spinner-border spinner-border-sm"
+                                aria-hidden="true"
+                            ></span>
+
+                            <span>Completing Trip...</span>
+                        `;
+                    }
+                );
+            }
+
+        {% endif %}
+
+        /*
+         * Prevent duplicate dispatch submissions.
+         */
+
+        const dispatchTripForm = document.getElementById(
+            "dispatchTripForm"
+        );
+
+        const dispatchTripButton = document.getElementById(
+            "dispatchTripConfirmButton"
+        );
+
+        if (dispatchTripForm && dispatchTripButton) {
+            dispatchTripForm.addEventListener(
+                "submit",
+                function () {
+                    dispatchTripButton.disabled = true;
+
+                    dispatchTripButton.innerHTML = `
+                        <span
+                            class="spinner-border spinner-border-sm"
+                            aria-hidden="true"
+                        ></span>
+
+                        <span>Dispatching...</span>
+                    `;
+                }
+            );
+        }
+
+        /*
+         * Prevent duplicate cancellation submissions.
+         */
+
+        const cancelTripForm = document.getElementById(
+            "cancelTripForm"
+        );
+
+        const cancelTripButton = document.getElementById(
+            "cancelTripConfirmButton"
+        );
+
+        if (cancelTripForm && cancelTripButton) {
+            cancelTripForm.addEventListener(
+                "submit",
+                function () {
+                    cancelTripButton.disabled = true;
+
+                    cancelTripButton.innerHTML = `
+                        <span
+                            class="spinner-border spinner-border-sm"
+                            aria-hidden="true"
+                        ></span>
+
+                        <span>Cancelling...</span>
+                    `;
+                }
+            );
+        }
+    });
+</script>
 
 {% endblock %}

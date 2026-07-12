@@ -1,0 +1,2516 @@
+{% extends "base.html" %}
+
+{% block title %}
+Upload Vehicle Document | TransitOps
+{% endblock %}
+
+{% block page_title %}
+Upload Vehicle Document
+{% endblock %}
+
+{% block page_subtitle %}
+Securely upload and manage vehicle certificates, permits and records.
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+    .document-upload-page {
+        --doc-primary: #2563eb;
+        --doc-primary-dark: #1d4ed8;
+        --doc-primary-soft: #eff6ff;
+
+        --doc-success: #16a34a;
+        --doc-success-soft: #f0fdf4;
+
+        --doc-warning: #d97706;
+        --doc-warning-soft: #fff7ed;
+
+        --doc-danger: #dc2626;
+        --doc-danger-soft: #fef2f2;
+
+        --doc-purple: #7c3aed;
+        --doc-purple-soft: #f5f3ff;
+
+        --doc-dark: #0f172a;
+        --doc-text: #334155;
+        --doc-muted: #64748b;
+        --doc-border: #e2e8f0;
+        --doc-surface: #ffffff;
+
+        --doc-radius: 18px;
+        --doc-shadow: 0 16px 42px rgba(15, 23, 42, 0.07);
+    }
+
+    .document-upload-page * {
+        box-sizing: border-box;
+    }
+
+    .document-upload-wrapper {
+        width: 100%;
+        max-width: 1180px;
+        margin: 0 auto;
+    }
+
+    /* Breadcrumb */
+
+    .document-breadcrumb {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        margin-bottom: 18px;
+
+        color: var(--doc-muted);
+        font-size: 12px;
+    }
+
+    .document-breadcrumb a {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        color: var(--doc-muted);
+        font-weight: 600;
+        text-decoration: none;
+
+        transition: color 0.2s ease;
+    }
+
+    .document-breadcrumb a:hover {
+        color: var(--doc-primary);
+    }
+
+    .document-breadcrumb > i {
+        color: #94a3b8;
+        font-size: 10px;
+    }
+
+    /* Hero */
+
+    .document-upload-hero {
+        position: relative;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+
+        overflow: hidden;
+
+        margin-bottom: 22px;
+        padding: 28px 30px;
+
+        color: #ffffff;
+
+        background:
+            radial-gradient(
+                circle at 91% 10%,
+                rgba(255, 255, 255, 0.18),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 8% 115%,
+                rgba(124, 58, 237, 0.24),
+                transparent 36%
+            ),
+            linear-gradient(
+                135deg,
+                #0f172a 0%,
+                #1e3a8a 52%,
+                #2563eb 100%
+            );
+
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 22px;
+
+        box-shadow: 0 19px 45px rgba(37, 99, 235, 0.18);
+    }
+
+    .document-upload-hero::after {
+        position: absolute;
+        right: -72px;
+        bottom: -110px;
+
+        width: 255px;
+        height: 255px;
+
+        content: "";
+
+        border: 34px solid rgba(255, 255, 255, 0.055);
+        border-radius: 50%;
+    }
+
+    .document-upload-hero-content {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        max-width: 790px;
+    }
+
+    .document-upload-hero-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 58px;
+        height: 58px;
+
+        color: #ffffff;
+        font-size: 24px;
+
+        background: rgba(255, 255, 255, 0.13);
+        border: 1px solid rgba(255, 255, 255, 0.17);
+        border-radius: 17px;
+
+        backdrop-filter: blur(10px);
+    }
+
+    .document-upload-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+
+        margin-bottom: 8px;
+        padding: 5px 9px;
+
+        color: #dbeafe;
+        font-size: 9px;
+        font-weight: 750;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 30px;
+    }
+
+    .document-upload-eyebrow span {
+        width: 7px;
+        height: 7px;
+
+        background: #4ade80;
+        border-radius: 50%;
+
+        box-shadow: 0 0 0 5px rgba(74, 222, 128, 0.13);
+    }
+
+    .document-upload-hero h2 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: clamp(24px, 4vw, 32px);
+        font-weight: 760;
+        letter-spacing: -0.8px;
+    }
+
+    .document-upload-hero p {
+        max-width: 650px;
+
+        margin: 8px 0 0;
+
+        color: #dbeafe;
+        font-size: 12px;
+        line-height: 1.65;
+    }
+
+    .document-back-button {
+        position: relative;
+        z-index: 2;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        gap: 8px;
+
+        min-height: 44px;
+        padding: 9px 15px;
+
+        color: #1e3a8a;
+        font-size: 11px;
+        font-weight: 700;
+        text-decoration: none;
+
+        background: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        border-radius: 10px;
+
+        box-shadow: 0 9px 20px rgba(15, 23, 42, 0.13);
+
+        transition:
+            color 0.2s ease,
+            background 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .document-back-button:hover {
+        color: var(--doc-primary);
+        background: var(--doc-primary-soft);
+        transform: translateY(-2px);
+    }
+
+    /* Main Layout */
+
+    .document-upload-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 290px;
+        align-items: start;
+        gap: 22px;
+    }
+
+    /* Upload Card */
+
+    .document-upload-card {
+        overflow: hidden;
+
+        background: var(--doc-surface);
+        border: 1px solid var(--doc-border);
+        border-radius: var(--doc-radius);
+
+        box-shadow: var(--doc-shadow);
+    }
+
+    .document-upload-card-header {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+
+        padding: 20px 23px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(239, 246, 255, 0.95),
+                rgba(255, 255, 255, 0.98)
+            );
+
+        border-bottom: 1px solid var(--doc-border);
+    }
+
+    .document-upload-card-header-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 43px;
+        height: 43px;
+
+        color: var(--doc-primary);
+        font-size: 19px;
+
+        background: #ffffff;
+        border: 1px solid #dbeafe;
+        border-radius: 12px;
+
+        box-shadow: 0 7px 17px rgba(37, 99, 235, 0.09);
+    }
+
+    .document-upload-card-header h3 {
+        margin: 0;
+
+        color: var(--doc-dark);
+        font-size: 16px;
+        font-weight: 720;
+    }
+
+    .document-upload-card-header p {
+        margin: 4px 0 0;
+
+        color: var(--doc-muted);
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+    .document-upload-card-body {
+        padding: 24px;
+    }
+
+    /* General Errors */
+
+    .document-general-errors {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+
+        margin-bottom: 22px;
+        padding: 14px 15px;
+
+        color: #991b1b;
+
+        background: var(--doc-danger-soft);
+        border: 1px solid #fecaca;
+        border-radius: 12px;
+    }
+
+    .document-general-errors-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 34px;
+        height: 34px;
+
+        color: var(--doc-danger);
+
+        background: #fee2e2;
+        border-radius: 9px;
+    }
+
+    .document-general-errors strong {
+        display: block;
+
+        margin-bottom: 4px;
+
+        font-size: 11px;
+        font-weight: 750;
+    }
+
+    .document-general-errors ul {
+        margin: 0;
+        padding-left: 17px;
+
+        font-size: 10px;
+        line-height: 1.55;
+    }
+
+    /* Section */
+
+    .document-form-section {
+        margin-bottom: 28px;
+    }
+
+    .document-form-section:last-of-type {
+        margin-bottom: 0;
+    }
+
+    .document-section-heading {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+
+        margin-bottom: 17px;
+        padding-bottom: 12px;
+
+        border-bottom: 1px solid #eef2f7;
+    }
+
+    .document-section-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 37px;
+        height: 37px;
+
+        color: var(--doc-primary);
+        font-size: 15px;
+
+        background: var(--doc-primary-soft);
+        border-radius: 10px;
+    }
+
+    .document-section-heading h4 {
+        margin: 0;
+
+        color: var(--doc-dark);
+        font-size: 13px;
+        font-weight: 720;
+    }
+
+    .document-section-heading p {
+        margin: 3px 0 0;
+
+        color: var(--doc-muted);
+        font-size: 9px;
+        line-height: 1.45;
+    }
+
+    /* Form Fields */
+
+    .document-field {
+        width: 100%;
+    }
+
+    .document-field-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+
+        margin-bottom: 7px;
+
+        color: var(--doc-text);
+        font-size: 11px;
+        font-weight: 680;
+    }
+
+    .document-field-label-text {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .document-required-mark {
+        color: var(--doc-danger);
+    }
+
+    .document-optional-label {
+        color: #94a3b8;
+        font-size: 8px;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+    }
+
+    .document-field input:not([type="file"]):not([type="checkbox"]),
+    .document-field select,
+    .document-field textarea {
+        width: 100%;
+        min-height: 46px;
+
+        padding: 10px 13px;
+
+        color: var(--doc-dark);
+        font-size: 12px;
+
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+
+        outline: none;
+        box-shadow: none;
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            background 0.2s ease;
+    }
+
+    .document-field textarea {
+        min-height: 110px;
+        resize: vertical;
+        line-height: 1.6;
+    }
+
+    .document-field select {
+        cursor: pointer;
+    }
+
+    .document-field input:not([type="file"]):not([type="checkbox"]):hover,
+    .document-field select:hover,
+    .document-field textarea:hover {
+        border-color: #94a3b8;
+    }
+
+    .document-field input:not([type="file"]):not([type="checkbox"]):focus,
+    .document-field select:focus,
+    .document-field textarea:focus {
+        border-color: var(--doc-primary);
+
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+
+    .document-field input::placeholder,
+    .document-field textarea::placeholder {
+        color: #94a3b8;
+    }
+
+    .document-field.has-error input:not([type="file"]),
+    .document-field.has-error select,
+    .document-field.has-error textarea {
+        background: #fffafa;
+        border-color: #f87171;
+    }
+
+    .document-field-help {
+        display: flex;
+        align-items: flex-start;
+        gap: 5px;
+
+        margin-top: 6px;
+
+        color: var(--doc-muted);
+        font-size: 9px;
+        line-height: 1.5;
+    }
+
+    .document-field-help i {
+        margin-top: 1px;
+        color: #94a3b8;
+    }
+
+    .document-field-errors {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        margin-top: 6px;
+    }
+
+    .document-field-error {
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+
+        color: var(--doc-danger);
+        font-size: 9px;
+        font-weight: 650;
+        line-height: 1.45;
+    }
+
+    /* Upload Area */
+
+    .document-file-field input[type="file"] {
+        position: absolute;
+
+        width: 1px;
+        height: 1px;
+
+        overflow: hidden;
+
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .document-drop-zone {
+        position: relative;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+
+        min-height: 235px;
+        padding: 28px;
+
+        text-align: center;
+
+        cursor: pointer;
+
+        background:
+            radial-gradient(
+                circle at top right,
+                rgba(37, 99, 235, 0.06),
+                transparent 32%
+            ),
+            #f8fafc;
+
+        border: 2px dashed #bfdbfe;
+        border-radius: 16px;
+
+        transition:
+            background 0.2s ease,
+            border-color 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .document-drop-zone:hover,
+    .document-drop-zone.dragging {
+        background: var(--doc-primary-soft);
+        border-color: var(--doc-primary);
+
+        transform: translateY(-2px);
+    }
+
+    .document-drop-zone.has-file {
+        background: var(--doc-success-soft);
+        border-color: #86efac;
+    }
+
+    .document-drop-zone.has-error {
+        background: var(--doc-danger-soft);
+        border-color: #f87171;
+    }
+
+    .document-drop-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 66px;
+        height: 66px;
+
+        margin-bottom: 15px;
+
+        color: var(--doc-primary);
+        font-size: 28px;
+
+        background: #ffffff;
+        border: 1px solid #dbeafe;
+        border-radius: 19px;
+
+        box-shadow: 0 9px 22px rgba(37, 99, 235, 0.1);
+    }
+
+    .document-drop-zone.has-file .document-drop-icon {
+        color: var(--doc-success);
+        border-color: #bbf7d0;
+    }
+
+    .document-drop-zone h4 {
+        margin: 0 0 6px;
+
+        color: var(--doc-dark);
+        font-size: 15px;
+        font-weight: 730;
+    }
+
+    .document-drop-zone p {
+        margin: 0;
+
+        color: var(--doc-muted);
+        font-size: 10px;
+        line-height: 1.55;
+    }
+
+    .document-browse-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+
+        margin-top: 14px;
+        padding: 8px 13px;
+
+        color: var(--doc-primary);
+        font-size: 9px;
+        font-weight: 720;
+
+        background: #ffffff;
+        border: 1px solid #bfdbfe;
+        border-radius: 9px;
+    }
+
+    .document-format-list {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 7px;
+
+        margin-top: 15px;
+    }
+
+    .document-format-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+
+        padding: 5px 8px;
+
+        color: #475569;
+        font-size: 7px;
+        font-weight: 720;
+
+        background: #ffffff;
+        border: 1px solid var(--doc-border);
+        border-radius: 20px;
+    }
+
+    /* File Preview */
+
+    .document-file-preview {
+        display: none;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+
+        margin-top: 13px;
+        padding: 13px;
+
+        background: var(--doc-success-soft);
+        border: 1px solid #bbf7d0;
+        border-radius: 12px;
+    }
+
+    .document-file-preview.show {
+        display: flex;
+    }
+
+    .document-file-preview-details {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+
+        min-width: 0;
+    }
+
+    .document-file-preview-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 42px;
+        height: 42px;
+
+        color: var(--doc-success);
+        font-size: 18px;
+
+        background: #ffffff;
+        border: 1px solid #bbf7d0;
+        border-radius: 11px;
+    }
+
+    .document-file-information {
+        min-width: 0;
+    }
+
+    .document-file-information strong {
+        display: block;
+        overflow: hidden;
+
+        max-width: 420px;
+
+        color: var(--doc-dark);
+        font-size: 10px;
+        font-weight: 720;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .document-file-information small {
+        display: block;
+
+        margin-top: 4px;
+
+        color: var(--doc-muted);
+        font-size: 8px;
+    }
+
+    .document-file-remove {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 34px;
+        height: 34px;
+
+        color: var(--doc-danger);
+
+        background: #ffffff;
+        border: 1px solid #fecaca;
+        border-radius: 9px;
+
+        transition:
+            color 0.2s ease,
+            background 0.2s ease;
+    }
+
+    .document-file-remove:hover {
+        color: #ffffff;
+        background: var(--doc-danger);
+    }
+
+    .document-client-error {
+        display: none;
+        align-items: flex-start;
+        gap: 7px;
+
+        margin-top: 9px;
+        padding: 10px 11px;
+
+        color: #991b1b;
+        font-size: 9px;
+        line-height: 1.5;
+
+        background: var(--doc-danger-soft);
+        border: 1px solid #fecaca;
+        border-radius: 9px;
+    }
+
+    .document-client-error.show {
+        display: flex;
+    }
+
+    /* Checkbox */
+
+    .document-checkbox-panel {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+
+        min-height: 76px;
+        padding: 14px 15px;
+
+        background: #f8fafc;
+        border: 1px solid var(--doc-border);
+        border-radius: 12px;
+    }
+
+    .document-checkbox-content {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+    }
+
+    .document-checkbox-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 38px;
+        height: 38px;
+
+        color: var(--doc-primary);
+        font-size: 16px;
+
+        background: var(--doc-primary-soft);
+        border-radius: 10px;
+    }
+
+    .document-checkbox-content strong {
+        display: block;
+
+        color: var(--doc-dark);
+        font-size: 10px;
+    }
+
+    .document-checkbox-content small {
+        display: block;
+
+        margin-top: 3px;
+
+        color: var(--doc-muted);
+        font-size: 8px;
+        line-height: 1.4;
+    }
+
+    .document-checkbox-control input[type="checkbox"] {
+        width: 42px;
+        height: 22px;
+
+        margin: 0;
+
+        cursor: pointer;
+        accent-color: var(--doc-primary);
+    }
+
+    /* Footer */
+
+    .document-form-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+
+        margin-top: 29px;
+        padding-top: 20px;
+
+        border-top: 1px solid #eef2f7;
+    }
+
+    .document-form-footer-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 7px;
+
+        color: var(--doc-muted);
+        font-size: 9px;
+        line-height: 1.5;
+    }
+
+    .document-form-footer-note i {
+        margin-top: 1px;
+        color: var(--doc-primary);
+    }
+
+    .document-form-actions {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+    .document-cancel-button,
+    .document-upload-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+
+        min-height: 42px;
+        padding: 9px 15px;
+
+        font-size: 11px;
+        font-weight: 700;
+        text-decoration: none;
+
+        border-radius: 10px;
+
+        transition:
+            color 0.2s ease,
+            background 0.2s ease,
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .document-cancel-button {
+        color: #475569;
+
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+    }
+
+    .document-cancel-button:hover {
+        color: var(--doc-dark);
+
+        background: #f8fafc;
+        border-color: #94a3b8;
+
+        transform: translateY(-1px);
+    }
+
+    .document-upload-button {
+        color: #ffffff;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--doc-primary),
+                var(--doc-primary-dark)
+            );
+
+        border: 1px solid var(--doc-primary);
+
+        box-shadow: 0 8px 18px rgba(37, 99, 235, 0.2);
+    }
+
+    .document-upload-button:hover {
+        color: #ffffff;
+
+        background:
+            linear-gradient(
+                135deg,
+                #1d4ed8,
+                #1e40af
+            );
+
+        box-shadow: 0 11px 23px rgba(37, 99, 235, 0.26);
+
+        transform: translateY(-2px);
+    }
+
+    .document-upload-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.7;
+        transform: none;
+    }
+
+    /* Sidebar */
+
+    .document-upload-sidebar {
+        position: sticky;
+        top: 115px;
+
+        overflow: hidden;
+
+        background: #ffffff;
+        border: 1px solid var(--doc-border);
+        border-radius: var(--doc-radius);
+
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
+    }
+
+    .document-sidebar-header {
+        padding: 20px;
+
+        color: #ffffff;
+
+        background:
+            radial-gradient(
+                circle at top right,
+                rgba(255, 255, 255, 0.15),
+                transparent 35%
+            ),
+            linear-gradient(
+                135deg,
+                #0f172a,
+                #1e3a8a
+            );
+    }
+
+    .document-sidebar-header-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 42px;
+        height: 42px;
+
+        margin-bottom: 13px;
+
+        color: #ffffff;
+        font-size: 18px;
+
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+    }
+
+    .document-sidebar-header h4 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 720;
+    }
+
+    .document-sidebar-header p {
+        margin: 6px 0 0;
+
+        color: #cbd5e1;
+        font-size: 9px;
+        line-height: 1.55;
+    }
+
+    .document-sidebar-body {
+        padding: 18px;
+    }
+
+    .document-guide-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+
+        margin: 0;
+        padding: 0;
+
+        list-style: none;
+    }
+
+    .document-guide-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .document-guide-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 31px;
+        height: 31px;
+
+        color: var(--doc-primary);
+        font-size: 13px;
+
+        background: var(--doc-primary-soft);
+        border-radius: 9px;
+    }
+
+    .document-guide-list strong {
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: var(--doc-dark);
+        font-size: 10px;
+        font-weight: 720;
+    }
+
+    .document-guide-list p {
+        margin: 0;
+
+        color: var(--doc-muted);
+        font-size: 8px;
+        line-height: 1.5;
+    }
+
+    .document-security-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+
+        margin-top: 17px;
+        padding: 11px;
+
+        color: #166534;
+        font-size: 8px;
+        line-height: 1.5;
+
+        background: var(--doc-success-soft);
+        border: 1px solid #bbf7d0;
+        border-radius: 10px;
+    }
+
+    .document-security-note i {
+        margin-top: 1px;
+
+        color: var(--doc-success);
+        font-size: 12px;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 991.98px) {
+        .document-upload-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .document-upload-sidebar {
+            position: static;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .document-upload-hero {
+            align-items: stretch;
+            flex-direction: column;
+
+            padding: 23px;
+        }
+
+        .document-back-button {
+            width: 100%;
+        }
+
+        .document-upload-card-body {
+            padding: 20px;
+        }
+
+        .document-form-footer {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .document-form-footer-note {
+            justify-content: center;
+            text-align: center;
+        }
+
+        .document-form-actions {
+            width: 100%;
+        }
+
+        .document-cancel-button,
+        .document-upload-button {
+            flex: 1;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .document-upload-hero {
+            padding: 20px;
+            border-radius: 17px;
+        }
+
+        .document-upload-hero-content {
+            align-items: flex-start;
+        }
+
+        .document-upload-hero-icon {
+            width: 47px;
+            height: 47px;
+
+            font-size: 20px;
+        }
+
+        .document-upload-card,
+        .document-upload-sidebar {
+            border-radius: 15px;
+        }
+
+        .document-upload-card-header,
+        .document-upload-card-body {
+            padding: 17px;
+        }
+
+        .document-drop-zone {
+            min-height: 210px;
+            padding: 22px 16px;
+        }
+
+        .document-form-actions {
+            flex-direction: column-reverse;
+        }
+
+        .document-cancel-button,
+        .document-upload-button {
+            width: 100%;
+        }
+
+        .document-file-preview {
+            align-items: flex-start;
+        }
+
+        .document-file-information strong {
+            max-width: 190px;
+        }
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="document-upload-page">
+
+    <div class="document-upload-wrapper">
+
+        <!-- Breadcrumb -->
+        <nav class="document-breadcrumb">
+
+            <a href="{% url 'documents:document_list' %}">
+                <i class="bi bi-folder2-open"></i>
+                Vehicle Documents
+            </a>
+
+            <i class="bi bi-chevron-right"></i>
+
+            <span>Upload Document</span>
+
+        </nav>
+
+        <!-- Hero -->
+        <section class="document-upload-hero">
+
+            <div class="document-upload-hero-content">
+
+                <div class="document-upload-hero-icon">
+                    <i class="bi bi-cloud-arrow-up-fill"></i>
+                </div>
+
+                <div>
+
+                    <div class="document-upload-eyebrow">
+                        <span></span>
+                        Vehicle Document Management
+                    </div>
+
+                    <h2>Upload Vehicle Document</h2>
+
+                    <p>
+                        Upload vehicle registration certificates, insurance,
+                        permits, fitness records and other operational documents
+                        to the secure TransitOps document library.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <a
+                href="{% url 'documents:document_list' %}"
+                class="document-back-button"
+            >
+                <i class="bi bi-arrow-left"></i>
+                Back to Documents
+            </a>
+
+        </section>
+
+        <div class="document-upload-grid">
+
+            <!-- Upload Form -->
+            <section class="document-upload-card">
+
+                <header class="document-upload-card-header">
+
+                    <div class="document-upload-card-header-icon">
+                        <i class="bi bi-file-earmark-arrow-up-fill"></i>
+                    </div>
+
+                    <div>
+
+                        <h3>Document Information</h3>
+
+                        <p>
+                            Select the vehicle, document category and file
+                            before submitting.
+                        </p>
+
+                    </div>
+
+                </header>
+
+                <div class="document-upload-card-body">
+
+                    <form
+                        method="post"
+                        enctype="multipart/form-data"
+                        id="vehicleDocumentForm"
+                        novalidate
+                    >
+                        {% csrf_token %}
+
+                        {% for hidden_field in form.hidden_fields %}
+                            {{ hidden_field }}
+                        {% endfor %}
+
+                        <!-- Non-field Errors -->
+                        {% if form.non_field_errors %}
+
+                            <div class="document-general-errors">
+
+                                <div class="document-general-errors-icon">
+                                    <i class="bi bi-exclamation-octagon-fill"></i>
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        Please correct the following errors
+                                    </strong>
+
+                                    <ul>
+
+                                        {% for error in form.non_field_errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+
+                                    </ul>
+
+                                </div>
+
+                            </div>
+
+                        {% endif %}
+
+                        <!-- Document Details -->
+                        <section class="document-form-section">
+
+                            <div class="document-section-heading">
+
+                                <div class="document-section-icon">
+                                    <i class="bi bi-card-checklist"></i>
+                                </div>
+
+                                <div>
+
+                                    <h4>Document Details</h4>
+
+                                    <p>
+                                        Enter the vehicle and document information.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            <div class="row g-3">
+
+                                {% for field in form.visible_fields %}
+
+                                    {% if field.field.widget.input_type != "file" %}
+
+                                        <div
+                                            class="
+                                                {% if field.name == 'description' or field.name == 'notes' or field.name == 'remarks' %}
+                                                    col-12
+                                                {% else %}
+                                                    col-md-6
+                                                {% endif %}
+                                            "
+                                        >
+
+                                            <div
+                                                class="
+                                                    document-field
+
+                                                    {% if field.errors %}
+                                                        has-error
+                                                    {% endif %}
+                                                "
+                                            >
+
+                                                {% if field.field.widget.input_type == "checkbox" %}
+
+                                                    <div class="document-checkbox-panel">
+
+                                                        <div class="document-checkbox-content">
+
+                                                            <div class="document-checkbox-icon">
+                                                                <i class="bi bi-toggle-on"></i>
+                                                            </div>
+
+                                                            <div>
+
+                                                                <strong>
+                                                                    {{ field.label }}
+                                                                </strong>
+
+                                                                <small>
+
+                                                                    {% if field.help_text %}
+                                                                        {{ field.help_text }}
+                                                                    {% else %}
+                                                                        Enable or disable this option.
+                                                                    {% endif %}
+
+                                                                </small>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="document-checkbox-control">
+                                                            {{ field }}
+                                                        </div>
+
+                                                    </div>
+
+                                                {% else %}
+
+                                                    <label
+                                                        for="{{ field.id_for_label }}"
+                                                        class="document-field-label"
+                                                    >
+
+                                                        <span class="document-field-label-text">
+
+                                                            {{ field.label }}
+
+                                                            {% if field.field.required %}
+                                                                <span class="document-required-mark">*</span>
+                                                            {% endif %}
+
+                                                        </span>
+
+                                                        {% if not field.field.required %}
+
+                                                            <span class="document-optional-label">
+                                                                Optional
+                                                            </span>
+
+                                                        {% endif %}
+
+                                                    </label>
+
+                                                    {{ field }}
+
+                                                    {% if field.help_text %}
+
+                                                        <div class="document-field-help">
+
+                                                            <i class="bi bi-info-circle"></i>
+
+                                                            <span>
+                                                                {{ field.help_text }}
+                                                            </span>
+
+                                                        </div>
+
+                                                    {% elif field.name == "vehicle" %}
+
+                                                        <div class="document-field-help">
+
+                                                            <i class="bi bi-truck-front-fill"></i>
+
+                                                            <span>
+                                                                Select the vehicle connected
+                                                                to this document.
+                                                            </span>
+
+                                                        </div>
+
+                                                    {% elif field.name == "document_type" or field.name == "document_category" %}
+
+                                                        <div class="document-field-help">
+
+                                                            <i class="bi bi-file-earmark-text"></i>
+
+                                                            <span>
+                                                                Choose the correct document
+                                                                type for reporting and reminders.
+                                                            </span>
+
+                                                        </div>
+
+                                                    {% elif field.name == "expiry_date" %}
+
+                                                        <div class="document-field-help">
+
+                                                            <i class="bi bi-calendar-event"></i>
+
+                                                            <span>
+                                                                Add the expiry date to enable
+                                                                renewal tracking.
+                                                            </span>
+
+                                                        </div>
+
+                                                    {% endif %}
+
+                                                {% endif %}
+
+                                                {% if field.errors %}
+
+                                                    <div class="document-field-errors">
+
+                                                        {% for error in field.errors %}
+
+                                                            <div class="document-field-error">
+                                                                <i class="bi bi-exclamation-circle-fill"></i>
+                                                                <span>{{ error }}</span>
+                                                            </div>
+
+                                                        {% endfor %}
+
+                                                    </div>
+
+                                                {% endif %}
+
+                                            </div>
+
+                                        </div>
+
+                                    {% endif %}
+
+                                {% endfor %}
+
+                            </div>
+
+                        </section>
+
+                        <!-- File Upload -->
+                        <section class="document-form-section">
+
+                            <div class="document-section-heading">
+
+                                <div class="document-section-icon">
+                                    <i class="bi bi-cloud-upload-fill"></i>
+                                </div>
+
+                                <div>
+
+                                    <h4>Select Document File</h4>
+
+                                    <p>
+                                        Upload one supported document with a
+                                        maximum size of 5 MB.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            {% for field in form.visible_fields %}
+
+                                {% if field.field.widget.input_type == "file" %}
+
+                                    <div
+                                        class="
+                                            document-field
+                                            document-file-field
+
+                                            {% if field.errors %}
+                                                has-error
+                                            {% endif %}
+                                        "
+                                    >
+
+                                        <label
+                                            for="{{ field.id_for_label }}"
+                                            class="document-field-label"
+                                        >
+
+                                            <span class="document-field-label-text">
+
+                                                {{ field.label }}
+
+                                                {% if field.field.required %}
+                                                    <span class="document-required-mark">*</span>
+                                                {% endif %}
+
+                                            </span>
+
+                                        </label>
+
+                                        <div id="nativeDocumentFileInput">
+                                            {{ field }}
+                                        </div>
+
+                                        <div
+                                            class="
+                                                document-drop-zone
+
+                                                {% if field.errors %}
+                                                    has-error
+                                                {% endif %}
+                                            "
+                                            id="documentDropZone"
+                                            tabindex="0"
+                                            role="button"
+                                            aria-label="Choose or drop a vehicle document"
+                                        >
+
+                                            <div class="document-drop-icon">
+                                                <i
+                                                    class="bi bi-cloud-arrow-up-fill"
+                                                    id="documentDropIcon"
+                                                ></i>
+                                            </div>
+
+                                            <h4 id="documentDropTitle">
+                                                Drag and drop your document here
+                                            </h4>
+
+                                            <p id="documentDropDescription">
+                                                Drop a file inside this area or
+                                                select it from your device.
+                                            </p>
+
+                                            <span class="document-browse-button">
+                                                <i class="bi bi-folder2-open"></i>
+                                                Browse Document
+                                            </span>
+
+                                            <div class="document-format-list">
+
+                                                <span class="document-format-badge">
+                                                    <i class="bi bi-file-earmark-pdf"></i>
+                                                    PDF
+                                                </span>
+
+                                                <span class="document-format-badge">
+                                                    <i class="bi bi-file-earmark-image"></i>
+                                                    JPG
+                                                </span>
+
+                                                <span class="document-format-badge">
+                                                    <i class="bi bi-file-earmark-image"></i>
+                                                    JPEG
+                                                </span>
+
+                                                <span class="document-format-badge">
+                                                    <i class="bi bi-file-earmark-image"></i>
+                                                    PNG
+                                                </span>
+
+                                                <span class="document-format-badge">
+                                                    <i class="bi bi-hdd"></i>
+                                                    Maximum 5 MB
+                                                </span>
+
+                                            </div>
+
+                                        </div>
+
+                                        <!-- Selected File Preview -->
+                                        <div
+                                            class="document-file-preview"
+                                            id="documentFilePreview"
+                                        >
+
+                                            <div class="document-file-preview-details">
+
+                                                <div class="document-file-preview-icon">
+                                                    <i
+                                                        class="bi bi-file-earmark-check-fill"
+                                                        id="selectedFileIcon"
+                                                    ></i>
+                                                </div>
+
+                                                <div class="document-file-information">
+
+                                                    <strong id="selectedFileName">
+                                                        Selected document
+                                                    </strong>
+
+                                                    <small id="selectedFileDetails">
+                                                        File information
+                                                    </small>
+
+                                                </div>
+
+                                            </div>
+
+                                            <button
+                                                type="button"
+                                                class="document-file-remove"
+                                                id="removeSelectedFile"
+                                                aria-label="Remove selected file"
+                                                title="Remove selected file"
+                                            >
+                                                <i class="bi bi-x-lg"></i>
+                                            </button>
+
+                                        </div>
+
+                                        <!-- Client Validation Error -->
+                                        <div
+                                            class="document-client-error"
+                                            id="documentClientError"
+                                        >
+
+                                            <i class="bi bi-exclamation-circle-fill"></i>
+
+                                            <span id="documentClientErrorText">
+                                                Invalid file.
+                                            </span>
+
+                                        </div>
+
+                                        {% if field.help_text %}
+
+                                            <div class="document-field-help">
+
+                                                <i class="bi bi-info-circle"></i>
+
+                                                <span>
+                                                    {{ field.help_text }}
+                                                </span>
+
+                                            </div>
+
+                                        {% endif %}
+
+                                        {% if field.errors %}
+
+                                            <div class="document-field-errors">
+
+                                                {% for error in field.errors %}
+
+                                                    <div class="document-field-error">
+                                                        <i class="bi bi-exclamation-circle-fill"></i>
+                                                        <span>{{ error }}</span>
+                                                    </div>
+
+                                                {% endfor %}
+
+                                            </div>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </section>
+
+                        <!-- Actions -->
+                        <footer class="document-form-footer">
+
+                            <div class="document-form-footer-note">
+
+                                <i class="bi bi-shield-check"></i>
+
+                                <span>
+                                    Verify the vehicle, document type,
+                                    expiry date and selected file before uploading.
+                                </span>
+
+                            </div>
+
+                            <div class="document-form-actions">
+
+                                <a
+                                    href="{% url 'documents:document_list' %}"
+                                    class="document-cancel-button"
+                                >
+                                    <i class="bi bi-x-lg"></i>
+                                    Cancel
+                                </a>
+
+                                <button
+                                    type="submit"
+                                    class="document-upload-button"
+                                    id="documentUploadButton"
+                                >
+                                    <i class="bi bi-cloud-arrow-up-fill"></i>
+
+                                    <span>
+                                        Upload Document
+                                    </span>
+                                </button>
+
+                            </div>
+
+                        </footer>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+            <!-- Sidebar -->
+            <aside class="document-upload-sidebar">
+
+                <header class="document-sidebar-header">
+
+                    <div class="document-sidebar-header-icon">
+                        <i class="bi bi-info-circle-fill"></i>
+                    </div>
+
+                    <h4>Upload Guidelines</h4>
+
+                    <p>
+                        Follow these recommendations to keep vehicle
+                        documents organised and valid.
+                    </p>
+
+                </header>
+
+                <div class="document-sidebar-body">
+
+                    <ul class="document-guide-list">
+
+                        <li>
+
+                            <span class="document-guide-icon">
+                                <i class="bi bi-file-earmark-check"></i>
+                            </span>
+
+                            <div>
+
+                                <strong>Supported Files</strong>
+
+                                <p>
+                                    Upload PDF, JPG, JPEG or PNG documents only.
+                                </p>
+
+                            </div>
+
+                        </li>
+
+                        <li>
+
+                            <span class="document-guide-icon">
+                                <i class="bi bi-hdd"></i>
+                            </span>
+
+                            <div>
+
+                                <strong>Maximum File Size</strong>
+
+                                <p>
+                                    Each uploaded document must be 5 MB or smaller.
+                                </p>
+
+                            </div>
+
+                        </li>
+
+                        <li>
+
+                            <span class="document-guide-icon">
+                                <i class="bi bi-truck-front"></i>
+                            </span>
+
+                            <div>
+
+                                <strong>Correct Vehicle</strong>
+
+                                <p>
+                                    Confirm that the document belongs to the
+                                    selected vehicle.
+                                </p>
+
+                            </div>
+
+                        </li>
+
+                        <li>
+
+                            <span class="document-guide-icon">
+                                <i class="bi bi-calendar-check"></i>
+                            </span>
+
+                            <div>
+
+                                <strong>Expiry Information</strong>
+
+                                <p>
+                                    Add the correct expiry date for insurance,
+                                    permits and certificates.
+                                </p>
+
+                            </div>
+
+                        </li>
+
+                        <li>
+
+                            <span class="document-guide-icon">
+                                <i class="bi bi-eye"></i>
+                            </span>
+
+                            <div>
+
+                                <strong>Readable Document</strong>
+
+                                <p>
+                                    Ensure the file is clear, complete and
+                                    easy to read.
+                                </p>
+
+                            </div>
+
+                        </li>
+
+                    </ul>
+
+                    <div class="document-security-note">
+
+                        <i class="bi bi-shield-lock-fill"></i>
+
+                        <span>
+                            Vehicle documents are stored for authorised
+                            TransitOps users and operational compliance.
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const documentForm = document.getElementById(
+            "vehicleDocumentForm"
+        );
+
+        const uploadButton = document.getElementById(
+            "documentUploadButton"
+        );
+
+        const fileInput = document.querySelector(
+            '#vehicleDocumentForm input[type="file"]'
+        );
+
+        const dropZone = document.getElementById(
+            "documentDropZone"
+        );
+
+        const dropIcon = document.getElementById(
+            "documentDropIcon"
+        );
+
+        const dropTitle = document.getElementById(
+            "documentDropTitle"
+        );
+
+        const dropDescription = document.getElementById(
+            "documentDropDescription"
+        );
+
+        const filePreview = document.getElementById(
+            "documentFilePreview"
+        );
+
+        const selectedFileName = document.getElementById(
+            "selectedFileName"
+        );
+
+        const selectedFileDetails = document.getElementById(
+            "selectedFileDetails"
+        );
+
+        const selectedFileIcon = document.getElementById(
+            "selectedFileIcon"
+        );
+
+        const removeFileButton = document.getElementById(
+            "removeSelectedFile"
+        );
+
+        const clientError = document.getElementById(
+            "documentClientError"
+        );
+
+        const clientErrorText = document.getElementById(
+            "documentClientErrorText"
+        );
+
+        const maximumFileSize = 5 * 1024 * 1024;
+
+        const allowedExtensions = [
+            "pdf",
+            "jpg",
+            "jpeg",
+            "png"
+        ];
+
+        const allowedMimeTypes = [
+            "application/pdf",
+            "image/jpeg",
+            "image/png"
+        ];
+
+        /*
+         * Add useful field placeholders and attributes.
+         */
+
+        const expiryDateInput = document.querySelector(
+            '[name="expiry_date"]'
+        );
+
+        const issueDateInput = document.querySelector(
+            '[name="issue_date"]'
+        );
+
+        const documentNumberInput = document.querySelector(
+            '[name="document_number"]'
+        );
+
+        const notesInput = document.querySelector(
+            '[name="notes"]'
+        );
+
+        if (expiryDateInput) {
+            expiryDateInput.setAttribute(
+                "min",
+                new Date().toISOString().split("T")[0]
+            );
+        }
+
+        if (issueDateInput) {
+            issueDateInput.setAttribute(
+                "max",
+                new Date().toISOString().split("T")[0]
+            );
+        }
+
+        if (documentNumberInput) {
+            documentNumberInput.placeholder =
+                "Enter certificate or document number";
+        }
+
+        if (notesInput) {
+            notesInput.placeholder =
+                "Add any additional document information...";
+        }
+
+        /*
+         * File formatting.
+         */
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) {
+                return "0 Bytes";
+            }
+
+            const units = [
+                "Bytes",
+                "KB",
+                "MB",
+                "GB"
+            ];
+
+            const unitIndex = Math.floor(
+                Math.log(bytes) / Math.log(1024)
+            );
+
+            return (
+                parseFloat(
+                    (
+                        bytes /
+                        Math.pow(1024, unitIndex)
+                    ).toFixed(2)
+                ) +
+                " " +
+                units[unitIndex]
+            );
+        }
+
+        function getFileExtension(fileName) {
+            return fileName
+                .split(".")
+                .pop()
+                .toLowerCase();
+        }
+
+        function hideClientError() {
+            if (clientError) {
+                clientError.classList.remove("show");
+            }
+
+            if (dropZone) {
+                dropZone.classList.remove("has-error");
+            }
+        }
+
+        function showClientError(message) {
+            if (clientErrorText) {
+                clientErrorText.textContent = message;
+            }
+
+            if (clientError) {
+                clientError.classList.add("show");
+            }
+
+            if (dropZone) {
+                dropZone.classList.add("has-error");
+                dropZone.classList.remove("has-file");
+            }
+        }
+
+        function resetFileSelection() {
+            if (fileInput) {
+                fileInput.value = "";
+            }
+
+            if (filePreview) {
+                filePreview.classList.remove("show");
+            }
+
+            if (dropZone) {
+                dropZone.classList.remove(
+                    "has-file",
+                    "has-error"
+                );
+            }
+
+            if (dropIcon) {
+                dropIcon.className =
+                    "bi bi-cloud-arrow-up-fill";
+            }
+
+            if (dropTitle) {
+                dropTitle.textContent =
+                    "Drag and drop your document here";
+            }
+
+            if (dropDescription) {
+                dropDescription.textContent =
+                    "Drop a file inside this area or select it from your device.";
+            }
+
+            hideClientError();
+        }
+
+        function validateFile(file) {
+            if (!file) {
+                return false;
+            }
+
+            const extension = getFileExtension(
+                file.name
+            );
+
+            const validExtension =
+                allowedExtensions.includes(extension);
+
+            const validMimeType =
+                !file.type ||
+                allowedMimeTypes.includes(file.type);
+
+            if (!validExtension || !validMimeType) {
+                showClientError(
+                    "Unsupported file format. Please upload a PDF, JPG, JPEG or PNG file."
+                );
+
+                return false;
+            }
+
+            if (file.size > maximumFileSize) {
+                showClientError(
+                    "The selected file is larger than 5 MB. Please choose a smaller document."
+                );
+
+                return false;
+            }
+
+            if (file.size === 0) {
+                showClientError(
+                    "The selected file is empty. Please choose a valid document."
+                );
+
+                return false;
+            }
+
+            hideClientError();
+
+            return true;
+        }
+
+        function displaySelectedFile(file) {
+            if (!validateFile(file)) {
+                if (fileInput) {
+                    fileInput.value = "";
+                }
+
+                if (filePreview) {
+                    filePreview.classList.remove("show");
+                }
+
+                return;
+            }
+
+            const extension = getFileExtension(
+                file.name
+            );
+
+            if (selectedFileName) {
+                selectedFileName.textContent =
+                    file.name;
+            }
+
+            if (selectedFileDetails) {
+                selectedFileDetails.textContent =
+                    extension.toUpperCase() +
+                    " • " +
+                    formatFileSize(file.size);
+            }
+
+            if (selectedFileIcon) {
+                selectedFileIcon.className =
+                    extension === "pdf"
+                        ? "bi bi-file-earmark-pdf-fill"
+                        : "bi bi-file-earmark-image-fill";
+            }
+
+            if (filePreview) {
+                filePreview.classList.add("show");
+            }
+
+            if (dropZone) {
+                dropZone.classList.add("has-file");
+                dropZone.classList.remove("has-error");
+            }
+
+            if (dropIcon) {
+                dropIcon.className =
+                    "bi bi-check-circle-fill";
+            }
+
+            if (dropTitle) {
+                dropTitle.textContent =
+                    "Document selected successfully";
+            }
+
+            if (dropDescription) {
+                dropDescription.textContent =
+                    "Choose another file to replace the current selection.";
+            }
+        }
+
+        /*
+         * Open file chooser.
+         */
+
+        if (dropZone && fileInput) {
+            dropZone.addEventListener(
+                "click",
+                function () {
+                    fileInput.click();
+                }
+            );
+
+            dropZone.addEventListener(
+                "keydown",
+                function (event) {
+                    if (
+                        event.key === "Enter" ||
+                        event.key === " "
+                    ) {
+                        event.preventDefault();
+                        fileInput.click();
+                    }
+                }
+            );
+        }
+
+        /*
+         * File input change.
+         */
+
+        if (fileInput) {
+            fileInput.setAttribute(
+                "accept",
+                ".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
+            );
+
+            fileInput.addEventListener(
+                "change",
+                function () {
+                    const selectedFile =
+                        fileInput.files &&
+                        fileInput.files.length
+                            ? fileInput.files[0]
+                            : null;
+
+                    if (selectedFile) {
+                        displaySelectedFile(
+                            selectedFile
+                        );
+                    } else {
+                        resetFileSelection();
+                    }
+                }
+            );
+        }
+
+        /*
+         * Drag and drop handling.
+         */
+
+        if (dropZone && fileInput) {
+            [
+                "dragenter",
+                "dragover"
+            ].forEach(function (eventName) {
+                dropZone.addEventListener(
+                    eventName,
+                    function (event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                        dropZone.classList.add(
+                            "dragging"
+                        );
+                    }
+                );
+            });
+
+            [
+                "dragleave",
+                "drop"
+            ].forEach(function (eventName) {
+                dropZone.addEventListener(
+                    eventName,
+                    function (event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                        dropZone.classList.remove(
+                            "dragging"
+                        );
+                    }
+                );
+            });
+
+            dropZone.addEventListener(
+                "drop",
+                function (event) {
+                    const droppedFiles =
+                        event.dataTransfer.files;
+
+                    if (
+                        !droppedFiles ||
+                        !droppedFiles.length
+                    ) {
+                        return;
+                    }
+
+                    const droppedFile =
+                        droppedFiles[0];
+
+                    if (!validateFile(droppedFile)) {
+                        return;
+                    }
+
+                    try {
+                        const fileTransfer =
+                            new DataTransfer();
+
+                        fileTransfer.items.add(
+                            droppedFile
+                        );
+
+                        fileInput.files =
+                            fileTransfer.files;
+
+                        displaySelectedFile(
+                            droppedFile
+                        );
+                    } catch (error) {
+                        fileInput.click();
+                    }
+                }
+            );
+        }
+
+        /*
+         * Remove selected file.
+         */
+
+        if (removeFileButton) {
+            removeFileButton.addEventListener(
+                "click",
+                function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    resetFileSelection();
+                }
+            );
+        }
+
+        /*
+         * Validate before submission and prevent duplicate uploads.
+         */
+
+        if (documentForm && uploadButton) {
+            documentForm.addEventListener(
+                "submit",
+                function (event) {
+                    if (
+                        fileInput &&
+                        fileInput.required &&
+                        (
+                            !fileInput.files ||
+                            !fileInput.files.length
+                        )
+                    ) {
+                        event.preventDefault();
+
+                        showClientError(
+                            "Please select a document before uploading."
+                        );
+
+                        if (dropZone) {
+                            dropZone.focus();
+                        }
+
+                        return;
+                    }
+
+                    if (
+                        fileInput &&
+                        fileInput.files &&
+                        fileInput.files.length &&
+                        !validateFile(fileInput.files[0])
+                    ) {
+                        event.preventDefault();
+                        return;
+                    }
+
+                    uploadButton.disabled = true;
+
+                    uploadButton.innerHTML = `
+                        <span
+                            class="spinner-border spinner-border-sm"
+                            aria-hidden="true"
+                        ></span>
+
+                        <span>Uploading Document...</span>
+                    `;
+                }
+            );
+        }
+    });
+</script>
+
+{% endblock %}

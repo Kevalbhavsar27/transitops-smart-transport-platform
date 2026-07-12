@@ -12,492 +12,2495 @@ Trip Management
 Create, dispatch, complete and monitor transport trips.
 {% endblock %}
 
+{% block extra_css %}
+
+<style>
+    .trip-list-page {
+        --tl-primary: #2563eb;
+        --tl-primary-dark: #1d4ed8;
+        --tl-primary-soft: #eff6ff;
+
+        --tl-success: #16a34a;
+        --tl-success-soft: #f0fdf4;
+
+        --tl-warning: #d97706;
+        --tl-warning-soft: #fff7ed;
+
+        --tl-danger: #dc2626;
+        --tl-danger-soft: #fef2f2;
+
+        --tl-purple: #7c3aed;
+        --tl-purple-soft: #f5f3ff;
+
+        --tl-cyan: #0891b2;
+        --tl-cyan-soft: #ecfeff;
+
+        --tl-grey: #64748b;
+        --tl-grey-soft: #f1f5f9;
+
+        --tl-dark: #0f172a;
+        --tl-text: #334155;
+        --tl-muted: #64748b;
+        --tl-border: #e2e8f0;
+        --tl-surface: #ffffff;
+
+        --tl-radius: 18px;
+        --tl-shadow: 0 14px 38px rgba(15, 23, 42, 0.07);
+    }
+
+    .trip-list-page * {
+        box-sizing: border-box;
+    }
+
+    .trip-list-wrapper {
+        width: 100%;
+        max-width: 1500px;
+        margin: 0 auto;
+    }
+
+    /* Breadcrumb */
+
+    .trip-list-breadcrumb {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        margin-bottom: 18px;
+
+        color: var(--tl-muted);
+        font-size: 12px;
+    }
+
+    .trip-list-breadcrumb a {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        color: var(--tl-muted);
+        font-weight: 600;
+        text-decoration: none;
+
+        transition: color 0.2s ease;
+    }
+
+    .trip-list-breadcrumb a:hover {
+        color: var(--tl-primary);
+    }
+
+    .trip-list-breadcrumb > i {
+        color: #94a3b8;
+        font-size: 10px;
+    }
+
+    /* Hero */
+
+    .trip-list-hero {
+        position: relative;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 28px;
+
+        overflow: hidden;
+
+        margin-bottom: 22px;
+        padding: 29px 31px;
+
+        color: #ffffff;
+
+        background:
+            radial-gradient(
+                circle at 91% 10%,
+                rgba(255, 255, 255, 0.18),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 8% 115%,
+                rgba(14, 165, 233, 0.25),
+                transparent 36%
+            ),
+            linear-gradient(
+                135deg,
+                #0f172a 0%,
+                #1e3a8a 52%,
+                #2563eb 100%
+            );
+
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 22px;
+
+        box-shadow: 0 19px 45px rgba(37, 99, 235, 0.18);
+    }
+
+    .trip-list-hero::after {
+        position: absolute;
+        right: -72px;
+        bottom: -110px;
+
+        width: 255px;
+        height: 255px;
+
+        content: "";
+
+        border: 34px solid rgba(255, 255, 255, 0.055);
+        border-radius: 50%;
+    }
+
+    .trip-list-hero-content {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        gap: 17px;
+
+        max-width: 800px;
+    }
+
+    .trip-list-hero-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 58px;
+        height: 58px;
+
+        color: #ffffff;
+        font-size: 24px;
+
+        background: rgba(255, 255, 255, 0.13);
+        border: 1px solid rgba(255, 255, 255, 0.17);
+        border-radius: 17px;
+
+        backdrop-filter: blur(10px);
+    }
+
+    .trip-list-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+
+        margin-bottom: 8px;
+        padding: 5px 9px;
+
+        color: #dbeafe;
+        font-size: 9px;
+        font-weight: 750;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 30px;
+    }
+
+    .trip-list-eyebrow span {
+        width: 7px;
+        height: 7px;
+
+        background: #4ade80;
+        border-radius: 50%;
+
+        box-shadow: 0 0 0 5px rgba(74, 222, 128, 0.13);
+    }
+
+    .trip-list-hero h2 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: clamp(24px, 4vw, 32px);
+        font-weight: 760;
+        letter-spacing: -0.8px;
+    }
+
+    .trip-list-hero p {
+        max-width: 650px;
+
+        margin: 8px 0 0;
+
+        color: #dbeafe;
+        font-size: 12px;
+        line-height: 1.65;
+    }
+
+    .trip-create-button {
+        position: relative;
+        z-index: 2;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        gap: 9px;
+
+        min-height: 45px;
+        padding: 10px 17px;
+
+        color: #1e3a8a;
+        font-size: 11px;
+        font-weight: 720;
+        text-decoration: none;
+
+        background: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        border-radius: 11px;
+
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.15);
+
+        transition:
+            color 0.2s ease,
+            background 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .trip-create-button:hover {
+        color: var(--tl-primary);
+
+        background: var(--tl-primary-soft);
+
+        box-shadow: 0 14px 28px rgba(15, 23, 42, 0.2);
+
+        transform: translateY(-2px);
+    }
+
+    /* Statistics */
+
+    .trip-statistics-grid {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 14px;
+
+        margin-bottom: 22px;
+    }
+
+    .trip-stat-card {
+        position: relative;
+
+        overflow: hidden;
+
+        min-height: 115px;
+        padding: 16px;
+
+        background: #ffffff;
+        border: 1px solid var(--tl-border);
+        border-radius: 15px;
+
+        box-shadow: 0 7px 22px rgba(15, 23, 42, 0.045);
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .trip-stat-card:hover {
+        border-color: #bfdbfe;
+
+        box-shadow: 0 12px 27px rgba(15, 23, 42, 0.07);
+
+        transform: translateY(-3px);
+    }
+
+    .trip-stat-card::after {
+        position: absolute;
+        right: -25px;
+        bottom: -38px;
+
+        width: 105px;
+        height: 105px;
+
+        content: "";
+
+        background: var(--stat-soft);
+        border-radius: 50%;
+
+        opacity: 0.75;
+    }
+
+    .trip-stat-card.total {
+        --stat-color: var(--tl-primary);
+        --stat-soft: var(--tl-primary-soft);
+    }
+
+    .trip-stat-card.draft {
+        --stat-color: var(--tl-grey);
+        --stat-soft: var(--tl-grey-soft);
+    }
+
+    .trip-stat-card.dispatched {
+        --stat-color: var(--tl-primary);
+        --stat-soft: var(--tl-primary-soft);
+    }
+
+    .trip-stat-card.completed {
+        --stat-color: var(--tl-success);
+        --stat-soft: var(--tl-success-soft);
+    }
+
+    .trip-stat-card.cancelled {
+        --stat-color: var(--tl-danger);
+        --stat-soft: var(--tl-danger-soft);
+    }
+
+    .trip-stat-card.revenue {
+        --stat-color: var(--tl-purple);
+        --stat-soft: var(--tl-purple-soft);
+    }
+
+    .trip-stat-card-header {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+
+        margin-bottom: 12px;
+    }
+
+    .trip-stat-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 38px;
+        height: 38px;
+
+        color: var(--stat-color);
+        font-size: 16px;
+
+        background: var(--stat-soft);
+        border-radius: 11px;
+    }
+
+    .trip-stat-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+
+        padding: 5px 7px;
+
+        color: var(--stat-color);
+        font-size: 7px;
+        font-weight: 720;
+
+        background: var(--stat-soft);
+        border-radius: 20px;
+    }
+
+    .trip-stat-label {
+        position: relative;
+        z-index: 2;
+
+        display: block;
+
+        margin-bottom: 4px;
+
+        color: var(--tl-muted);
+        font-size: 8px;
+        font-weight: 700;
+        letter-spacing: 0.45px;
+        text-transform: uppercase;
+    }
+
+    .trip-stat-value {
+        position: relative;
+        z-index: 2;
+
+        display: block;
+        overflow: hidden;
+
+        color: var(--tl-dark);
+        font-size: 21px;
+        font-weight: 780;
+        letter-spacing: -0.5px;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .trip-stat-card.revenue .trip-stat-value {
+        font-size: 17px;
+    }
+
+    /* Filter Panel */
+
+    .trip-filter-panel {
+        overflow: hidden;
+
+        margin-bottom: 22px;
+
+        background: var(--tl-surface);
+        border: 1px solid var(--tl-border);
+        border-radius: var(--tl-radius);
+
+        box-shadow: var(--tl-shadow);
+    }
+
+    .trip-filter-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+
+        padding: 17px 20px;
+
+        border-bottom: 1px solid #eef2f7;
+    }
+
+    .trip-filter-title {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+    }
+
+    .trip-filter-title-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 38px;
+        height: 38px;
+
+        color: var(--tl-primary);
+        font-size: 16px;
+
+        background: var(--tl-primary-soft);
+        border-radius: 10px;
+    }
+
+    .trip-filter-title h3 {
+        margin: 0;
+
+        color: var(--tl-dark);
+        font-size: 14px;
+        font-weight: 720;
+    }
+
+    .trip-filter-title p {
+        margin: 3px 0 0;
+
+        color: var(--tl-muted);
+        font-size: 9px;
+    }
+
+    .trip-filter-active {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        padding: 6px 9px;
+
+        color: var(--tl-primary);
+        font-size: 9px;
+        font-weight: 700;
+
+        background: var(--tl-primary-soft);
+        border-radius: 20px;
+    }
+
+    .trip-filter-body {
+        padding: 20px;
+    }
+
+    .trip-filter-field label {
+        display: block;
+
+        margin-bottom: 7px;
+
+        color: var(--tl-text);
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+    .trip-search-wrapper {
+        position: relative;
+    }
+
+    .trip-search-icon {
+        position: absolute;
+        top: 50%;
+        left: 13px;
+        z-index: 2;
+
+        color: #94a3b8;
+        font-size: 14px;
+
+        pointer-events: none;
+
+        transform: translateY(-50%);
+    }
+
+    .trip-search-wrapper .form-control {
+        padding-left: 39px;
+    }
+
+    .trip-filter-panel .form-control,
+    .trip-filter-panel .form-select {
+        min-height: 44px;
+
+        color: var(--tl-dark);
+        font-size: 11px;
+
+        background-color: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+
+        box-shadow: none;
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .trip-filter-panel .form-control::placeholder {
+        color: #94a3b8;
+    }
+
+    .trip-filter-panel .form-control:hover,
+    .trip-filter-panel .form-select:hover {
+        border-color: #94a3b8;
+    }
+
+    .trip-filter-panel .form-control:focus,
+    .trip-filter-panel .form-select:focus {
+        border-color: var(--tl-primary);
+
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+
+    .trip-filter-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        padding-top: 24px;
+    }
+
+    .trip-filter-submit,
+    .trip-filter-reset {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+
+        min-height: 44px;
+        padding: 9px 13px;
+
+        font-size: 10px;
+        font-weight: 700;
+        text-decoration: none;
+
+        border-radius: 10px;
+
+        transition:
+            color 0.2s ease,
+            background 0.2s ease,
+            border-color 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .trip-filter-submit {
+        flex: 1;
+
+        color: #ffffff;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--tl-primary),
+                var(--tl-primary-dark)
+            );
+
+        border: 1px solid var(--tl-primary);
+
+        box-shadow: 0 7px 17px rgba(37, 99, 235, 0.18);
+    }
+
+    .trip-filter-submit:hover {
+        color: #ffffff;
+
+        background:
+            linear-gradient(
+                135deg,
+                #1d4ed8,
+                #1e40af
+            );
+
+        transform: translateY(-1px);
+    }
+
+    .trip-filter-reset {
+        color: #475569;
+
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+    }
+
+    .trip-filter-reset:hover {
+        color: var(--tl-dark);
+
+        background: #f8fafc;
+        border-color: #94a3b8;
+    }
+
+    /* Table Panel */
+
+    .trip-table-panel {
+        overflow: hidden;
+
+        background: var(--tl-surface);
+        border: 1px solid var(--tl-border);
+        border-radius: var(--tl-radius);
+
+        box-shadow: var(--tl-shadow);
+    }
+
+    .trip-table-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+
+        padding: 19px 21px;
+
+        border-bottom: 1px solid #eef2f7;
+    }
+
+    .trip-table-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .trip-table-title-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 40px;
+        height: 40px;
+
+        color: var(--tl-primary);
+        font-size: 17px;
+
+        background: var(--tl-primary-soft);
+        border-radius: 11px;
+    }
+
+    .trip-table-title h3 {
+        margin: 0;
+
+        color: var(--tl-dark);
+        font-size: 15px;
+        font-weight: 720;
+    }
+
+    .trip-table-title p {
+        margin: 3px 0 0;
+
+        color: var(--tl-muted);
+        font-size: 9px;
+    }
+
+    .trip-result-count {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        padding: 7px 10px;
+
+        color: #475569;
+        font-size: 9px;
+        font-weight: 700;
+
+        background: #f8fafc;
+        border: 1px solid var(--tl-border);
+        border-radius: 20px;
+    }
+
+    /* Desktop Table */
+
+    .trip-management-table {
+        width: 100%;
+        margin: 0;
+    }
+
+    .trip-management-table thead th {
+        padding: 13px 14px;
+
+        color: #64748b;
+        font-size: 8px;
+        font-weight: 760;
+        letter-spacing: 0.65px;
+        text-transform: uppercase;
+
+        background: #f8fafc;
+        border-bottom: 1px solid var(--tl-border);
+
+        white-space: nowrap;
+    }
+
+    .trip-management-table tbody td {
+        padding: 14px;
+
+        color: var(--tl-text);
+        font-size: 9px;
+        vertical-align: middle;
+
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .trip-management-table tbody tr {
+        transition: background 0.18s ease;
+    }
+
+    .trip-management-table tbody tr:hover {
+        background: #f8fbff;
+    }
+
+    .trip-management-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    /* Trip Number */
+
+    .trip-number {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+
+        min-width: 90px;
+
+        color: var(--tl-dark);
+        font-size: 10px;
+        font-weight: 760;
+    }
+
+    .trip-number-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 32px;
+        height: 32px;
+
+        color: var(--tl-primary);
+        font-size: 13px;
+
+        background: var(--tl-primary-soft);
+        border-radius: 9px;
+    }
+
+    /* Route */
+
+    .trip-route-cell {
+        min-width: 190px;
+    }
+
+    .trip-route {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        min-width: 0;
+    }
+
+    .trip-route-point {
+        min-width: 0;
+    }
+
+    .trip-route-point small {
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: #94a3b8;
+        font-size: 7px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .trip-route-point strong {
+        display: block;
+        overflow: hidden;
+
+        max-width: 110px;
+
+        color: var(--tl-dark);
+        font-size: 9px;
+        font-weight: 680;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .trip-route-arrow {
+        flex-shrink: 0;
+
+        color: var(--tl-primary);
+        font-size: 12px;
+    }
+
+    /* Vehicle and Driver */
+
+    .trip-entity {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        min-width: 125px;
+    }
+
+    .trip-entity-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 33px;
+        height: 33px;
+
+        color: var(--tl-primary);
+        font-size: 13px;
+
+        background: var(--tl-primary-soft);
+        border-radius: 9px;
+    }
+
+    .trip-entity-details {
+        min-width: 0;
+    }
+
+    .trip-entity-details strong {
+        display: block;
+        overflow: hidden;
+
+        max-width: 135px;
+
+        color: var(--tl-dark);
+        font-size: 9px;
+        font-weight: 700;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .trip-entity-details small {
+        display: block;
+        overflow: hidden;
+
+        max-width: 135px;
+
+        margin-top: 3px;
+
+        color: var(--tl-muted);
+        font-size: 7px;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Numeric Metrics */
+
+    .trip-metric {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        color: var(--tl-text);
+        font-size: 9px;
+        font-weight: 650;
+
+        white-space: nowrap;
+    }
+
+    .trip-metric i {
+        color: var(--tl-primary);
+    }
+
+    .trip-revenue {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        padding: 6px 9px;
+
+        color: var(--tl-success);
+        font-size: 8px;
+        font-weight: 720;
+
+        background: var(--tl-success-soft);
+        border-radius: 20px;
+
+        white-space: nowrap;
+    }
+
+    /* Status */
+
+    .trip-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        padding: 6px 9px;
+
+        font-size: 8px;
+        font-weight: 720;
+
+        border-radius: 20px;
+
+        white-space: nowrap;
+    }
+
+    .trip-status-badge::before {
+        width: 6px;
+        height: 6px;
+
+        content: "";
+
+        background: currentColor;
+        border-radius: 50%;
+    }
+
+    .trip-status-draft {
+        color: var(--tl-grey);
+        background: var(--tl-grey-soft);
+    }
+
+    .trip-status-dispatched {
+        color: var(--tl-primary);
+        background: var(--tl-primary-soft);
+    }
+
+    .trip-status-completed {
+        color: var(--tl-success);
+        background: var(--tl-success-soft);
+    }
+
+    .trip-status-cancelled {
+        color: var(--tl-danger);
+        background: var(--tl-danger-soft);
+    }
+
+    /* View Button */
+
+    .trip-view-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+
+        min-height: 34px;
+        padding: 7px 10px;
+
+        color: var(--tl-primary);
+        font-size: 8px;
+        font-weight: 720;
+        text-decoration: none;
+
+        background: var(--tl-primary-soft);
+        border: 1px solid #dbeafe;
+        border-radius: 9px;
+
+        transition:
+            color 0.2s ease,
+            background 0.2s ease,
+            border-color 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .trip-view-button:hover {
+        color: #ffffff;
+
+        background: var(--tl-primary);
+        border-color: var(--tl-primary);
+
+        transform: translateY(-1px);
+    }
+
+    /* Mobile Cards */
+
+    .mobile-trip-list {
+        display: none;
+        padding: 15px;
+    }
+
+    .mobile-trip-card {
+        margin-bottom: 12px;
+        padding: 15px;
+
+        background: #ffffff;
+        border: 1px solid var(--tl-border);
+        border-radius: 14px;
+
+        box-shadow: 0 5px 16px rgba(15, 23, 42, 0.035);
+    }
+
+    .mobile-trip-card:last-child {
+        margin-bottom: 0;
+    }
+
+    .mobile-trip-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+
+        margin-bottom: 14px;
+    }
+
+    .mobile-trip-route {
+        margin-bottom: 14px;
+        padding: 12px;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--tl-primary-soft),
+                #ffffff
+            );
+
+        border: 1px solid #dbeafe;
+        border-radius: 11px;
+    }
+
+    .mobile-trip-route-line {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 9px;
+    }
+
+    .mobile-route-point {
+        min-width: 0;
+    }
+
+    .mobile-route-point:last-child {
+        text-align: right;
+    }
+
+    .mobile-route-point small {
+        display: block;
+
+        margin-bottom: 4px;
+
+        color: var(--tl-muted);
+        font-size: 7px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .mobile-route-point strong {
+        display: block;
+        overflow: hidden;
+
+        max-width: 130px;
+
+        color: var(--tl-dark);
+        font-size: 9px;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .mobile-route-arrow {
+        flex-shrink: 0;
+        color: var(--tl-primary);
+    }
+
+    .mobile-trip-assignments {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+
+        margin-bottom: 12px;
+    }
+
+    .mobile-assignment {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        padding: 10px;
+
+        background: #f8fafc;
+        border-radius: 10px;
+    }
+
+    .mobile-assignment-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 31px;
+        height: 31px;
+
+        color: var(--tl-primary);
+        font-size: 12px;
+
+        background: var(--tl-primary-soft);
+        border-radius: 8px;
+    }
+
+    .mobile-assignment small {
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: #94a3b8;
+        font-size: 7px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .mobile-assignment strong {
+        display: block;
+        overflow: hidden;
+
+        max-width: 115px;
+
+        color: var(--tl-dark);
+        font-size: 8px;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .mobile-trip-metrics {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 9px;
+
+        margin-bottom: 13px;
+    }
+
+    .mobile-trip-metric {
+        padding: 10px;
+
+        text-align: center;
+
+        background: #f8fafc;
+        border-radius: 10px;
+    }
+
+    .mobile-trip-metric small {
+        display: block;
+
+        margin-bottom: 4px;
+
+        color: #94a3b8;
+        font-size: 7px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .mobile-trip-metric strong {
+        display: block;
+
+        color: var(--tl-dark);
+        font-size: 9px;
+    }
+
+    .mobile-trip-action {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .mobile-trip-action .trip-view-button {
+        width: 100%;
+    }
+
+    /* Empty State */
+
+    .trip-empty-state {
+        padding: 58px 20px;
+
+        text-align: center;
+    }
+
+    .trip-empty-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 66px;
+        height: 66px;
+
+        margin: 0 auto 15px;
+
+        color: var(--tl-primary);
+        font-size: 28px;
+
+        background: var(--tl-primary-soft);
+        border-radius: 19px;
+    }
+
+    .trip-empty-state h4 {
+        margin: 0 0 6px;
+
+        color: var(--tl-dark);
+        font-size: 16px;
+        font-weight: 720;
+    }
+
+    .trip-empty-state p {
+        max-width: 390px;
+
+        margin: 0 auto 17px;
+
+        color: var(--tl-muted);
+        font-size: 10px;
+        line-height: 1.6;
+    }
+
+    .trip-empty-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+
+        min-height: 40px;
+        padding: 8px 13px;
+
+        color: #ffffff;
+        font-size: 9px;
+        font-weight: 720;
+        text-decoration: none;
+
+        background: var(--tl-primary);
+        border: 1px solid var(--tl-primary);
+        border-radius: 9px;
+    }
+
+    .trip-empty-button:hover {
+        color: #ffffff;
+        background: var(--tl-primary-dark);
+    }
+
+    /* Responsive */
+
+    @media (max-width: 1350px) {
+        .trip-statistics-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 991.98px) {
+        .trip-list-hero {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .trip-create-button {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .trip-statistics-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .trip-filter-header,
+        .trip-table-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .trip-filter-actions {
+            padding-top: 0;
+        }
+
+        .desktop-trip-table {
+            display: none;
+        }
+
+        .mobile-trip-list {
+            display: block;
+        }
+
+        .trip-table-panel {
+            background: #f8fafc;
+        }
+
+        .trip-table-header {
+            background: #ffffff;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .trip-list-hero {
+            padding: 21px;
+            border-radius: 17px;
+        }
+
+        .trip-list-hero-content {
+            align-items: flex-start;
+        }
+
+        .trip-list-hero-icon {
+            width: 47px;
+            height: 47px;
+
+            font-size: 20px;
+        }
+
+        .trip-statistics-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .trip-filter-body {
+            padding: 16px;
+        }
+
+        .trip-filter-actions {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .trip-filter-submit,
+        .trip-filter-reset {
+            width: 100%;
+        }
+
+        .trip-filter-panel,
+        .trip-table-panel {
+            border-radius: 15px;
+        }
+
+        .mobile-trip-assignments,
+        .mobile-trip-metrics {
+            grid-template-columns: 1fr;
+        }
+
+        .mobile-route-point strong {
+            max-width: 105px;
+        }
+    }
+</style>
+
+{% endblock %}
+
 {% block content %}
 
-<div class="d-flex flex-wrap justify-content-between
-            align-items-center gap-3 mb-4">
+<div class="trip-list-page">
 
-    <div>
-        <h4 class="mb-1">
-            Trips
-        </h4>
+    <div class="trip-list-wrapper">
 
-        <p class="text-muted mb-0">
-            Monitor all transport operations and trip statuses.
-        </p>
-    </div>
+        <!-- Breadcrumb -->
+        <nav class="trip-list-breadcrumb">
 
-    {% if can_manage %}
-        <a
-            href="{% url 'operations:trip_create' %}"
-            class="btn btn-primary"
-        >
-            + Create Trip
-        </a>
-    {% endif %}
+            <a href="{% url 'dashboard:home' %}">
+                <i class="bi bi-house-door"></i>
+                Dashboard
+            </a>
 
-</div>
+            <i class="bi bi-chevron-right"></i>
 
+            <span>Trips</span>
 
-<!-- Trip Statistics -->
+        </nav>
 
-<div class="row g-3 mb-4">
+        <!-- Hero -->
+        <section class="trip-list-hero">
 
-    <div class="col-xl-2 col-md-4 col-sm-6">
+            <div class="trip-list-hero-content">
 
-        <div class="card border-0 shadow-sm h-100">
+                <div class="trip-list-hero-icon">
+                    <i class="bi bi-signpost-split-fill"></i>
+                </div>
 
-            <div class="card-body">
+                <div>
 
-                <small class="text-muted">
+                    <div class="trip-list-eyebrow">
+                        <span></span>
+                        Live Transport Operations
+                    </div>
+
+                    <h2>Trip Management</h2>
+
+                    <p>
+                        Create transport trips, assign drivers and vehicles,
+                        monitor dispatch status, review cargo and track
+                        completed revenue from one operational dashboard.
+                    </p>
+
+                </div>
+
+            </div>
+
+            {% if can_manage %}
+
+                <a
+                    href="{% url 'operations:trip_create' %}"
+                    class="trip-create-button"
+                >
+                    <i class="bi bi-plus-circle-fill"></i>
+                    Create New Trip
+                </a>
+
+            {% endif %}
+
+        </section>
+
+        <!-- Statistics -->
+        <section class="trip-statistics-grid">
+
+            <article class="trip-stat-card total">
+
+                <div class="trip-stat-card-header">
+
+                    <div class="trip-stat-icon">
+                        <i class="bi bi-list-check"></i>
+                    </div>
+
+                    <span class="trip-stat-indicator">
+                        <i class="bi bi-bar-chart-fill"></i>
+                        All
+                    </span>
+
+                </div>
+
+                <span class="trip-stat-label">
                     Total Trips
-                </small>
+                </span>
 
-                <h3 class="fw-bold mb-0 mt-2">
-                    {{ trip_statistics.total }}
-                </h3>
+                <strong class="trip-stat-value">
+                    {{ trip_statistics.total|default:0 }}
+                </strong>
 
-            </div>
+            </article>
 
-        </div>
+            <article class="trip-stat-card draft">
 
-    </div>
+                <div class="trip-stat-card-header">
 
+                    <div class="trip-stat-icon">
+                        <i class="bi bi-pencil-square"></i>
+                    </div>
 
-    <div class="col-xl-2 col-md-4 col-sm-6">
+                    <span class="trip-stat-indicator">
+                        <i class="bi bi-clock"></i>
+                        Pending
+                    </span>
 
-        <div class="card border-0 shadow-sm h-100">
+                </div>
 
-            <div class="card-body">
-
-                <small class="text-muted">
+                <span class="trip-stat-label">
                     Draft
-                </small>
+                </span>
 
-                <h3 class="fw-bold text-secondary mb-0 mt-2">
-                    {{ trip_statistics.draft }}
-                </h3>
+                <strong class="trip-stat-value">
+                    {{ trip_statistics.draft|default:0 }}
+                </strong>
 
-            </div>
+            </article>
 
-        </div>
+            <article class="trip-stat-card dispatched">
 
-    </div>
+                <div class="trip-stat-card-header">
 
+                    <div class="trip-stat-icon">
+                        <i class="bi bi-send-fill"></i>
+                    </div>
 
-    <div class="col-xl-2 col-md-4 col-sm-6">
+                    <span class="trip-stat-indicator">
+                        <i class="bi bi-activity"></i>
+                        Active
+                    </span>
 
-        <div class="card border-0 shadow-sm h-100">
+                </div>
 
-            <div class="card-body">
-
-                <small class="text-muted">
+                <span class="trip-stat-label">
                     Dispatched
-                </small>
+                </span>
 
-                <h3 class="fw-bold text-primary mb-0 mt-2">
-                    {{ trip_statistics.dispatched }}
-                </h3>
+                <strong class="trip-stat-value">
+                    {{ trip_statistics.dispatched|default:0 }}
+                </strong>
 
-            </div>
+            </article>
 
-        </div>
+            <article class="trip-stat-card completed">
 
-    </div>
+                <div class="trip-stat-card-header">
 
+                    <div class="trip-stat-icon">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
 
-    <div class="col-xl-2 col-md-4 col-sm-6">
+                    <span class="trip-stat-indicator">
+                        <i class="bi bi-check2"></i>
+                        Closed
+                    </span>
 
-        <div class="card border-0 shadow-sm h-100">
+                </div>
 
-            <div class="card-body">
-
-                <small class="text-muted">
+                <span class="trip-stat-label">
                     Completed
-                </small>
+                </span>
 
-                <h3 class="fw-bold text-success mb-0 mt-2">
-                    {{ trip_statistics.completed }}
-                </h3>
+                <strong class="trip-stat-value">
+                    {{ trip_statistics.completed|default:0 }}
+                </strong>
 
-            </div>
+            </article>
 
-        </div>
+            <article class="trip-stat-card cancelled">
 
-    </div>
+                <div class="trip-stat-card-header">
 
+                    <div class="trip-stat-icon">
+                        <i class="bi bi-x-circle-fill"></i>
+                    </div>
 
-    <div class="col-xl-2 col-md-4 col-sm-6">
+                    <span class="trip-stat-indicator">
+                        <i class="bi bi-slash-circle"></i>
+                        Closed
+                    </span>
 
-        <div class="card border-0 shadow-sm h-100">
+                </div>
 
-            <div class="card-body">
-
-                <small class="text-muted">
+                <span class="trip-stat-label">
                     Cancelled
-                </small>
+                </span>
 
-                <h3 class="fw-bold text-danger mb-0 mt-2">
-                    {{ trip_statistics.cancelled }}
-                </h3>
+                <strong class="trip-stat-value">
+                    {{ trip_statistics.cancelled|default:0 }}
+                </strong>
 
-            </div>
+            </article>
 
-        </div>
+            <article class="trip-stat-card revenue">
 
-    </div>
+                <div class="trip-stat-card-header">
 
+                    <div class="trip-stat-icon">
+                        <i class="bi bi-cash-stack"></i>
+                    </div>
 
-    <div class="col-xl-2 col-md-4 col-sm-6">
+                    <span class="trip-stat-indicator">
+                        <i class="bi bi-graph-up-arrow"></i>
+                        Income
+                    </span>
 
-        <div class="card border-0 shadow-sm h-100">
+                </div>
 
-            <div class="card-body">
-
-                <small class="text-muted">
+                <span class="trip-stat-label">
                     Completed Revenue
-                </small>
+                </span>
 
-                <h5 class="fw-bold text-success mb-0 mt-2">
-                    ₹{{ trip_statistics.completed_revenue|floatformat:2 }}
-                </h5>
+                <strong class="trip-stat-value">
+                    ₹{{ trip_statistics.completed_revenue|default:0|floatformat:2 }}
+                </strong>
 
-            </div>
+            </article>
 
-        </div>
+        </section>
 
-    </div>
+        <!-- Search and Filters -->
+        <section class="trip-filter-panel">
 
-</div>
+            <header class="trip-filter-header">
 
+                <div class="trip-filter-title">
 
-<!-- Search, Filter and Sorting -->
+                    <div class="trip-filter-title-icon">
+                        <i class="bi bi-funnel-fill"></i>
+                    </div>
 
-<div class="card border-0 shadow-sm mb-4">
+                    <div>
 
-    <div class="card-body">
+                        <h3>Search, Filter and Sort Trips</h3>
 
-        <form method="get">
-
-            <div class="row g-3">
-
-                <div class="col-xl-4 col-md-6">
-
-                    <input
-                        type="text"
-                        name="search"
-                        value="{{ request.GET.search }}"
-                        class="form-control"
-                        placeholder="Search route, vehicle, driver or notes"
-                    >
-
-                </div>
-
-
-                <div class="col-xl-3 col-md-6">
-
-                    <select
-                        name="status"
-                        class="form-select"
-                    >
-                        <option value="">
-                            All statuses
-                        </option>
-
-                        {% for value, label in trip_statuses %}
-
-                            <option
-                                value="{{ value }}"
-                                {% if request.GET.status == value %}
-                                    selected
-                                {% endif %}
-                            >
-                                {{ label }}
-                            </option>
-
-                        {% endfor %}
-
-                    </select>
-
-                </div>
-
-
-                <div class="col-xl-3 col-md-6">
-
-                    <select
-                        name="sort"
-                        class="form-select"
-                    >
-                        <option
-                            value="newest"
-                            {% if selected_sort == "newest" %}
-                                selected
-                            {% endif %}
-                        >
-                            Newest First
-                        </option>
-
-                        <option
-                            value="oldest"
-                            {% if selected_sort == "oldest" %}
-                                selected
-                            {% endif %}
-                        >
-                            Oldest First
-                        </option>
-
-                        <option
-                            value="source"
-                            {% if selected_sort == "source" %}
-                                selected
-                            {% endif %}
-                        >
-                            Source
-                        </option>
-
-                        <option
-                            value="destination"
-                            {% if selected_sort == "destination" %}
-                                selected
-                            {% endif %}
-                        >
-                            Destination
-                        </option>
-
-                        <option
-                            value="vehicle"
-                            {% if selected_sort == "vehicle" %}
-                                selected
-                            {% endif %}
-                        >
-                            Vehicle
-                        </option>
-
-                        <option
-                            value="driver"
-                            {% if selected_sort == "driver" %}
-                                selected
-                            {% endif %}
-                        >
-                            Driver
-                        </option>
-
-                        <option
-                            value="status"
-                            {% if selected_sort == "status" %}
-                                selected
-                            {% endif %}
-                        >
-                            Status
-                        </option>
-
-                        <option
-                            value="cargo_high"
-                            {% if selected_sort == "cargo_high" %}
-                                selected
-                            {% endif %}
-                        >
-                            Highest Cargo Weight
-                        </option>
-
-                        <option
-                            value="distance_high"
-                            {% if selected_sort == "distance_high" %}
-                                selected
-                            {% endif %}
-                        >
-                            Highest Distance
-                        </option>
-
-                        <option
-                            value="revenue_high"
-                            {% if selected_sort == "revenue_high" %}
-                                selected
-                            {% endif %}
-                        >
-                            Highest Revenue
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="col-xl-2 col-md-6">
-
-                    <div class="d-flex gap-2">
-
-                        <button
-                            type="submit"
-                            class="btn btn-dark flex-grow-1"
-                        >
-                            Apply
-                        </button>
-
-                        <a
-                            href="{% url 'operations:trip_list' %}"
-                            class="btn btn-outline-secondary"
-                        >
-                            Reset
-                        </a>
+                        <p>
+                            Find trips by route, vehicle, driver, notes or status
+                        </p>
 
                     </div>
 
                 </div>
 
+                {% if request.GET.search or request.GET.status or selected_sort != "newest" %}
+
+                    <span class="trip-filter-active">
+                        <i class="bi bi-check-circle-fill"></i>
+                        Filters Applied
+                    </span>
+
+                {% endif %}
+
+            </header>
+
+            <div class="trip-filter-body">
+
+                <form
+                    method="get"
+                    id="tripFilterForm"
+                >
+
+                    <div class="row g-3">
+
+                        <!-- Search -->
+                        <div class="col-xl-4 col-lg-4 col-md-6">
+
+                            <div class="trip-filter-field">
+
+                                <label for="tripSearch">
+                                    Search Trips
+                                </label>
+
+                                <div class="trip-search-wrapper">
+
+                                    <i class="bi bi-search trip-search-icon"></i>
+
+                                    <input
+                                        type="search"
+                                        id="tripSearch"
+                                        name="search"
+                                        value="{{ request.GET.search }}"
+                                        class="form-control"
+                                        placeholder="Route, vehicle, driver or notes"
+                                        autocomplete="off"
+                                    >
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Status -->
+                        <div class="col-xl-3 col-lg-3 col-md-6">
+
+                            <div class="trip-filter-field">
+
+                                <label for="tripStatusFilter">
+                                    Trip Status
+                                </label>
+
+                                <select
+                                    id="tripStatusFilter"
+                                    name="status"
+                                    class="form-select"
+                                >
+
+                                    <option value="">
+                                        All statuses
+                                    </option>
+
+                                    {% for value, label in trip_statuses %}
+
+                                        <option
+                                            value="{{ value }}"
+                                            {% if request.GET.status == value %}
+                                                selected
+                                            {% endif %}
+                                        >
+                                            {{ label }}
+                                        </option>
+
+                                    {% endfor %}
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Sort -->
+                        <div class="col-xl-3 col-lg-3 col-md-6">
+
+                            <div class="trip-filter-field">
+
+                                <label for="tripSortFilter">
+                                    Sort Results
+                                </label>
+
+                                <select
+                                    id="tripSortFilter"
+                                    name="sort"
+                                    class="form-select"
+                                >
+
+                                    <option
+                                        value="newest"
+                                        {% if selected_sort == "newest" %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        Newest First
+                                    </option>
+
+                                    <option
+                                        value="oldest"
+                                        {% if selected_sort == "oldest" %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        Oldest First
+                                    </option>
+
+                                    <option
+                                        value="source"
+                                        {% if selected_sort == "source" %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        Source A–Z
+                                    </option>
+
+                                    <option
+                                        value="destination"
+                                        {% if selected_sort == "destination" %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        Destination A–Z
+                                    </option>
+
+                                    <option
+                                        value="vehicle"
+                                        {% if selected_sort == "vehicle" %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        Vehicle
+                                    </option>
+
+                                    <option
+                                        value="driver"
+                                        {% if selected_sort == "driver" %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        Driver
+                                    </option>
+
+                                    <option
+                                        value="status"
+                                        {% if selected_sort == "status" %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        Status
+                                    </option>
+
+                                    <option
+                                        value="cargo_high"
+                                        {% if selected_sort == "cargo_high" %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        Highest Cargo Weight
+                                    </option>
+
+                                    <option
+                                        value="distance_high"
+                                        {% if selected_sort == "distance_high" %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        Highest Distance
+                                    </option>
+
+                                    <option
+                                        value="revenue_high"
+                                        {% if selected_sort == "revenue_high" %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        Highest Revenue
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="col-xl-2 col-lg-2 col-md-6">
+
+                            <div class="trip-filter-actions">
+
+                                <button
+                                    type="submit"
+                                    class="trip-filter-submit"
+                                    id="tripFilterButton"
+                                >
+                                    <i class="bi bi-search"></i>
+                                    Apply
+                                </button>
+
+                                <a
+                                    href="{% url 'operations:trip_list' %}"
+                                    class="trip-filter-reset"
+                                    title="Reset filters"
+                                >
+                                    <i class="bi bi-arrow-counterclockwise"></i>
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </form>
+
             </div>
 
-        </form>
+        </section>
 
-    </div>
+        <!-- Trip Directory -->
+        <section class="trip-table-panel">
 
-</div>
+            <header class="trip-table-header">
 
+                <div class="trip-table-title">
 
-<!-- Trip Table -->
+                    <div class="trip-table-title-icon">
+                        <i class="bi bi-signpost-split-fill"></i>
+                    </div>
 
-<div class="card border-0 shadow-sm">
+                    <div>
 
-    <div class="table-responsive">
+                        <h3>Transport Trips</h3>
 
-        <table class="table table-hover align-middle mb-0">
+                        <p>
+                            Review route, vehicle, driver, cargo and trip status
+                        </p>
 
-            <thead class="table-light">
+                    </div>
 
-                <tr>
-                    <th>Trip</th>
-                    <th>Route</th>
-                    <th>Vehicle</th>
-                    <th>Driver</th>
-                    <th>Cargo</th>
-                    <th>Distance</th>
-                    <th>Revenue</th>
-                    <th>Status</th>
-                    <th class="text-end">
-                        Action
-                    </th>
-                </tr>
+                </div>
 
-            </thead>
+                <span class="trip-result-count">
 
-            <tbody>
+                    <i class="bi bi-list-ul"></i>
+
+                    {{ trips|length }}
+                    trip{{ trips|length|pluralize }}
+
+                </span>
+
+            </header>
+
+            <!-- Desktop Table -->
+            <div class="table-responsive desktop-trip-table">
+
+                <table class="trip-management-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Trip</th>
+                            <th>Route</th>
+                            <th>Vehicle</th>
+                            <th>Driver</th>
+                            <th>Cargo</th>
+                            <th>Distance</th>
+                            <th>Revenue</th>
+                            <th>Status</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for trip in trips %}
+
+                            <tr>
+
+                                <!-- Trip -->
+                                <td>
+
+                                    <div class="trip-number">
+
+                                        <span class="trip-number-icon">
+                                            <i class="bi bi-hash"></i>
+                                        </span>
+
+                                        <span>
+
+                                            {% if trip.trip_number %}
+                                                {{ trip.trip_number }}
+                                            {% else %}
+                                                {{ trip.pk }}
+                                            {% endif %}
+
+                                        </span>
+
+                                    </div>
+
+                                </td>
+
+                                <!-- Route -->
+                                <td class="trip-route-cell">
+
+                                    <div class="trip-route">
+
+                                        <div class="trip-route-point">
+
+                                            <small>From</small>
+
+                                            <strong>
+                                                {{ trip.source }}
+                                            </strong>
+
+                                        </div>
+
+                                        <i
+                                            class="
+                                                bi bi-arrow-right
+                                                trip-route-arrow
+                                            "
+                                        ></i>
+
+                                        <div class="trip-route-point">
+
+                                            <small>To</small>
+
+                                            <strong>
+                                                {{ trip.destination }}
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+                                <!-- Vehicle -->
+                                <td>
+
+                                    <div class="trip-entity">
+
+                                        <div class="trip-entity-icon">
+                                            <i class="bi bi-truck-front-fill"></i>
+                                        </div>
+
+                                        <div class="trip-entity-details">
+
+                                            <strong>
+                                                {{ trip.vehicle.registration_number }}
+                                            </strong>
+
+                                            <small>
+
+                                                {% if trip.vehicle.vehicle_name %}
+                                                    {{ trip.vehicle.vehicle_name }}
+                                                {% else %}
+                                                    Assigned vehicle
+                                                {% endif %}
+
+                                            </small>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+                                <!-- Driver -->
+                                <td>
+
+                                    <div class="trip-entity">
+
+                                        <div class="trip-entity-icon">
+                                            <i class="bi bi-person-badge-fill"></i>
+                                        </div>
+
+                                        <div class="trip-entity-details">
+
+                                            <strong>
+                                                {{ trip.driver.name }}
+                                            </strong>
+
+                                            <small>
+                                                Assigned driver
+                                            </small>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+                                <!-- Cargo -->
+                                <td>
+
+                                    <span class="trip-metric">
+
+                                        <i class="bi bi-box-seam-fill"></i>
+
+                                        {{ trip.cargo_weight|default:0|floatformat:2 }}
+                                        kg
+
+                                    </span>
+
+                                </td>
+
+                                <!-- Distance -->
+                                <td>
+
+                                    <span class="trip-metric">
+
+                                        <i class="bi bi-signpost-2-fill"></i>
+
+                                        {{ trip.planned_distance|default:0|floatformat:2 }}
+                                        km
+
+                                    </span>
+
+                                </td>
+
+                                <!-- Revenue -->
+                                <td>
+
+                                    <span class="trip-revenue">
+
+                                        <i class="bi bi-graph-up-arrow"></i>
+
+                                        ₹{{ trip.revenue|default:0|floatformat:2 }}
+
+                                    </span>
+
+                                </td>
+
+                                <!-- Status -->
+                                <td>
+
+                                    {% if trip.status == "DRAFT" %}
+
+                                        <span
+                                            class="
+                                                trip-status-badge
+                                                trip-status-draft
+                                            "
+                                        >
+                                            Draft
+                                        </span>
+
+                                    {% elif trip.status == "DISPATCHED" %}
+
+                                        <span
+                                            class="
+                                                trip-status-badge
+                                                trip-status-dispatched
+                                            "
+                                        >
+                                            Dispatched
+                                        </span>
+
+                                    {% elif trip.status == "COMPLETED" %}
+
+                                        <span
+                                            class="
+                                                trip-status-badge
+                                                trip-status-completed
+                                            "
+                                        >
+                                            Completed
+                                        </span>
+
+                                    {% elif trip.status == "CANCELLED" %}
+
+                                        <span
+                                            class="
+                                                trip-status-badge
+                                                trip-status-cancelled
+                                            "
+                                        >
+                                            Cancelled
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <!-- Action -->
+                                <td class="text-end">
+
+                                    <a
+                                        href="{% url 'operations:trip_detail' trip.pk %}"
+                                        class="trip-view-button"
+                                    >
+                                        <i class="bi bi-eye-fill"></i>
+                                        View Details
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        {% empty %}
+
+                            <tr>
+
+                                <td colspan="9">
+
+                                    <div class="trip-empty-state">
+
+                                        <div class="trip-empty-icon">
+                                            <i class="bi bi-signpost-split"></i>
+                                        </div>
+
+                                        <h4>No Trips Found</h4>
+
+                                        <p>
+                                            No trips match the selected filters.
+                                            Change your search criteria or create
+                                            a new transport trip.
+                                        </p>
+
+                                        {% if request.GET.search or request.GET.status or selected_sort != "newest" %}
+
+                                            <a
+                                                href="{% url 'operations:trip_list' %}"
+                                                class="trip-empty-button"
+                                            >
+                                                <i class="bi bi-arrow-counterclockwise"></i>
+                                                Clear Filters
+                                            </a>
+
+                                        {% elif can_manage %}
+
+                                            <a
+                                                href="{% url 'operations:trip_create' %}"
+                                                class="trip-empty-button"
+                                            >
+                                                <i class="bi bi-plus-circle-fill"></i>
+                                                Create Trip
+                                            </a>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- Mobile Cards -->
+            <div class="mobile-trip-list">
 
                 {% for trip in trips %}
 
-                    <tr>
+                    <article class="mobile-trip-card">
 
-                        <td>
-                            <strong>
-                                {% if trip.trip_number %}
-                                    {{ trip.trip_number }}
-                                {% else %}
-                                    #{{ trip.pk }}
-                                {% endif %}
-                            </strong>
-                        </td>
+                        <div class="mobile-trip-header">
 
+                            <div class="trip-number">
 
-                        <td>
-                            {{ trip.source }}
+                                <span class="trip-number-icon">
+                                    <i class="bi bi-hash"></i>
+                                </span>
 
-                            <span class="text-muted">
-                                →
-                            </span>
+                                <span>
 
-                            {{ trip.destination }}
-                        </td>
+                                    {% if trip.trip_number %}
+                                        {{ trip.trip_number }}
+                                    {% else %}
+                                        {{ trip.pk }}
+                                    {% endif %}
 
+                                </span>
 
-                        <td>
-                            {{ trip.vehicle.registration_number }}
-                        </td>
-
-
-                        <td>
-                            {{ trip.driver.name }}
-                        </td>
-
-
-                        <td>
-                            {{ trip.cargo_weight|floatformat:2 }} kg
-                        </td>
-
-
-                        <td>
-                            {{ trip.planned_distance|floatformat:2 }} km
-                        </td>
-
-
-                        <td>
-                            ₹{{ trip.revenue|floatformat:2 }}
-                        </td>
-
-
-                        <td>
+                            </div>
 
                             {% if trip.status == "DRAFT" %}
 
-                                <span class="badge text-bg-secondary">
+                                <span
+                                    class="
+                                        trip-status-badge
+                                        trip-status-draft
+                                    "
+                                >
                                     Draft
                                 </span>
 
                             {% elif trip.status == "DISPATCHED" %}
 
-                                <span class="badge text-bg-primary">
+                                <span
+                                    class="
+                                        trip-status-badge
+                                        trip-status-dispatched
+                                    "
+                                >
                                     Dispatched
                                 </span>
 
                             {% elif trip.status == "COMPLETED" %}
 
-                                <span class="badge text-bg-success">
+                                <span
+                                    class="
+                                        trip-status-badge
+                                        trip-status-completed
+                                    "
+                                >
                                     Completed
                                 </span>
 
-                            {% elif trip.status == "CANCELLED" %}
+                            {% else %}
 
-                                <span class="badge text-bg-danger">
+                                <span
+                                    class="
+                                        trip-status-badge
+                                        trip-status-cancelled
+                                    "
+                                >
                                     Cancelled
                                 </span>
 
                             {% endif %}
 
-                        </td>
+                        </div>
 
+                        <div class="mobile-trip-route">
 
-                        <td class="text-end">
+                            <div class="mobile-trip-route-line">
+
+                                <div class="mobile-route-point">
+
+                                    <small>From</small>
+
+                                    <strong>
+                                        {{ trip.source }}
+                                    </strong>
+
+                                </div>
+
+                                <i
+                                    class="
+                                        bi bi-arrow-right
+                                        mobile-route-arrow
+                                    "
+                                ></i>
+
+                                <div class="mobile-route-point">
+
+                                    <small>To</small>
+
+                                    <strong>
+                                        {{ trip.destination }}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="mobile-trip-assignments">
+
+                            <div class="mobile-assignment">
+
+                                <div class="mobile-assignment-icon">
+                                    <i class="bi bi-truck-front-fill"></i>
+                                </div>
+
+                                <div>
+
+                                    <small>Vehicle</small>
+
+                                    <strong>
+                                        {{ trip.vehicle.registration_number }}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                            <div class="mobile-assignment">
+
+                                <div class="mobile-assignment-icon">
+                                    <i class="bi bi-person-badge-fill"></i>
+                                </div>
+
+                                <div>
+
+                                    <small>Driver</small>
+
+                                    <strong>
+                                        {{ trip.driver.name }}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="mobile-trip-metrics">
+
+                            <div class="mobile-trip-metric">
+
+                                <small>Cargo</small>
+
+                                <strong>
+                                    {{ trip.cargo_weight|default:0|floatformat:2 }}
+                                    kg
+                                </strong>
+
+                            </div>
+
+                            <div class="mobile-trip-metric">
+
+                                <small>Distance</small>
+
+                                <strong>
+                                    {{ trip.planned_distance|default:0|floatformat:2 }}
+                                    km
+                                </strong>
+
+                            </div>
+
+                            <div class="mobile-trip-metric">
+
+                                <small>Revenue</small>
+
+                                <strong>
+                                    ₹{{ trip.revenue|default:0|floatformat:2 }}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                        <div class="mobile-trip-action">
 
                             <a
                                 href="{% url 'operations:trip_detail' trip.pk %}"
-                                class="btn btn-sm btn-outline-primary"
+                                class="trip-view-button"
                             >
-                                View
+                                <i class="bi bi-eye-fill"></i>
+                                View Trip Details
                             </a>
 
-                        </td>
+                        </div>
 
-                    </tr>
+                    </article>
 
                 {% empty %}
 
-                    <tr>
+                    <div class="trip-empty-state">
 
-                        <td
-                            colspan="9"
-                            class="text-center text-muted py-5"
-                        >
-                            No trips found.
-                        </td>
+                        <div class="trip-empty-icon">
+                            <i class="bi bi-signpost-split"></i>
+                        </div>
 
-                    </tr>
+                        <h4>No Trips Found</h4>
+
+                        <p>
+                            Change your filters or create a new transport trip.
+                        </p>
+
+                        {% if request.GET.search or request.GET.status or selected_sort != "newest" %}
+
+                            <a
+                                href="{% url 'operations:trip_list' %}"
+                                class="trip-empty-button"
+                            >
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                                Clear Filters
+                            </a>
+
+                        {% elif can_manage %}
+
+                            <a
+                                href="{% url 'operations:trip_create' %}"
+                                class="trip-empty-button"
+                            >
+                                <i class="bi bi-plus-circle-fill"></i>
+                                Create Trip
+                            </a>
+
+                        {% endif %}
+
+                    </div>
 
                 {% endfor %}
 
-            </tbody>
+            </div>
 
-        </table>
+        </section>
 
     </div>
 
 </div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        /*
+         * Clear search input when Escape is pressed.
+         */
+        const searchInput = document.getElementById(
+            "tripSearch"
+        );
+
+        if (searchInput) {
+            searchInput.addEventListener(
+                "keydown",
+                function (event) {
+                    if (event.key === "Escape") {
+                        searchInput.value = "";
+                    }
+                }
+            );
+        }
+
+        /*
+         * Show loading feedback when filters are submitted.
+         */
+        const filterForm = document.getElementById(
+            "tripFilterForm"
+        );
+
+        const filterButton = document.getElementById(
+            "tripFilterButton"
+        );
+
+        if (filterForm && filterButton) {
+            filterForm.addEventListener(
+                "submit",
+                function () {
+                    filterButton.disabled = true;
+
+                    filterButton.innerHTML = `
+                        <span
+                            class="spinner-border spinner-border-sm"
+                            aria-hidden="true"
+                        ></span>
+
+                        <span>Applying...</span>
+                    `;
+                }
+            );
+        }
+    });
+</script>
 
 {% endblock %}

@@ -1,285 +1,1721 @@
+```html
 {% extends "base.html" %}
 
 {% block title %}
-    {{ page_heading|default:"Driver Form" }} | TransitOps
+{{ page_heading|default:"Driver Form" }} | TransitOps
+{% endblock %}
+
+{% block page_title %}
+{{ page_heading|default:"Driver Management" }}
+{% endblock %}
+
+{% block page_subtitle %}
+Add or update driver licence, safety and availability information.
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+    .driver-form-page {
+        --df-primary: #2563eb;
+        --df-primary-dark: #1d4ed8;
+        --df-primary-soft: #eff6ff;
+
+        --df-success: #16a34a;
+        --df-success-soft: #f0fdf4;
+
+        --df-warning: #d97706;
+        --df-warning-soft: #fff7ed;
+
+        --df-danger: #dc2626;
+        --df-danger-soft: #fef2f2;
+
+        --df-purple: #7c3aed;
+        --df-purple-soft: #f5f3ff;
+
+        --df-dark: #0f172a;
+        --df-text: #334155;
+        --df-muted: #64748b;
+        --df-border: #e2e8f0;
+        --df-surface: #ffffff;
+
+        --df-radius: 18px;
+        --df-shadow: 0 16px 42px rgba(15, 23, 42, 0.07);
+    }
+
+    .driver-form-page * {
+        box-sizing: border-box;
+    }
+
+    .driver-form-wrapper {
+        width: 100%;
+        max-width: 1160px;
+        margin: 0 auto;
+    }
+
+    /* Breadcrumb */
+
+    .driver-form-breadcrumb {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 18px;
+        color: var(--df-muted);
+        font-size: 12px;
+    }
+
+    .driver-form-breadcrumb a {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--df-muted);
+        font-weight: 600;
+        transition: color 0.2s ease;
+    }
+
+    .driver-form-breadcrumb a:hover {
+        color: var(--df-primary);
+    }
+
+    .driver-form-breadcrumb > i {
+        color: #94a3b8;
+        font-size: 10px;
+    }
+
+    /* Hero */
+
+    .driver-form-hero {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        overflow: hidden;
+        margin-bottom: 22px;
+        padding: 27px 29px;
+        color: #ffffff;
+        background:
+            radial-gradient(
+                circle at 90% 10%,
+                rgba(255, 255, 255, 0.18),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 8% 115%,
+                rgba(14, 165, 233, 0.25),
+                transparent 36%
+            ),
+            linear-gradient(
+                135deg,
+                #0f172a 0%,
+                #1e3a8a 52%,
+                #2563eb 100%
+            );
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 21px;
+        box-shadow: 0 18px 42px rgba(37, 99, 235, 0.17);
+    }
+
+    .driver-form-hero::after {
+        position: absolute;
+        right: -65px;
+        bottom: -105px;
+        width: 240px;
+        height: 240px;
+        content: "";
+        border: 32px solid rgba(255, 255, 255, 0.055);
+        border-radius: 50%;
+    }
+
+    .driver-form-hero-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        max-width: 760px;
+    }
+
+    .driver-form-hero-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 54px;
+        height: 54px;
+        color: #ffffff;
+        font-size: 22px;
+        background: rgba(255, 255, 255, 0.13);
+        border: 1px solid rgba(255, 255, 255, 0.17);
+        border-radius: 16px;
+        backdrop-filter: blur(10px);
+    }
+
+    .driver-form-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 8px;
+        padding: 5px 9px;
+        color: #dbeafe;
+        font-size: 9px;
+        font-weight: 750;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 30px;
+    }
+
+    .driver-form-eyebrow span {
+        width: 7px;
+        height: 7px;
+        background: #4ade80;
+        border-radius: 50%;
+        box-shadow: 0 0 0 5px rgba(74, 222, 128, 0.13);
+    }
+
+    .driver-form-hero h2 {
+        margin: 0;
+        color: #ffffff;
+        font-size: clamp(23px, 4vw, 31px);
+        font-weight: 760;
+        letter-spacing: -0.8px;
+    }
+
+    .driver-form-hero p {
+        max-width: 620px;
+        margin: 7px 0 0;
+        color: #dbeafe;
+        font-size: 12px;
+        line-height: 1.65;
+    }
+
+    .driver-back-button {
+        position: relative;
+        z-index: 2;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        gap: 8px;
+        min-height: 43px;
+        padding: 9px 15px;
+        color: #1e3a8a;
+        font-size: 11px;
+        font-weight: 700;
+        background: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        border-radius: 10px;
+        box-shadow: 0 9px 20px rgba(15, 23, 42, 0.13);
+        transition: 0.2s ease;
+    }
+
+    .driver-back-button:hover {
+        color: var(--df-primary);
+        background: var(--df-primary-soft);
+        transform: translateY(-2px);
+    }
+
+    /* Main Layout */
+
+    .driver-form-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 285px;
+        align-items: start;
+        gap: 22px;
+    }
+
+    /* Main Card */
+
+    .driver-form-card {
+        overflow: hidden;
+        background: var(--df-surface);
+        border: 1px solid var(--df-border);
+        border-radius: var(--df-radius);
+        box-shadow: var(--df-shadow);
+    }
+
+    .driver-form-card-header {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        padding: 20px 23px;
+        background:
+            linear-gradient(
+                135deg,
+                rgba(239, 246, 255, 0.95),
+                rgba(255, 255, 255, 0.98)
+            );
+        border-bottom: 1px solid var(--df-border);
+    }
+
+    .driver-form-card-header-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 43px;
+        height: 43px;
+        color: var(--df-primary);
+        font-size: 19px;
+        background: #ffffff;
+        border: 1px solid #dbeafe;
+        border-radius: 12px;
+        box-shadow: 0 7px 17px rgba(37, 99, 235, 0.09);
+    }
+
+    .driver-form-card-header h3 {
+        margin: 0;
+        color: var(--df-dark);
+        font-size: 16px;
+        font-weight: 720;
+    }
+
+    .driver-form-card-header p {
+        margin: 4px 0 0;
+        color: var(--df-muted);
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+    .driver-form-card-body {
+        padding: 24px;
+    }
+
+    /* General Errors */
+
+    .driver-general-errors {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+        margin-bottom: 22px;
+        padding: 14px 15px;
+        color: #991b1b;
+        background: var(--df-danger-soft);
+        border: 1px solid #fecaca;
+        border-radius: 12px;
+    }
+
+    .driver-general-error-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 33px;
+        height: 33px;
+        color: var(--df-danger);
+        background: #fee2e2;
+        border-radius: 9px;
+    }
+
+    .driver-general-errors strong {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 11px;
+        font-weight: 750;
+    }
+
+    .driver-general-errors ul {
+        margin: 0;
+        padding-left: 17px;
+        font-size: 10px;
+        line-height: 1.55;
+    }
+
+    /* Form Sections */
+
+    .driver-form-section {
+        margin-bottom: 28px;
+    }
+
+    .driver-form-section:last-of-type {
+        margin-bottom: 0;
+    }
+
+    .driver-form-section-heading {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        margin-bottom: 17px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #eef2f7;
+    }
+
+    .driver-form-section-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 36px;
+        height: 36px;
+        color: var(--df-primary);
+        font-size: 15px;
+        background: var(--df-primary-soft);
+        border-radius: 10px;
+    }
+
+    .driver-form-section-heading h4 {
+        margin: 0;
+        color: var(--df-dark);
+        font-size: 13px;
+        font-weight: 720;
+    }
+
+    .driver-form-section-heading p {
+        margin: 3px 0 0;
+        color: var(--df-muted);
+        font-size: 9px;
+        line-height: 1.45;
+    }
+
+    /* Fields */
+
+    .driver-field {
+        width: 100%;
+    }
+
+    .driver-field-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 7px;
+        color: var(--df-text);
+        font-size: 11px;
+        font-weight: 680;
+    }
+
+    .required-mark {
+        margin-left: 2px;
+        color: var(--df-danger);
+    }
+
+    .optional-label {
+        color: #94a3b8;
+        font-size: 8px;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+    }
+
+    .driver-field input:not([type="checkbox"]),
+    .driver-field select,
+    .driver-field textarea {
+        width: 100%;
+        min-height: 46px;
+        padding: 10px 13px;
+        color: var(--df-dark);
+        font-size: 12px;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        outline: none;
+        box-shadow: none;
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            background 0.2s ease;
+    }
+
+    .driver-field select {
+        cursor: pointer;
+    }
+
+    .driver-field input:not([type="checkbox"]):hover,
+    .driver-field select:hover,
+    .driver-field textarea:hover {
+        border-color: #94a3b8;
+    }
+
+    .driver-field input:not([type="checkbox"]):focus,
+    .driver-field select:focus,
+    .driver-field textarea:focus {
+        background: #ffffff;
+        border-color: var(--df-primary);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+
+    .driver-field input::placeholder {
+        color: #94a3b8;
+    }
+
+    .driver-field.has-error input:not([type="checkbox"]),
+    .driver-field.has-error select,
+    .driver-field.has-error textarea {
+        background: #fffafa;
+        border-color: #f87171;
+    }
+
+    .driver-field-help {
+        display: flex;
+        align-items: flex-start;
+        gap: 5px;
+        margin-top: 6px;
+        color: var(--df-muted);
+        font-size: 9px;
+        line-height: 1.5;
+    }
+
+    .driver-field-help i {
+        margin-top: 1px;
+        color: #94a3b8;
+    }
+
+    .driver-field-errors {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-top: 6px;
+    }
+
+    .driver-field-error {
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+        color: var(--df-danger);
+        font-size: 9px;
+        font-weight: 650;
+        line-height: 1.45;
+    }
+
+    .driver-field-error i {
+        margin-top: 1px;
+    }
+
+    /* Safety Score */
+
+    .safety-score-preview {
+        margin-top: 10px;
+        padding: 12px;
+        background: #f8fafc;
+        border: 1px solid var(--df-border);
+        border-radius: 11px;
+    }
+
+    .safety-score-preview-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 8px;
+    }
+
+    .safety-score-preview-header strong {
+        color: var(--df-dark);
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+    .safety-score-preview-header span {
+        color: var(--df-muted);
+        font-size: 9px;
+        font-weight: 650;
+    }
+
+    .safety-score-track {
+        width: 100%;
+        height: 7px;
+        overflow: hidden;
+        background: #e2e8f0;
+        border-radius: 20px;
+    }
+
+    .safety-score-bar {
+        width: 0;
+        height: 100%;
+        background: linear-gradient(90deg, #16a34a, #4ade80);
+        border-radius: 20px;
+        transition:
+            width 0.35s ease,
+            background 0.35s ease;
+    }
+
+    .safety-score-bar.medium {
+        background: linear-gradient(90deg, #d97706, #fbbf24);
+    }
+
+    .safety-score-bar.low {
+        background: linear-gradient(90deg, #dc2626, #f87171);
+    }
+
+    /* Status Preview */
+
+    .driver-status-preview {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 9px;
+        padding: 11px 12px;
+        background: #f8fafc;
+        border: 1px solid var(--df-border);
+        border-radius: 10px;
+    }
+
+    .driver-status-preview-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 32px;
+        height: 32px;
+        color: var(--df-success);
+        background: var(--df-success-soft);
+        border-radius: 9px;
+    }
+
+    .driver-status-preview strong {
+        display: block;
+        color: var(--df-dark);
+        font-size: 10px;
+    }
+
+    .driver-status-preview small {
+        display: block;
+        margin-top: 2px;
+        color: var(--df-muted);
+        font-size: 8px;
+        line-height: 1.4;
+    }
+
+    /* Footer */
+
+    .driver-form-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        margin-top: 28px;
+        padding-top: 20px;
+        border-top: 1px solid #eef2f7;
+    }
+
+    .driver-form-footer-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 7px;
+        color: var(--df-muted);
+        font-size: 9px;
+        line-height: 1.5;
+    }
+
+    .driver-form-footer-note i {
+        margin-top: 1px;
+        color: var(--df-primary);
+    }
+
+    .driver-form-actions {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+    .driver-cancel-button,
+    .driver-save-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        min-height: 42px;
+        padding: 9px 15px;
+        font-size: 11px;
+        font-weight: 700;
+        border-radius: 10px;
+        transition: 0.2s ease;
+    }
+
+    .driver-cancel-button {
+        color: #475569;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+    }
+
+    .driver-cancel-button:hover {
+        color: var(--df-dark);
+        background: #f8fafc;
+        border-color: #94a3b8;
+        transform: translateY(-1px);
+    }
+
+    .driver-save-button {
+        color: #ffffff;
+        background:
+            linear-gradient(
+                135deg,
+                var(--df-primary),
+                var(--df-primary-dark)
+            );
+        border: 1px solid var(--df-primary);
+        box-shadow: 0 8px 18px rgba(37, 99, 235, 0.2);
+    }
+
+    .driver-save-button:hover {
+        color: #ffffff;
+        background: linear-gradient(135deg, #1d4ed8, #1e40af);
+        border-color: #1d4ed8;
+        box-shadow: 0 11px 23px rgba(37, 99, 235, 0.26);
+        transform: translateY(-2px);
+    }
+
+    .driver-save-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.7;
+        transform: none;
+    }
+
+    /* Sidebar */
+
+    .driver-form-sidebar {
+        position: sticky;
+        top: 115px;
+        overflow: hidden;
+        background: #ffffff;
+        border: 1px solid var(--df-border);
+        border-radius: var(--df-radius);
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
+    }
+
+    .driver-form-sidebar-header {
+        padding: 20px;
+        color: #ffffff;
+        background:
+            radial-gradient(
+                circle at top right,
+                rgba(255, 255, 255, 0.15),
+                transparent 35%
+            ),
+            linear-gradient(135deg, #0f172a, #1e3a8a);
+    }
+
+    .driver-form-sidebar-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        margin-bottom: 13px;
+        color: #ffffff;
+        font-size: 18px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+    }
+
+    .driver-form-sidebar-header h4 {
+        margin: 0;
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 720;
+    }
+
+    .driver-form-sidebar-header p {
+        margin: 6px 0 0;
+        color: #cbd5e1;
+        font-size: 9px;
+        line-height: 1.55;
+    }
+
+    .driver-form-sidebar-body {
+        padding: 18px;
+    }
+
+    .driver-guide-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .driver-guide-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .driver-guide-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 31px;
+        height: 31px;
+        color: var(--df-primary);
+        font-size: 13px;
+        background: var(--df-primary-soft);
+        border-radius: 9px;
+    }
+
+    .driver-guide-list strong {
+        display: block;
+        margin-bottom: 3px;
+        color: var(--df-dark);
+        font-size: 10px;
+        font-weight: 720;
+    }
+
+    .driver-guide-list p {
+        margin: 0;
+        color: var(--df-muted);
+        font-size: 8px;
+        line-height: 1.5;
+    }
+
+    .driver-compliance-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        margin-top: 17px;
+        padding: 11px;
+        color: #166534;
+        font-size: 8px;
+        line-height: 1.5;
+        background: var(--df-success-soft);
+        border: 1px solid #bbf7d0;
+        border-radius: 10px;
+    }
+
+    .driver-compliance-note i {
+        margin-top: 1px;
+        color: var(--df-success);
+        font-size: 12px;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 991.98px) {
+        .driver-form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .driver-form-sidebar {
+            position: static;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .driver-form-hero {
+            align-items: stretch;
+            flex-direction: column;
+            padding: 22px;
+        }
+
+        .driver-back-button {
+            width: 100%;
+        }
+
+        .driver-form-card-body {
+            padding: 20px;
+        }
+
+        .driver-form-footer {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .driver-form-footer-note {
+            justify-content: center;
+            text-align: center;
+        }
+
+        .driver-form-actions {
+            width: 100%;
+        }
+
+        .driver-cancel-button,
+        .driver-save-button {
+            flex: 1;
+        }
+    }
+
+    @media (max-width: 479.98px) {
+        .driver-form-hero {
+            padding: 19px;
+            border-radius: 16px;
+        }
+
+        .driver-form-hero-content {
+            align-items: flex-start;
+        }
+
+        .driver-form-hero-icon {
+            width: 45px;
+            height: 45px;
+            font-size: 19px;
+        }
+
+        .driver-form-card,
+        .driver-form-sidebar {
+            border-radius: 15px;
+        }
+
+        .driver-form-card-header,
+        .driver-form-card-body {
+            padding: 17px;
+        }
+
+        .driver-form-actions {
+            flex-direction: column-reverse;
+        }
+
+        .driver-cancel-button,
+        .driver-save-button {
+            width: 100%;
+        }
+    }
+</style>
+
 {% endblock %}
 
 {% block content %}
 
-<div class="container-fluid py-4">
+<div class="driver-form-page">
 
-    <div class="row justify-content-center">
+    <div class="driver-form-wrapper">
 
-        <div class="col-xl-9 col-lg-10">
+        <!-- Breadcrumb -->
+        <nav class="driver-form-breadcrumb">
 
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <a href="{% url 'dashboard:home' %}">
+                <i class="bi bi-house-door"></i>
+                Dashboard
+            </a>
+
+            <i class="bi bi-chevron-right"></i>
+
+            <a href="{% url 'fleet:driver_list' %}">
+                Drivers
+            </a>
+
+            <i class="bi bi-chevron-right"></i>
+
+            <span>
+                {{ page_heading|default:"Driver Form" }}
+            </span>
+
+        </nav>
+
+        <!-- Hero -->
+        <section class="driver-form-hero">
+
+            <div class="driver-form-hero-content">
+
+                <div class="driver-form-hero-icon">
+                    <i class="bi bi-person-vcard-fill"></i>
+                </div>
 
                 <div>
-                    <h2 class="fw-bold mb-1">
+
+                    <div class="driver-form-eyebrow">
+                        <span></span>
+                        Driver Safety and Compliance
+                    </div>
+
+                    <h2>
                         {{ page_heading|default:"Driver Form" }}
                     </h2>
 
-                    <p class="text-muted mb-0">
-                        Add or update driver licence, contact,
-                        safety and availability information.
+                    <p>
+                        Add or update driver identity, licence validity,
+                        contact details, safety score and operational status.
                     </p>
-                </div>
 
-                <a
-                    href="{% url 'fleet:driver_list' %}"
-                    class="btn btn-outline-secondary"
-                >
-                    Back to Drivers
-                </a>
+                </div>
 
             </div>
 
+            <a
+                href="{% url 'fleet:driver_list' %}"
+                class="driver-back-button"
+            >
+                <i class="bi bi-arrow-left"></i>
+                Back to Drivers
+            </a>
 
-            <div class="card border-0 shadow-sm">
+        </section>
 
-                <div class="card-header bg-white border-0 py-3">
+        <div class="driver-form-grid">
 
-                    <h5 class="mb-0 fw-semibold">
-                        Driver Information
-                    </h5>
+            <!-- Main Form -->
+            <section class="driver-form-card">
 
-                </div>
+                <header class="driver-form-card-header">
 
+                    <div class="driver-form-card-header-icon">
+                        <i class="bi bi-person-lines-fill"></i>
+                    </div>
 
-                <div class="card-body p-4">
+                    <div>
+                        <h3>Driver Information</h3>
 
-                    <form method="post" novalidate>
+                        <p>
+                            Complete the required details and review all
+                            compliance information before saving.
+                        </p>
+                    </div>
 
+                </header>
+
+                <div class="driver-form-card-body">
+
+                    <form
+                        method="post"
+                        id="driverForm"
+                        novalidate
+                    >
                         {% csrf_token %}
 
+                        {% for hidden_field in form.hidden_fields %}
+                            {{ hidden_field }}
+                        {% endfor %}
 
+                        <!-- Non-field Errors -->
                         {% if form.non_field_errors %}
 
-                            <div class="alert alert-danger">
+                            <div class="driver-general-errors">
 
-                                {% for error in form.non_field_errors %}
-                                    <div>{{ error }}</div>
-                                {% endfor %}
+                                <div class="driver-general-error-icon">
+                                    <i class="bi bi-exclamation-octagon-fill"></i>
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        Please correct the following errors
+                                    </strong>
+
+                                    <ul>
+                                        {% for error in form.non_field_errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+
+                                </div>
 
                             </div>
 
                         {% endif %}
 
+                        <!-- Personal Details -->
+                        <section class="driver-form-section">
 
-                        <div class="row g-4">
+                            <div class="driver-form-section-heading">
 
-
-                            <div class="col-md-6">
-
-                                <label
-                                    for="{{ form.name.id_for_label }}"
-                                    class="form-label fw-semibold"
-                                >
-                                    Driver Name
-                                </label>
-
-                                {{ form.name }}
-
-                                {% for error in form.name.errors %}
-                                    <div class="text-danger small mt-1">
-                                        {{ error }}
-                                    </div>
-                                {% endfor %}
-
-                            </div>
-
-
-                            <div class="col-md-6">
-
-                                <label
-                                    for="{{ form.license_number.id_for_label }}"
-                                    class="form-label fw-semibold"
-                                >
-                                    Licence Number
-                                </label>
-
-                                {{ form.license_number }}
-
-                                {% for error in form.license_number.errors %}
-                                    <div class="text-danger small mt-1">
-                                        {{ error }}
-                                    </div>
-                                {% endfor %}
-
-                            </div>
-
-
-                            <div class="col-md-6">
-
-                                <label
-                                    for="{{ form.license_category.id_for_label }}"
-                                    class="form-label fw-semibold"
-                                >
-                                    Licence Category
-                                </label>
-
-                                {{ form.license_category }}
-
-                                {% for error in form.license_category.errors %}
-                                    <div class="text-danger small mt-1">
-                                        {{ error }}
-                                    </div>
-                                {% endfor %}
-
-                            </div>
-
-
-                            <div class="col-md-6">
-
-                                <label
-                                    for="{{ form.license_expiry_date.id_for_label }}"
-                                    class="form-label fw-semibold"
-                                >
-                                    Licence Expiry Date
-                                </label>
-
-                                {{ form.license_expiry_date }}
-
-                                {% for error in form.license_expiry_date.errors %}
-                                    <div class="text-danger small mt-1">
-                                        {{ error }}
-                                    </div>
-                                {% endfor %}
-
-                            </div>
-
-
-                            <div class="col-md-6">
-
-                                <label
-                                    for="{{ form.contact_number.id_for_label }}"
-                                    class="form-label fw-semibold"
-                                >
-                                    Contact Number
-                                </label>
-
-                                {{ form.contact_number }}
-
-                                {% for error in form.contact_number.errors %}
-                                    <div class="text-danger small mt-1">
-                                        {{ error }}
-                                    </div>
-                                {% endfor %}
-
-                            </div>
-
-
-                            <div class="col-md-6">
-
-                                <label
-                                    for="{{ form.safety_score.id_for_label }}"
-                                    class="form-label fw-semibold"
-                                >
-                                    Safety Score
-                                </label>
-
-                                {{ form.safety_score }}
-
-                                <div class="form-text">
-                                    Enter a score between 0 and 100.
+                                <div class="driver-form-section-icon">
+                                    <i class="bi bi-person-fill"></i>
                                 </div>
 
-                                {% for error in form.safety_score.errors %}
-                                    <div class="text-danger small mt-1">
-                                        {{ error }}
-                                    </div>
-                                {% endfor %}
+                                <div>
+                                    <h4>Personal and Contact Details</h4>
+
+                                    <p>
+                                        Basic driver identity and communication information.
+                                    </p>
+                                </div>
 
                             </div>
 
+                            <div class="row g-3">
 
-                            <div class="col-md-6">
+                                <!-- Driver Name -->
+                                <div class="col-md-6">
 
-                                <label
-                                    for="{{ form.status.id_for_label }}"
-                                    class="form-label fw-semibold"
-                                >
-                                    Driver Status
-                                </label>
-
-                                {{ form.status }}
-
-                                {% for error in form.status.errors %}
-                                    <div class="text-danger small mt-1">
-                                        {{ error }}
-                                    </div>
-                                {% endfor %}
-
-                            </div>
-
-
-                            {% for hidden_field in form.hidden_fields %}
-                                {{ hidden_field }}
-                            {% endfor %}
-
-
-                            {% for field in form.visible_fields %}
-
-                                {% if field.name != "name" and field.name != "license_number" and field.name != "license_category" and field.name != "license_expiry_date" and field.name != "contact_number" and field.name != "safety_score" and field.name != "status" %}
-
-                                    <div class="col-md-6">
+                                    <div
+                                        class="
+                                            driver-field
+                                            {% if form.name.errors %}
+                                                has-error
+                                            {% endif %}
+                                        "
+                                    >
 
                                         <label
-                                            for="{{ field.id_for_label }}"
-                                            class="form-label fw-semibold"
+                                            for="{{ form.name.id_for_label }}"
+                                            class="driver-field-label"
                                         >
-                                            {{ field.label }}
+                                            <span>
+                                                Driver Name
+                                                <span class="required-mark">*</span>
+                                            </span>
                                         </label>
 
-                                        {{ field }}
+                                        {{ form.name }}
 
-                                        {% if field.help_text %}
-                                            <div class="form-text">
-                                                {{ field.help_text }}
+                                        <div class="driver-field-help">
+                                            <i class="bi bi-info-circle"></i>
+
+                                            <span>
+                                                Enter the driver's full legal name.
+                                            </span>
+                                        </div>
+
+                                        {% if form.name.errors %}
+
+                                            <div class="driver-field-errors">
+
+                                                {% for error in form.name.errors %}
+
+                                                    <div class="driver-field-error">
+                                                        <i class="bi bi-exclamation-circle-fill"></i>
+                                                        <span>{{ error }}</span>
+                                                    </div>
+
+                                                {% endfor %}
+
                                             </div>
+
                                         {% endif %}
-
-                                        {% for error in field.errors %}
-                                            <div class="text-danger small mt-1">
-                                                {{ error }}
-                                            </div>
-                                        {% endfor %}
 
                                     </div>
 
-                                {% endif %}
+                                </div>
 
-                            {% endfor %}
+                                <!-- Contact -->
+                                <div class="col-md-6">
 
-                        </div>
+                                    <div
+                                        class="
+                                            driver-field
+                                            {% if form.contact_number.errors %}
+                                                has-error
+                                            {% endif %}
+                                        "
+                                    >
 
+                                        <label
+                                            for="{{ form.contact_number.id_for_label }}"
+                                            class="driver-field-label"
+                                        >
+                                            <span>
+                                                Contact Number
+                                                <span class="required-mark">*</span>
+                                            </span>
+                                        </label>
 
-                        <hr class="my-4">
+                                        {{ form.contact_number }}
 
+                                        <div class="driver-field-help">
+                                            <i class="bi bi-telephone"></i>
 
-                        <div class="d-flex gap-2">
+                                            <span>
+                                                Use an active mobile number for trip communication.
+                                            </span>
+                                        </div>
 
-                            <button
-                                type="submit"
-                                class="btn btn-primary px-4"
-                            >
-                                {{ button_text|default:"Save Driver" }}
-                            </button>
+                                        {% if form.contact_number.errors %}
 
-                            <a
-                                href="{% url 'fleet:driver_list' %}"
-                                class="btn btn-outline-secondary px-4"
-                            >
-                                Cancel
-                            </a>
+                                            <div class="driver-field-errors">
 
-                        </div>
+                                                {% for error in form.contact_number.errors %}
+
+                                                    <div class="driver-field-error">
+                                                        <i class="bi bi-exclamation-circle-fill"></i>
+                                                        <span>{{ error }}</span>
+                                                    </div>
+
+                                                {% endfor %}
+
+                                            </div>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </section>
+
+                        <!-- Licence Details -->
+                        <section class="driver-form-section">
+
+                            <div class="driver-form-section-heading">
+
+                                <div class="driver-form-section-icon">
+                                    <i class="bi bi-credit-card-2-front-fill"></i>
+                                </div>
+
+                                <div>
+                                    <h4>Driving Licence Details</h4>
+
+                                    <p>
+                                        Licence identity, category and validity information.
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <div class="row g-3">
+
+                                <!-- Licence Number -->
+                                <div class="col-md-6">
+
+                                    <div
+                                        class="
+                                            driver-field
+                                            {% if form.license_number.errors %}
+                                                has-error
+                                            {% endif %}
+                                        "
+                                    >
+
+                                        <label
+                                            for="{{ form.license_number.id_for_label }}"
+                                            class="driver-field-label"
+                                        >
+                                            <span>
+                                                Licence Number
+                                                <span class="required-mark">*</span>
+                                            </span>
+                                        </label>
+
+                                        {{ form.license_number }}
+
+                                        <div class="driver-field-help">
+                                            <i class="bi bi-shield-check"></i>
+
+                                            <span>
+                                                Enter the licence exactly as shown on the document.
+                                            </span>
+                                        </div>
+
+                                        {% if form.license_number.errors %}
+
+                                            <div class="driver-field-errors">
+
+                                                {% for error in form.license_number.errors %}
+
+                                                    <div class="driver-field-error">
+                                                        <i class="bi bi-exclamation-circle-fill"></i>
+                                                        <span>{{ error }}</span>
+                                                    </div>
+
+                                                {% endfor %}
+
+                                            </div>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+                                <!-- Licence Category -->
+                                <div class="col-md-6">
+
+                                    <div
+                                        class="
+                                            driver-field
+                                            {% if form.license_category.errors %}
+                                                has-error
+                                            {% endif %}
+                                        "
+                                    >
+
+                                        <label
+                                            for="{{ form.license_category.id_for_label }}"
+                                            class="driver-field-label"
+                                        >
+                                            <span>
+                                                Licence Category
+                                                <span class="required-mark">*</span>
+                                            </span>
+                                        </label>
+
+                                        {{ form.license_category }}
+
+                                        <div class="driver-field-help">
+                                            <i class="bi bi-card-text"></i>
+
+                                            <span>
+                                                Examples: LMV, LMV-TR, HMV or HGMV.
+                                            </span>
+                                        </div>
+
+                                        {% if form.license_category.errors %}
+
+                                            <div class="driver-field-errors">
+
+                                                {% for error in form.license_category.errors %}
+
+                                                    <div class="driver-field-error">
+                                                        <i class="bi bi-exclamation-circle-fill"></i>
+                                                        <span>{{ error }}</span>
+                                                    </div>
+
+                                                {% endfor %}
+
+                                            </div>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+                                <!-- Expiry Date -->
+                                <div class="col-md-6">
+
+                                    <div
+                                        class="
+                                            driver-field
+                                            {% if form.license_expiry_date.errors %}
+                                                has-error
+                                            {% endif %}
+                                        "
+                                    >
+
+                                        <label
+                                            for="{{ form.license_expiry_date.id_for_label }}"
+                                            class="driver-field-label"
+                                        >
+                                            <span>
+                                                Licence Expiry Date
+                                                <span class="required-mark">*</span>
+                                            </span>
+                                        </label>
+
+                                        {{ form.license_expiry_date }}
+
+                                        <div class="driver-field-help">
+                                            <i class="bi bi-calendar-check"></i>
+
+                                            <span>
+                                                Expired licences cannot be assigned to trips.
+                                            </span>
+                                        </div>
+
+                                        {% if form.license_expiry_date.errors %}
+
+                                            <div class="driver-field-errors">
+
+                                                {% for error in form.license_expiry_date.errors %}
+
+                                                    <div class="driver-field-error">
+                                                        <i class="bi bi-exclamation-circle-fill"></i>
+                                                        <span>{{ error }}</span>
+                                                    </div>
+
+                                                {% endfor %}
+
+                                            </div>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+                                <!-- Status -->
+                                <div class="col-md-6">
+
+                                    <div
+                                        class="
+                                            driver-field
+                                            {% if form.status.errors %}
+                                                has-error
+                                            {% endif %}
+                                        "
+                                    >
+
+                                        <label
+                                            for="{{ form.status.id_for_label }}"
+                                            class="driver-field-label"
+                                        >
+                                            <span>
+                                                Driver Status
+                                                <span class="required-mark">*</span>
+                                            </span>
+                                        </label>
+
+                                        {{ form.status }}
+
+                                        <div
+                                            class="driver-status-preview"
+                                            id="driverStatusPreview"
+                                        >
+
+                                            <div
+                                                class="driver-status-preview-icon"
+                                                id="driverStatusIcon"
+                                            >
+                                                <i class="bi bi-check-circle-fill"></i>
+                                            </div>
+
+                                            <div>
+                                                <strong id="driverStatusTitle">
+                                                    Available
+                                                </strong>
+
+                                                <small id="driverStatusDescription">
+                                                    Driver can be assigned to a new trip.
+                                                </small>
+                                            </div>
+
+                                        </div>
+
+                                        {% if form.status.errors %}
+
+                                            <div class="driver-field-errors">
+
+                                                {% for error in form.status.errors %}
+
+                                                    <div class="driver-field-error">
+                                                        <i class="bi bi-exclamation-circle-fill"></i>
+                                                        <span>{{ error }}</span>
+                                                    </div>
+
+                                                {% endfor %}
+
+                                            </div>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </section>
+
+                        <!-- Safety -->
+                        <section class="driver-form-section">
+
+                            <div class="driver-form-section-heading">
+
+                                <div class="driver-form-section-icon">
+                                    <i class="bi bi-shield-check"></i>
+                                </div>
+
+                                <div>
+                                    <h4>Safety Performance</h4>
+
+                                    <p>
+                                        Record the driver's current safety score.
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+
+                                    <div
+                                        class="
+                                            driver-field
+                                            {% if form.safety_score.errors %}
+                                                has-error
+                                            {% endif %}
+                                        "
+                                    >
+
+                                        <label
+                                            for="{{ form.safety_score.id_for_label }}"
+                                            class="driver-field-label"
+                                        >
+                                            <span>
+                                                Safety Score
+                                                <span class="required-mark">*</span>
+                                            </span>
+                                        </label>
+
+                                        {{ form.safety_score }}
+
+                                        <div class="driver-field-help">
+                                            <i class="bi bi-speedometer2"></i>
+
+                                            <span>
+                                                Enter a score between 0 and 100.
+                                            </span>
+                                        </div>
+
+                                        <div class="safety-score-preview">
+
+                                            <div class="safety-score-preview-header">
+
+                                                <strong>
+                                                    Safety performance
+                                                </strong>
+
+                                                <span id="safetyScoreText">
+                                                    0/100
+                                                </span>
+
+                                            </div>
+
+                                            <div class="safety-score-track">
+
+                                                <div
+                                                    class="safety-score-bar low"
+                                                    id="safetyScoreBar"
+                                                ></div>
+
+                                            </div>
+
+                                        </div>
+
+                                        {% if form.safety_score.errors %}
+
+                                            <div class="driver-field-errors">
+
+                                                {% for error in form.safety_score.errors %}
+
+                                                    <div class="driver-field-error">
+                                                        <i class="bi bi-exclamation-circle-fill"></i>
+                                                        <span>{{ error }}</span>
+                                                    </div>
+
+                                                {% endfor %}
+
+                                            </div>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+                                <!-- Extra Form Fields -->
+                                {% for field in form.visible_fields %}
+
+                                    {% if field.name != "name" and field.name != "license_number" and field.name != "license_category" and field.name != "license_expiry_date" and field.name != "contact_number" and field.name != "safety_score" and field.name != "status" %}
+
+                                        <div class="col-md-6">
+
+                                            <div
+                                                class="
+                                                    driver-field
+                                                    {% if field.errors %}
+                                                        has-error
+                                                    {% endif %}
+                                                "
+                                            >
+
+                                                <label
+                                                    for="{{ field.id_for_label }}"
+                                                    class="driver-field-label"
+                                                >
+                                                    <span>
+                                                        {{ field.label }}
+                                                    </span>
+                                                </label>
+
+                                                {{ field }}
+
+                                                {% if field.help_text %}
+
+                                                    <div class="driver-field-help">
+                                                        <i class="bi bi-info-circle"></i>
+
+                                                        <span>
+                                                            {{ field.help_text }}
+                                                        </span>
+                                                    </div>
+
+                                                {% endif %}
+
+                                                {% if field.errors %}
+
+                                                    <div class="driver-field-errors">
+
+                                                        {% for error in field.errors %}
+
+                                                            <div class="driver-field-error">
+                                                                <i class="bi bi-exclamation-circle-fill"></i>
+                                                                <span>{{ error }}</span>
+                                                            </div>
+
+                                                        {% endfor %}
+
+                                                    </div>
+
+                                                {% endif %}
+
+                                            </div>
+
+                                        </div>
+
+                                    {% endif %}
+
+                                {% endfor %}
+
+                            </div>
+
+                        </section>
+
+                        <!-- Actions -->
+                        <footer class="driver-form-footer">
+
+                            <div class="driver-form-footer-note">
+
+                                <i class="bi bi-shield-check"></i>
+
+                                <span>
+                                    Confirm licence details before saving this driver.
+                                </span>
+
+                            </div>
+
+                            <div class="driver-form-actions">
+
+                                <a
+                                    href="{% url 'fleet:driver_list' %}"
+                                    class="driver-cancel-button"
+                                >
+                                    <i class="bi bi-x-lg"></i>
+                                    Cancel
+                                </a>
+
+                                <button
+                                    type="submit"
+                                    class="driver-save-button"
+                                    id="driverSaveButton"
+                                >
+                                    <i class="bi bi-check2-circle"></i>
+
+                                    <span>
+                                        {{ button_text|default:"Save Driver" }}
+                                    </span>
+                                </button>
+
+                            </div>
+
+                        </footer>
 
                     </form>
 
                 </div>
 
-            </div>
+            </section>
+
+            <!-- Sidebar -->
+            <aside class="driver-form-sidebar">
+
+                <header class="driver-form-sidebar-header">
+
+                    <div class="driver-form-sidebar-icon">
+                        <i class="bi bi-info-circle-fill"></i>
+                    </div>
+
+                    <h4>Driver Registration Guide</h4>
+
+                    <p>
+                        Follow these checks to maintain safe and compliant
+                        fleet operations.
+                    </p>
+
+                </header>
+
+                <div class="driver-form-sidebar-body">
+
+                    <ul class="driver-guide-list">
+
+                        <li>
+
+                            <span class="driver-guide-icon">
+                                <i class="bi bi-credit-card-2-front"></i>
+                            </span>
+
+                            <div>
+                                <strong>Verify Licence Number</strong>
+
+                                <p>
+                                    Enter the number exactly as printed on the
+                                    official driving licence.
+                                </p>
+                            </div>
+
+                        </li>
+
+                        <li>
+
+                            <span class="driver-guide-icon">
+                                <i class="bi bi-calendar-check"></i>
+                            </span>
+
+                            <div>
+                                <strong>Check Expiry Date</strong>
+
+                                <p>
+                                    Drivers with expired licences cannot be
+                                    dispatched on trips.
+                                </p>
+                            </div>
+
+                        </li>
+
+                        <li>
+
+                            <span class="driver-guide-icon">
+                                <i class="bi bi-card-checklist"></i>
+                            </span>
+
+                            <div>
+                                <strong>Correct Category</strong>
+
+                                <p>
+                                    Ensure the licence category is suitable for
+                                    the assigned vehicle type.
+                                </p>
+                            </div>
+
+                        </li>
+
+                        <li>
+
+                            <span class="driver-guide-icon">
+                                <i class="bi bi-shield-check"></i>
+                            </span>
+
+                            <div>
+                                <strong>Safety Score</strong>
+
+                                <p>
+                                    Use a consistent safety rating process for
+                                    all registered drivers.
+                                </p>
+                            </div>
+
+                        </li>
+
+                        <li>
+
+                            <span class="driver-guide-icon">
+                                <i class="bi bi-person-check"></i>
+                            </span>
+
+                            <div>
+                                <strong>Availability Status</strong>
+
+                                <p>
+                                    Only available drivers should appear during
+                                    trip dispatch.
+                                </p>
+                            </div>
+
+                        </li>
+
+                    </ul>
+
+                    <div class="driver-compliance-note">
+
+                        <i class="bi bi-shield-fill-check"></i>
+
+                        <span>
+                            Suspended, on-trip or expired-licence drivers must
+                            not be assigned to another trip.
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </aside>
 
         </div>
 
@@ -288,3 +1724,220 @@
 </div>
 
 {% endblock %}
+
+{% block extra_js %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const nameInput = document.getElementById(
+            "{{ form.name.id_for_label }}"
+        );
+
+        const licenceInput = document.getElementById(
+            "{{ form.license_number.id_for_label }}"
+        );
+
+        const categoryInput = document.getElementById(
+            "{{ form.license_category.id_for_label }}"
+        );
+
+        const contactInput = document.getElementById(
+            "{{ form.contact_number.id_for_label }}"
+        );
+
+        const expiryInput = document.getElementById(
+            "{{ form.license_expiry_date.id_for_label }}"
+        );
+
+        const safetyInput = document.getElementById(
+            "{{ form.safety_score.id_for_label }}"
+        );
+
+        const statusInput = document.getElementById(
+            "{{ form.status.id_for_label }}"
+        );
+
+        if (nameInput) {
+            nameInput.placeholder = "Example: Aarav Patel";
+            nameInput.setAttribute("autocomplete", "name");
+        }
+
+        if (licenceInput) {
+            licenceInput.placeholder = "Example: GJ05-2021-0012345";
+            licenceInput.setAttribute("autocomplete", "off");
+        }
+
+        if (categoryInput && categoryInput.tagName !== "SELECT") {
+            categoryInput.placeholder = "Example: LMV-TR";
+        }
+
+        if (contactInput) {
+            contactInput.placeholder = "Example: 98765 43210";
+            contactInput.setAttribute("autocomplete", "tel");
+            contactInput.setAttribute("inputmode", "tel");
+        }
+
+        if (expiryInput) {
+            expiryInput.setAttribute("autocomplete", "off");
+        }
+
+        if (safetyInput) {
+            safetyInput.setAttribute("min", "0");
+            safetyInput.setAttribute("max", "100");
+            safetyInput.setAttribute("inputmode", "numeric");
+        }
+
+        /*
+         * Safety score preview.
+         */
+        const safetyScoreBar = document.getElementById(
+            "safetyScoreBar"
+        );
+
+        const safetyScoreText = document.getElementById(
+            "safetyScoreText"
+        );
+
+        function updateSafetyScore() {
+            if (!safetyInput || !safetyScoreBar || !safetyScoreText) {
+                return;
+            }
+
+            let score = parseFloat(safetyInput.value || "0");
+
+            if (Number.isNaN(score)) {
+                score = 0;
+            }
+
+            score = Math.max(0, Math.min(100, score));
+
+            safetyScoreBar.style.width = score + "%";
+            safetyScoreText.textContent = score + "/100";
+
+            safetyScoreBar.classList.remove("low", "medium");
+
+            if (score < 60) {
+                safetyScoreBar.classList.add("low");
+            } else if (score < 80) {
+                safetyScoreBar.classList.add("medium");
+            }
+        }
+
+        if (safetyInput) {
+            updateSafetyScore();
+
+            safetyInput.addEventListener(
+                "input",
+                updateSafetyScore
+            );
+        }
+
+        /*
+         * Driver status explanation.
+         */
+        const statusPreview = document.getElementById(
+            "driverStatusPreview"
+        );
+
+        const statusIcon = document.getElementById(
+            "driverStatusIcon"
+        );
+
+        const statusTitle = document.getElementById(
+            "driverStatusTitle"
+        );
+
+        const statusDescription = document.getElementById(
+            "driverStatusDescription"
+        );
+
+        function updateDriverStatus() {
+            if (
+                !statusInput ||
+                !statusPreview ||
+                !statusIcon ||
+                !statusTitle ||
+                !statusDescription
+            ) {
+                return;
+            }
+
+            const status = statusInput.value;
+
+            let title = "Available";
+            let description =
+                "Driver can be assigned to a new trip.";
+            let icon = "bi bi-check-circle-fill";
+            let color = "#16a34a";
+            let background = "#f0fdf4";
+
+            if (status === "ON_TRIP") {
+                title = "On Trip";
+                description =
+                    "Driver is assigned to an active trip.";
+                icon = "bi bi-signpost-split-fill";
+                color = "#2563eb";
+                background = "#eff6ff";
+            } else if (status === "OFF_DUTY") {
+                title = "Off Duty";
+                description =
+                    "Driver is currently unavailable for dispatch.";
+                icon = "bi bi-moon-stars-fill";
+                color = "#64748b";
+                background = "#f1f5f9";
+            } else if (status === "SUSPENDED") {
+                title = "Suspended";
+                description =
+                    "Driver cannot be assigned to any trip.";
+                icon = "bi bi-person-x-fill";
+                color = "#dc2626";
+                background = "#fef2f2";
+            }
+
+            statusTitle.textContent = title;
+            statusDescription.textContent = description;
+            statusIcon.innerHTML = '<i class="' + icon + '"></i>';
+            statusIcon.style.color = color;
+            statusIcon.style.background = background;
+            statusPreview.style.borderColor = background;
+        }
+
+        if (statusInput) {
+            updateDriverStatus();
+
+            statusInput.addEventListener(
+                "change",
+                updateDriverStatus
+            );
+        }
+
+        /*
+         * Prevent duplicate form submissions.
+         */
+        const driverForm = document.getElementById(
+            "driverForm"
+        );
+
+        const saveButton = document.getElementById(
+            "driverSaveButton"
+        );
+
+        if (driverForm && saveButton) {
+            driverForm.addEventListener("submit", function () {
+                saveButton.disabled = true;
+
+                saveButton.innerHTML = `
+                    <span
+                        class="spinner-border spinner-border-sm"
+                        aria-hidden="true"
+                    ></span>
+
+                    <span>Saving Driver...</span>
+                `;
+            });
+        }
+    });
+</script>
+
+{% endblock %}
+```

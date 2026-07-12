@@ -1,105 +1,1255 @@
 {% extends "base.html" %}
+
 {% block title %}
-    Login | TransitOps
+Login | TransitOps
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+    .transit-login-page {
+        --login-primary: #2563eb;
+        --login-primary-dark: #1d4ed8;
+        --login-primary-soft: #eff6ff;
+
+        --login-success: #16a34a;
+        --login-success-soft: #f0fdf4;
+
+        --login-danger: #dc2626;
+        --login-danger-soft: #fef2f2;
+
+        --login-dark: #0f172a;
+        --login-text: #334155;
+        --login-muted: #64748b;
+        --login-border: #e2e8f0;
+        --login-surface: #ffffff;
+
+        width: 100%;
+        min-height: 100vh;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 28px;
+
+        background:
+            radial-gradient(
+                circle at top left,
+                rgba(37, 99, 235, 0.12),
+                transparent 32%
+            ),
+            radial-gradient(
+                circle at bottom right,
+                rgba(14, 165, 233, 0.1),
+                transparent 34%
+            ),
+            #f8fafc;
+    }
+
+    .transit-login-page * {
+        box-sizing: border-box;
+    }
+
+    .login-wrapper {
+        width: 100%;
+        max-width: 1120px;
+        min-height: 660px;
+
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(420px, 0.95fr);
+
+        overflow: hidden;
+
+        background: var(--login-surface);
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        border-radius: 26px;
+
+        box-shadow:
+            0 28px 80px rgba(15, 23, 42, 0.15);
+    }
+
+    /* Brand Panel */
+
+    .login-brand-panel {
+        position: relative;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        overflow: hidden;
+
+        padding: 48px;
+
+        color: #ffffff;
+
+        background:
+            radial-gradient(
+                circle at 84% 12%,
+                rgba(255, 255, 255, 0.16),
+                transparent 28%
+            ),
+            radial-gradient(
+                circle at 6% 92%,
+                rgba(14, 165, 233, 0.28),
+                transparent 38%
+            ),
+            linear-gradient(
+                145deg,
+                #0f172a 0%,
+                #1e3a8a 56%,
+                #2563eb 100%
+            );
+    }
+
+    .login-brand-panel::before {
+        position: absolute;
+        top: -85px;
+        right: -90px;
+
+        width: 260px;
+        height: 260px;
+
+        content: "";
+
+        border: 35px solid rgba(255, 255, 255, 0.055);
+        border-radius: 50%;
+    }
+
+    .login-brand-panel::after {
+        position: absolute;
+        right: -125px;
+        bottom: -145px;
+
+        width: 330px;
+        height: 330px;
+
+        content: "";
+
+        border: 44px solid rgba(255, 255, 255, 0.045);
+        border-radius: 50%;
+    }
+
+    .login-brand-content,
+    .login-brand-footer {
+        position: relative;
+        z-index: 2;
+    }
+
+    .login-logo-row {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+
+        margin-bottom: 56px;
+    }
+
+    .large-brand-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 54px;
+        height: 54px;
+
+        color: #1e3a8a;
+        font-size: 25px;
+        font-weight: 850;
+
+        background: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        border-radius: 16px;
+
+        box-shadow:
+            0 12px 28px rgba(15, 23, 42, 0.2);
+    }
+
+    .login-logo-text strong {
+        display: block;
+
+        color: #ffffff;
+        font-size: 18px;
+        font-weight: 780;
+        letter-spacing: -0.3px;
+    }
+
+    .login-logo-text span {
+        display: block;
+
+        margin-top: 2px;
+
+        color: #bfdbfe;
+        font-size: 9px;
+        font-weight: 650;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+    }
+
+    .login-brand-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+
+        margin-bottom: 16px;
+        padding: 6px 10px;
+
+        color: #dbeafe;
+        font-size: 9px;
+        font-weight: 750;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 30px;
+    }
+
+    .login-brand-eyebrow span {
+        width: 7px;
+        height: 7px;
+
+        background: #4ade80;
+        border-radius: 50%;
+
+        box-shadow:
+            0 0 0 5px rgba(74, 222, 128, 0.13);
+    }
+
+    .login-brand-panel h1 {
+        max-width: 480px;
+
+        margin: 0;
+
+        color: #ffffff;
+        font-size: clamp(34px, 5vw, 48px);
+        font-weight: 800;
+        letter-spacing: -1.8px;
+        line-height: 1.08;
+    }
+
+    .login-brand-description {
+        max-width: 520px;
+
+        margin: 20px 0 30px;
+
+        color: #dbeafe;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    .login-feature-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+
+        max-width: 520px;
+    }
+
+    .login-feature-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+
+        min-height: 62px;
+        padding: 13px;
+
+        background: rgba(255, 255, 255, 0.09);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 13px;
+
+        backdrop-filter: blur(10px);
+    }
+
+    .login-feature-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 29px;
+        height: 29px;
+
+        color: #4ade80;
+        font-size: 13px;
+
+        background: rgba(74, 222, 128, 0.14);
+        border-radius: 8px;
+    }
+
+    .login-feature-item strong {
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: #ffffff;
+        font-size: 10px;
+        font-weight: 720;
+    }
+
+    .login-feature-item span {
+        display: block;
+
+        color: #bfdbfe;
+        font-size: 8px;
+        line-height: 1.45;
+    }
+
+    .login-brand-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+
+        margin-top: 40px;
+        padding-top: 20px;
+
+        color: #bfdbfe;
+        font-size: 8px;
+
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .login-security-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .login-security-indicator i {
+        color: #4ade80;
+    }
+
+    /* Form Panel */
+
+    .login-form-panel {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 48px;
+
+        background:
+            radial-gradient(
+                circle at top right,
+                rgba(37, 99, 235, 0.05),
+                transparent 30%
+            ),
+            #ffffff;
+    }
+
+    .login-card {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .login-mobile-logo {
+        display: none;
+        align-items: center;
+        gap: 10px;
+
+        margin-bottom: 30px;
+    }
+
+    .login-mobile-logo-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 43px;
+        height: 43px;
+
+        color: #ffffff;
+        font-size: 20px;
+        font-weight: 850;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--login-primary),
+                var(--login-primary-dark)
+            );
+
+        border-radius: 12px;
+    }
+
+    .login-mobile-logo strong {
+        display: block;
+
+        color: var(--login-dark);
+        font-size: 16px;
+        font-weight: 760;
+    }
+
+    .login-mobile-logo span {
+        display: block;
+
+        color: var(--login-muted);
+        font-size: 8px;
+        text-transform: uppercase;
+    }
+
+    .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+
+        margin: 0 0 12px;
+        padding: 6px 9px;
+
+        color: var(--login-primary);
+        font-size: 8px;
+        font-weight: 760;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+
+        background: var(--login-primary-soft);
+        border-radius: 20px;
+    }
+
+    .eyebrow::before {
+        width: 6px;
+        height: 6px;
+
+        content: "";
+
+        background: var(--login-primary);
+        border-radius: 50%;
+    }
+
+    .login-card h2 {
+        margin: 0;
+
+        color: var(--login-dark);
+        font-size: 30px;
+        font-weight: 790;
+        letter-spacing: -0.8px;
+    }
+
+    .login-description {
+        margin: 9px 0 28px;
+
+        color: var(--login-muted);
+        font-size: 11px;
+        line-height: 1.6;
+    }
+
+    /* Errors */
+
+    .login-general-error {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+
+        margin-bottom: 20px;
+        padding: 13px;
+
+        color: #991b1b;
+
+        background: var(--login-danger-soft);
+        border: 1px solid #fecaca;
+        border-radius: 11px;
+    }
+
+    .login-general-error-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 31px;
+        height: 31px;
+
+        color: var(--login-danger);
+
+        background: #fee2e2;
+        border-radius: 8px;
+    }
+
+    .login-general-error strong {
+        display: block;
+
+        margin-bottom: 3px;
+
+        font-size: 10px;
+        font-weight: 720;
+    }
+
+    .login-general-error ul {
+        margin: 0;
+        padding-left: 16px;
+
+        font-size: 9px;
+        line-height: 1.45;
+    }
+
+    /* Fields */
+
+    .login-form-field {
+        margin-bottom: 18px;
+    }
+
+    .login-form-field.password-field {
+        margin-bottom: 23px;
+    }
+
+    .login-field-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+
+        margin-bottom: 7px;
+
+        color: var(--login-text);
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+    .login-field-label span {
+        color: var(--login-danger);
+    }
+
+    .login-input-wrapper {
+        position: relative;
+    }
+
+    .login-input-icon {
+        position: absolute;
+        top: 50%;
+        left: 13px;
+        z-index: 2;
+
+        color: #94a3b8;
+        font-size: 14px;
+
+        pointer-events: none;
+
+        transform: translateY(-50%);
+    }
+
+    .login-form-field input {
+        width: 100%;
+        min-height: 48px;
+
+        padding: 11px 43px 11px 40px;
+
+        color: var(--login-dark);
+        font-size: 11px;
+
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 11px;
+
+        outline: none;
+        box-shadow: none;
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            background 0.2s ease;
+    }
+
+    .login-form-field input::placeholder {
+        color: #94a3b8;
+    }
+
+    .login-form-field input:hover {
+        border-color: #94a3b8;
+    }
+
+    .login-form-field input:focus {
+        background: #ffffff;
+        border-color: var(--login-primary);
+
+        box-shadow:
+            0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+
+    .login-form-field.has-error input {
+        background: #fffafa;
+        border-color: #f87171;
+    }
+
+    .password-toggle-button {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 32px;
+        height: 32px;
+
+        color: #64748b;
+
+        background: transparent;
+        border: 0;
+        border-radius: 8px;
+
+        transform: translateY(-50%);
+    }
+
+    .password-toggle-button:hover {
+        color: var(--login-primary);
+        background: var(--login-primary-soft);
+    }
+
+    .login-field-help {
+        display: flex;
+        align-items: flex-start;
+        gap: 5px;
+
+        margin-top: 6px;
+
+        color: var(--login-muted);
+        font-size: 8px;
+        line-height: 1.45;
+    }
+
+    .login-field-error {
+        display: flex;
+        align-items: flex-start;
+        gap: 5px;
+
+        margin-top: 6px;
+
+        color: var(--login-danger);
+        font-size: 8px;
+        font-weight: 650;
+        line-height: 1.45;
+    }
+
+    /* Login Actions */
+
+    .login-access-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+
+        margin-bottom: 18px;
+        padding: 11px;
+
+        color: #475569;
+        font-size: 8px;
+        line-height: 1.5;
+
+        background: #f8fafc;
+        border: 1px solid var(--login-border);
+        border-radius: 10px;
+    }
+
+    .login-access-note i {
+        margin-top: 1px;
+
+        color: var(--login-primary);
+        font-size: 12px;
+    }
+
+    .login-submit-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        width: 100%;
+        min-height: 48px;
+        padding: 11px 16px;
+
+        color: #ffffff;
+        font-size: 11px;
+        font-weight: 730;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--login-primary),
+                var(--login-primary-dark)
+            );
+
+        border: 1px solid var(--login-primary);
+        border-radius: 11px;
+
+        box-shadow:
+            0 10px 22px rgba(37, 99, 235, 0.22);
+
+        transition:
+            background 0.2s ease,
+            box-shadow 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .login-submit-button:hover {
+        color: #ffffff;
+
+        background:
+            linear-gradient(
+                135deg,
+                #1d4ed8,
+                #1e40af
+            );
+
+        box-shadow:
+            0 14px 28px rgba(37, 99, 235, 0.28);
+
+        transform: translateY(-2px);
+    }
+
+    .login-submit-button:disabled {
+        cursor: not-allowed;
+
+        opacity: 0.72;
+        transform: none;
+    }
+
+    .login-footer-text {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+
+        margin: 22px 0 0;
+
+        color: var(--login-muted);
+        font-size: 8px;
+        text-align: center;
+    }
+
+    .login-footer-text i {
+        color: var(--login-success);
+    }
+
+    /* Responsive */
+
+    @media (max-width: 991.98px) {
+        .transit-login-page {
+            padding: 20px;
+        }
+
+        .login-wrapper {
+            max-width: 560px;
+            min-height: auto;
+
+            grid-template-columns: 1fr;
+        }
+
+        .login-brand-panel {
+            display: none;
+        }
+
+        .login-form-panel {
+            padding: 44px 35px;
+        }
+
+        .login-mobile-logo {
+            display: flex;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .transit-login-page {
+            align-items: flex-start;
+
+            min-height: 100vh;
+            padding: 14px;
+
+            background: #f8fafc;
+        }
+
+        .login-wrapper {
+            margin-top: 18px;
+
+            border-radius: 18px;
+
+            box-shadow:
+                0 18px 50px rgba(15, 23, 42, 0.12);
+        }
+
+        .login-form-panel {
+            padding: 30px 22px;
+        }
+
+        .login-card h2 {
+            font-size: 26px;
+        }
+    }
+</style>
+
 {% endblock %}
 
 {% block authentication_content %}
 
-<div class="login-wrapper">
+<div class="transit-login-page">
 
-    <div class="login-brand-panel">
+    <div class="login-wrapper">
 
-        <div class="large-brand-icon">
-            T
-        </div>
+        <!-- Brand Panel -->
+        <section class="login-brand-panel">
 
-        <h1>TransitOps</h1>
+            <div class="login-brand-content">
 
-        <p>
-            Manage vehicles, drivers, trips, maintenance,
-            fuel and operational expenses from one platform.
-        </p>
+                <div class="login-logo-row">
 
-        <div class="login-feature-list">
+                    <div class="large-brand-icon">
+                        T
+                    </div>
 
-            <div>✓ Real-time fleet visibility</div>
-            <div>✓ Automated dispatch validations</div>
-            <div>✓ Maintenance and expense tracking</div>
-            <div>✓ Operational analytics</div>
+                    <div class="login-logo-text">
+                        <strong>TransitOps</strong>
+                        <span>Smart Fleet Operations</span>
+                    </div>
 
-        </div>
-
-    </div>
-
-    <div class="login-form-panel">
-
-        <div class="login-card">
-
-            <p class="eyebrow">
-                SECURE ACCESS
-            </p>
-
-            <h2>Welcome back</h2>
-
-            <p class="login-description">
-                Enter your company account details.
-            </p>
-
-            {% if form.non_field_errors %}
-                <div class="alert alert-danger">
-                    {{ form.non_field_errors }}
-                </div>
-            {% endif %}
-
-            <form method="post">
-
-                {% csrf_token %}
-
-                <div class="mb-3">
-                    <label class="form-label">
-                        Email address
-                    </label>
-
-                    {{ form.username }}
-
-                    {% for error in form.username.errors %}
-                        <small class="text-danger">
-                            {{ error }}
-                        </small>
-                    {% endfor %}
                 </div>
 
-                <div class="mb-4">
-                    <label class="form-label">
-                        Password
-                    </label>
-
-                    {{ form.password }}
-
-                    {% for error in form.password.errors %}
-                        <small class="text-danger">
-                            {{ error }}
-                        </small>
-                    {% endfor %}
+                <div class="login-brand-eyebrow">
+                    <span></span>
+                    Transport Operations Platform
                 </div>
 
-                <button
-                    type="submit"
-                    class="btn btn-primary w-100 login-submit-button"
+                <h1>
+                    Run your fleet with clarity and control.
+                </h1>
+
+                <p class="login-brand-description">
+                    Manage vehicles, drivers, trips, maintenance,
+                    fuel and operational expenses from one secure
+                    transport management platform.
+                </p>
+
+                <div class="login-feature-list">
+
+                    <article class="login-feature-item">
+
+                        <div class="login-feature-icon">
+                            <i class="bi bi-truck-front-fill"></i>
+                        </div>
+
+                        <div>
+                            <strong>Fleet Visibility</strong>
+
+                            <span>
+                                Monitor vehicles, drivers and availability.
+                            </span>
+                        </div>
+
+                    </article>
+
+                    <article class="login-feature-item">
+
+                        <div class="login-feature-icon">
+                            <i class="bi bi-signpost-split-fill"></i>
+                        </div>
+
+                        <div>
+                            <strong>Trip Operations</strong>
+
+                            <span>
+                                Create, dispatch and complete transport trips.
+                            </span>
+                        </div>
+
+                    </article>
+
+                    <article class="login-feature-item">
+
+                        <div class="login-feature-icon">
+                            <i class="bi bi-tools"></i>
+                        </div>
+
+                        <div>
+                            <strong>Maintenance Control</strong>
+
+                            <span>
+                                Track repairs, service lifecycle and expenses.
+                            </span>
+                        </div>
+
+                    </article>
+
+                    <article class="login-feature-item">
+
+                        <div class="login-feature-icon">
+                            <i class="bi bi-bar-chart-line-fill"></i>
+                        </div>
+
+                        <div>
+                            <strong>Business Analytics</strong>
+
+                            <span>
+                                Review revenue, costs, profitability and ROI.
+                            </span>
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+            <footer class="login-brand-footer">
+
+                <span>
+                    © {% now "Y" %} TransitOps
+                </span>
+
+                <span class="login-security-indicator">
+                    <i class="bi bi-shield-check"></i>
+                    Secure employee access
+                </span>
+
+            </footer>
+
+        </section>
+
+        <!-- Form Panel -->
+        <section class="login-form-panel">
+
+            <div class="login-card">
+
+                <!-- Mobile Logo -->
+                <div class="login-mobile-logo">
+
+                    <div class="login-mobile-logo-icon">
+                        T
+                    </div>
+
+                    <div>
+                        <strong>TransitOps</strong>
+                        <span>Smart Fleet Operations</span>
+                    </div>
+
+                </div>
+
+                <p class="eyebrow">
+                    Secure Access
+                </p>
+
+                <h2>Welcome back</h2>
+
+                <p class="login-description">
+                    Sign in using your authorised TransitOps company account.
+                </p>
+
+                <!-- Non-field Errors -->
+                {% if form.non_field_errors %}
+
+                    <div class="login-general-error">
+
+                        <div class="login-general-error-icon">
+                            <i class="bi bi-exclamation-octagon-fill"></i>
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Sign-in failed
+                            </strong>
+
+                            <ul>
+                                {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+                <form
+                    method="post"
+                    id="loginForm"
+                    novalidate
                 >
-                    Sign in to TransitOps
-                </button>
+                    {% csrf_token %}
 
-            </form>
+                    {% for hidden_field in form.hidden_fields %}
+                        {{ hidden_field }}
+                    {% endfor %}
 
-            <p class="login-footer-text">
-                Access is restricted to authorized employees.
-            </p>
+                    <!-- Email -->
+                    <div
+                        class="
+                            login-form-field
 
-        </div>
+                            {% if form.username.errors %}
+                                has-error
+                            {% endif %}
+                        "
+                    >
+
+                        <label
+                            for="{{ form.username.id_for_label }}"
+                            class="login-field-label"
+                        >
+                            <span>
+                                Email address
+                                <span>*</span>
+                            </span>
+                        </label>
+
+                        <div class="login-input-wrapper">
+
+                            <i class="bi bi-envelope-fill login-input-icon"></i>
+
+                            {{ form.username }}
+
+                        </div>
+
+                        <div class="login-field-help">
+                            <i class="bi bi-info-circle"></i>
+
+                            <span>
+                                Enter the email address assigned to your account.
+                            </span>
+                        </div>
+
+                        {% for error in form.username.errors %}
+
+                            <div class="login-field-error">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                                <span>{{ error }}</span>
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                    <!-- Password -->
+                    <div
+                        class="
+                            login-form-field
+                            password-field
+
+                            {% if form.password.errors %}
+                                has-error
+                            {% endif %}
+                        "
+                    >
+
+                        <label
+                            for="{{ form.password.id_for_label }}"
+                            class="login-field-label"
+                        >
+                            <span>
+                                Password
+                                <span>*</span>
+                            </span>
+                        </label>
+
+                        <div class="login-input-wrapper">
+
+                            <i class="bi bi-lock-fill login-input-icon"></i>
+
+                            {{ form.password }}
+
+                            <button
+                                type="button"
+                                class="password-toggle-button"
+                                id="passwordToggleButton"
+                                aria-label="Show password"
+                                title="Show password"
+                            >
+                                <i
+                                    class="bi bi-eye"
+                                    id="passwordToggleIcon"
+                                ></i>
+                            </button>
+
+                        </div>
+
+                        <div class="login-field-help">
+                            <i class="bi bi-shield-lock"></i>
+
+                            <span>
+                                Your password is securely protected.
+                            </span>
+                        </div>
+
+                        {% for error in form.password.errors %}
+
+                            <div class="login-field-error">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                                <span>{{ error }}</span>
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                    <div class="login-access-note">
+
+                        <i class="bi bi-shield-check"></i>
+
+                        <span>
+                            Access is restricted to authorised TransitOps
+                            employees and administrators.
+                        </span>
+
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="login-submit-button"
+                        id="loginSubmitButton"
+                    >
+                        <i class="bi bi-box-arrow-in-right"></i>
+
+                        <span>
+                            Sign in to TransitOps
+                        </span>
+                    </button>
+
+                </form>
+
+                <p class="login-footer-text">
+
+                    <i class="bi bi-lock-fill"></i>
+
+                    Protected company authentication
+                </p>
+
+            </div>
+
+        </section>
 
     </div>
 
 </div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const usernameInput = document.getElementById(
+            "{{ form.username.id_for_label }}"
+        );
+
+        const passwordInput = document.getElementById(
+            "{{ form.password.id_for_label }}"
+        );
+
+        const passwordToggleButton = document.getElementById(
+            "passwordToggleButton"
+        );
+
+        const passwordToggleIcon = document.getElementById(
+            "passwordToggleIcon"
+        );
+
+        const loginForm = document.getElementById(
+            "loginForm"
+        );
+
+        const loginSubmitButton = document.getElementById(
+            "loginSubmitButton"
+        );
+
+        /*
+         * Input configuration.
+         */
+
+        if (usernameInput) {
+            usernameInput.placeholder =
+                "name@company.com";
+
+            usernameInput.setAttribute(
+                "autocomplete",
+                "username"
+            );
+
+            usernameInput.setAttribute(
+                "inputmode",
+                "email"
+            );
+
+            usernameInput.setAttribute(
+                "autocapitalize",
+                "none"
+            );
+        }
+
+        if (passwordInput) {
+            passwordInput.placeholder =
+                "Enter your password";
+
+            passwordInput.setAttribute(
+                "autocomplete",
+                "current-password"
+            );
+        }
+
+        /*
+         * Show and hide password.
+         */
+
+        if (
+            passwordInput &&
+            passwordToggleButton &&
+            passwordToggleIcon
+        ) {
+            passwordToggleButton.addEventListener(
+                "click",
+                function () {
+                    const passwordVisible =
+                        passwordInput.type === "text";
+
+                    passwordInput.type =
+                        passwordVisible
+                            ? "password"
+                            : "text";
+
+                    passwordToggleIcon.className =
+                        passwordVisible
+                            ? "bi bi-eye"
+                            : "bi bi-eye-slash";
+
+                    passwordToggleButton.setAttribute(
+                        "aria-label",
+                        passwordVisible
+                            ? "Show password"
+                            : "Hide password"
+                    );
+
+                    passwordToggleButton.setAttribute(
+                        "title",
+                        passwordVisible
+                            ? "Show password"
+                            : "Hide password"
+                    );
+
+                    passwordInput.focus();
+                }
+            );
+        }
+
+        /*
+         * Prevent duplicate sign-in submissions.
+         */
+
+        if (loginForm && loginSubmitButton) {
+            loginForm.addEventListener(
+                "submit",
+                function () {
+                    loginSubmitButton.disabled = true;
+
+                    loginSubmitButton.innerHTML = `
+                        <span
+                            class="spinner-border spinner-border-sm"
+                            aria-hidden="true"
+                        ></span>
+
+                        <span>Signing in securely...</span>
+                    `;
+                }
+            );
+        }
+    });
+</script>
 
 {% endblock %}

@@ -1,0 +1,2769 @@
+{% extends "base.html" %}
+
+{% block title %}
+Vehicle Documents | TransitOps
+{% endblock %}
+
+{% block page_title %}
+Vehicle Documents
+{% endblock %}
+
+{% block page_subtitle %}
+Store registration, insurance, permits and compliance files.
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+    .document-register-page {
+        --dr-primary: #2563eb;
+        --dr-primary-dark: #1d4ed8;
+        --dr-primary-soft: #eff6ff;
+
+        --dr-success: #16a34a;
+        --dr-success-soft: #f0fdf4;
+
+        --dr-warning: #d97706;
+        --dr-warning-soft: #fff7ed;
+
+        --dr-danger: #dc2626;
+        --dr-danger-soft: #fef2f2;
+
+        --dr-purple: #7c3aed;
+        --dr-purple-soft: #f5f3ff;
+
+        --dr-cyan: #0891b2;
+        --dr-cyan-soft: #ecfeff;
+
+        --dr-grey: #64748b;
+        --dr-grey-soft: #f1f5f9;
+
+        --dr-dark: #0f172a;
+        --dr-text: #334155;
+        --dr-muted: #64748b;
+        --dr-border: #e2e8f0;
+        --dr-surface: #ffffff;
+
+        --dr-radius: 18px;
+        --dr-shadow: 0 14px 38px rgba(15, 23, 42, 0.07);
+    }
+
+    .document-register-page * {
+        box-sizing: border-box;
+    }
+
+    .document-register-wrapper {
+        width: 100%;
+        max-width: 1500px;
+        margin: 0 auto;
+    }
+
+    /* Breadcrumb */
+
+    .document-register-breadcrumb {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        margin-bottom: 18px;
+
+        color: var(--dr-muted);
+        font-size: 12px;
+    }
+
+    .document-register-breadcrumb a {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        color: var(--dr-muted);
+        font-weight: 600;
+        text-decoration: none;
+
+        transition: color 0.2s ease;
+    }
+
+    .document-register-breadcrumb a:hover {
+        color: var(--dr-primary);
+    }
+
+    .document-register-breadcrumb > i {
+        color: #94a3b8;
+        font-size: 10px;
+    }
+
+    /* Hero */
+
+    .document-register-hero {
+        position: relative;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 28px;
+
+        overflow: hidden;
+
+        margin-bottom: 22px;
+        padding: 29px 31px;
+
+        color: #ffffff;
+
+        background:
+            radial-gradient(
+                circle at 91% 10%,
+                rgba(255, 255, 255, 0.18),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 8% 115%,
+                rgba(124, 58, 237, 0.24),
+                transparent 36%
+            ),
+            linear-gradient(
+                135deg,
+                #0f172a 0%,
+                #1e3a8a 52%,
+                #2563eb 100%
+            );
+
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 22px;
+
+        box-shadow: 0 19px 45px rgba(37, 99, 235, 0.18);
+    }
+
+    .document-register-hero::after {
+        position: absolute;
+        right: -72px;
+        bottom: -110px;
+
+        width: 255px;
+        height: 255px;
+
+        content: "";
+
+        border: 34px solid rgba(255, 255, 255, 0.055);
+        border-radius: 50%;
+    }
+
+    .document-register-hero-content {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        gap: 17px;
+
+        max-width: 810px;
+    }
+
+    .document-register-hero-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 58px;
+        height: 58px;
+
+        color: #ffffff;
+        font-size: 24px;
+
+        background: rgba(255, 255, 255, 0.13);
+        border: 1px solid rgba(255, 255, 255, 0.17);
+        border-radius: 17px;
+
+        backdrop-filter: blur(10px);
+    }
+
+    .document-register-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+
+        margin-bottom: 8px;
+        padding: 5px 9px;
+
+        color: #dbeafe;
+        font-size: 9px;
+        font-weight: 750;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 30px;
+    }
+
+    .document-register-eyebrow span {
+        width: 7px;
+        height: 7px;
+
+        background: #4ade80;
+        border-radius: 50%;
+
+        box-shadow: 0 0 0 5px rgba(74, 222, 128, 0.13);
+    }
+
+    .document-register-hero h2 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: clamp(24px, 4vw, 32px);
+        font-weight: 760;
+        letter-spacing: -0.8px;
+    }
+
+    .document-register-hero p {
+        max-width: 670px;
+
+        margin: 8px 0 0;
+
+        color: #dbeafe;
+        font-size: 12px;
+        line-height: 1.65;
+    }
+
+    .document-upload-button {
+        position: relative;
+        z-index: 2;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        gap: 9px;
+
+        min-height: 45px;
+        padding: 10px 17px;
+
+        color: #1e3a8a;
+        font-size: 11px;
+        font-weight: 720;
+        text-decoration: none;
+
+        background: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        border-radius: 11px;
+
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.15);
+
+        transition:
+            color 0.2s ease,
+            background 0.2s ease,
+            box-shadow 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .document-upload-button:hover {
+        color: var(--dr-primary);
+        background: var(--dr-primary-soft);
+
+        box-shadow: 0 14px 28px rgba(15, 23, 42, 0.2);
+
+        transform: translateY(-2px);
+    }
+
+    /* Summary Cards */
+
+    .document-summary-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 15px;
+
+        margin-bottom: 22px;
+    }
+
+    .document-summary-card {
+        position: relative;
+
+        display: flex;
+        align-items: center;
+        gap: 14px;
+
+        overflow: hidden;
+
+        min-height: 103px;
+        padding: 17px;
+
+        background: var(--dr-surface);
+        border: 1px solid var(--dr-border);
+        border-radius: 15px;
+
+        box-shadow: 0 7px 22px rgba(15, 23, 42, 0.045);
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .document-summary-card::after {
+        position: absolute;
+        right: -30px;
+        bottom: -45px;
+
+        width: 125px;
+        height: 125px;
+
+        content: "";
+
+        background: var(--summary-soft);
+        border-radius: 50%;
+
+        opacity: 0.72;
+    }
+
+    .document-summary-card.total {
+        --summary-color: var(--dr-primary);
+        --summary-soft: var(--dr-primary-soft);
+    }
+
+    .document-summary-card.compliance {
+        --summary-color: var(--dr-success);
+        --summary-soft: var(--dr-success-soft);
+    }
+
+    .document-summary-card.security {
+        --summary-color: var(--dr-purple);
+        --summary-soft: var(--dr-purple-soft);
+    }
+
+    .document-summary-card:hover {
+        border-color: #bfdbfe;
+
+        box-shadow: 0 12px 27px rgba(15, 23, 42, 0.07);
+
+        transform: translateY(-3px);
+    }
+
+    .document-summary-icon {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 47px;
+        height: 47px;
+
+        color: var(--summary-color);
+        font-size: 19px;
+
+        background: var(--summary-soft);
+        border-radius: 13px;
+    }
+
+    .document-summary-content {
+        position: relative;
+        z-index: 2;
+
+        min-width: 0;
+    }
+
+    .document-summary-content span {
+        display: block;
+
+        margin-bottom: 4px;
+
+        color: var(--dr-muted);
+        font-size: 8px;
+        font-weight: 700;
+        letter-spacing: 0.45px;
+        text-transform: uppercase;
+    }
+
+    .document-summary-content strong {
+        display: block;
+        overflow: hidden;
+
+        color: var(--dr-dark);
+        font-size: 19px;
+        font-weight: 780;
+        letter-spacing: -0.4px;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .document-summary-content small {
+        display: block;
+
+        margin-top: 4px;
+
+        color: var(--dr-muted);
+        font-size: 8px;
+        line-height: 1.45;
+    }
+
+    /* Filter Panel */
+
+    .document-filter-panel {
+        overflow: hidden;
+
+        margin-bottom: 22px;
+
+        background: var(--dr-surface);
+        border: 1px solid var(--dr-border);
+        border-radius: var(--dr-radius);
+
+        box-shadow: var(--dr-shadow);
+    }
+
+    .document-filter-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+
+        padding: 17px 20px;
+
+        border-bottom: 1px solid #eef2f7;
+    }
+
+    .document-filter-title {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+    }
+
+    .document-filter-title-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 38px;
+        height: 38px;
+
+        color: var(--dr-primary);
+        font-size: 16px;
+
+        background: var(--dr-primary-soft);
+        border-radius: 10px;
+    }
+
+    .document-filter-title h3 {
+        margin: 0;
+
+        color: var(--dr-dark);
+        font-size: 14px;
+        font-weight: 720;
+    }
+
+    .document-filter-title p {
+        margin: 3px 0 0;
+
+        color: var(--dr-muted);
+        font-size: 9px;
+    }
+
+    .document-filter-active {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        padding: 6px 9px;
+
+        color: var(--dr-primary);
+        font-size: 9px;
+        font-weight: 700;
+
+        background: var(--dr-primary-soft);
+        border-radius: 20px;
+    }
+
+    .document-filter-body {
+        padding: 20px;
+    }
+
+    .document-filter-field label {
+        display: block;
+
+        margin-bottom: 7px;
+
+        color: var(--dr-text);
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+    .document-search-wrapper {
+        position: relative;
+    }
+
+    .document-search-icon {
+        position: absolute;
+        top: 50%;
+        left: 13px;
+        z-index: 2;
+
+        color: #94a3b8;
+        font-size: 14px;
+
+        pointer-events: none;
+
+        transform: translateY(-50%);
+    }
+
+    .document-search-wrapper .form-control {
+        padding-left: 39px;
+    }
+
+    .document-filter-panel .form-control,
+    .document-filter-panel .form-select {
+        min-height: 44px;
+
+        color: var(--dr-dark);
+        font-size: 11px;
+
+        background-color: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+
+        box-shadow: none;
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .document-filter-panel .form-control::placeholder {
+        color: #94a3b8;
+    }
+
+    .document-filter-panel .form-control:hover,
+    .document-filter-panel .form-select:hover {
+        border-color: #94a3b8;
+    }
+
+    .document-filter-panel .form-control:focus,
+    .document-filter-panel .form-select:focus {
+        border-color: var(--dr-primary);
+
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+
+    .document-filter-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        padding-top: 24px;
+    }
+
+    .document-filter-submit,
+    .document-filter-reset {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+
+        min-height: 44px;
+        padding: 9px 13px;
+
+        font-size: 10px;
+        font-weight: 700;
+        text-decoration: none;
+
+        border-radius: 10px;
+
+        transition:
+            color 0.2s ease,
+            background 0.2s ease,
+            border-color 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .document-filter-submit {
+        flex: 1;
+
+        color: #ffffff;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--dr-primary),
+                var(--dr-primary-dark)
+            );
+
+        border: 1px solid var(--dr-primary);
+
+        box-shadow: 0 7px 17px rgba(37, 99, 235, 0.18);
+    }
+
+    .document-filter-submit:hover {
+        color: #ffffff;
+
+        background:
+            linear-gradient(
+                135deg,
+                #1d4ed8,
+                #1e40af
+            );
+
+        transform: translateY(-1px);
+    }
+
+    .document-filter-reset {
+        color: #475569;
+
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+    }
+
+    .document-filter-reset:hover {
+        color: var(--dr-dark);
+
+        background: #f8fafc;
+        border-color: #94a3b8;
+    }
+
+    /* Table Panel */
+
+    .document-table-panel {
+        overflow: hidden;
+
+        background: var(--dr-surface);
+        border: 1px solid var(--dr-border);
+        border-radius: var(--dr-radius);
+
+        box-shadow: var(--dr-shadow);
+    }
+
+    .document-table-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+
+        padding: 19px 21px;
+
+        border-bottom: 1px solid #eef2f7;
+    }
+
+    .document-table-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .document-table-title-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 40px;
+        height: 40px;
+
+        color: var(--dr-primary);
+        font-size: 17px;
+
+        background: var(--dr-primary-soft);
+        border-radius: 11px;
+    }
+
+    .document-table-title h3 {
+        margin: 0;
+
+        color: var(--dr-dark);
+        font-size: 15px;
+        font-weight: 720;
+    }
+
+    .document-table-title p {
+        margin: 3px 0 0;
+
+        color: var(--dr-muted);
+        font-size: 9px;
+    }
+
+    .document-result-count {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        padding: 7px 10px;
+
+        color: #475569;
+        font-size: 9px;
+        font-weight: 700;
+
+        background: #f8fafc;
+        border: 1px solid var(--dr-border);
+        border-radius: 20px;
+    }
+
+    /* Desktop Table */
+
+    .document-management-table {
+        width: 100%;
+        margin: 0;
+    }
+
+    .document-management-table thead th {
+        padding: 13px 14px;
+
+        color: #64748b;
+        font-size: 8px;
+        font-weight: 760;
+        letter-spacing: 0.65px;
+        text-transform: uppercase;
+
+        background: #f8fafc;
+        border-bottom: 1px solid var(--dr-border);
+
+        white-space: nowrap;
+    }
+
+    .document-management-table tbody td {
+        padding: 14px;
+
+        color: var(--dr-text);
+        font-size: 9px;
+        vertical-align: middle;
+
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .document-management-table tbody tr {
+        transition: background 0.18s ease;
+    }
+
+    .document-management-table tbody tr:hover {
+        background: #f8fbff;
+    }
+
+    .document-management-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    /* Vehicle */
+
+    .document-vehicle {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+
+        min-width: 150px;
+    }
+
+    .document-vehicle-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 37px;
+        height: 37px;
+
+        color: var(--dr-primary);
+        font-size: 15px;
+
+        background: var(--dr-primary-soft);
+        border-radius: 10px;
+    }
+
+    .document-vehicle-details {
+        min-width: 0;
+    }
+
+    .document-vehicle-details strong {
+        display: block;
+        overflow: hidden;
+
+        max-width: 160px;
+
+        color: var(--dr-dark);
+        font-size: 9px;
+        font-weight: 730;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .document-vehicle-details small {
+        display: block;
+        overflow: hidden;
+
+        max-width: 160px;
+
+        margin-top: 3px;
+
+        color: var(--dr-muted);
+        font-size: 7px;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Document */
+
+    .document-information {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        min-width: 210px;
+    }
+
+    .document-file-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 37px;
+        height: 37px;
+
+        color: var(--dr-purple);
+        font-size: 15px;
+
+        background: var(--dr-purple-soft);
+        border-radius: 10px;
+    }
+
+    .document-information-content {
+        min-width: 0;
+    }
+
+    .document-title {
+        display: block;
+        overflow: hidden;
+
+        max-width: 230px;
+
+        color: var(--dr-dark);
+        font-size: 9px;
+        font-weight: 730;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .document-type-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+
+        margin-top: 5px;
+        padding: 5px 8px;
+
+        font-size: 7px;
+        font-weight: 720;
+
+        border-radius: 20px;
+        white-space: nowrap;
+    }
+
+    .document-type-registration {
+        color: var(--dr-primary);
+        background: var(--dr-primary-soft);
+    }
+
+    .document-type-insurance {
+        color: var(--dr-success);
+        background: var(--dr-success-soft);
+    }
+
+    .document-type-permit {
+        color: var(--dr-warning);
+        background: var(--dr-warning-soft);
+    }
+
+    .document-type-fitness {
+        color: var(--dr-purple);
+        background: var(--dr-purple-soft);
+    }
+
+    .document-type-pollution {
+        color: var(--dr-cyan);
+        background: var(--dr-cyan-soft);
+    }
+
+    .document-type-other {
+        color: var(--dr-grey);
+        background: var(--dr-grey-soft);
+    }
+
+    /* Reference */
+
+    .document-reference {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        max-width: 170px;
+        padding: 6px 9px;
+
+        color: var(--dr-text);
+        font-size: 8px;
+        font-weight: 680;
+
+        background: #f8fafc;
+        border: 1px solid var(--dr-border);
+        border-radius: 9px;
+    }
+
+    .document-reference span {
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .document-reference i {
+        flex-shrink: 0;
+        color: var(--dr-primary);
+    }
+
+    /* Dates */
+
+    .document-date {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+
+        color: var(--dr-text);
+        font-size: 9px;
+        font-weight: 650;
+
+        white-space: nowrap;
+    }
+
+    .document-date i {
+        color: var(--dr-primary);
+    }
+
+    .document-date.expiry i {
+        color: var(--dr-warning);
+    }
+
+    .document-no-date {
+        color: #94a3b8;
+        font-size: 9px;
+    }
+
+    /* Status */
+
+    .document-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        padding: 6px 9px;
+
+        font-size: 8px;
+        font-weight: 720;
+
+        border-radius: 20px;
+        white-space: nowrap;
+    }
+
+    .document-status-badge::before {
+        width: 6px;
+        height: 6px;
+
+        content: "";
+
+        background: currentColor;
+        border-radius: 50%;
+    }
+
+    .document-status-valid {
+        color: var(--dr-success);
+        background: var(--dr-success-soft);
+    }
+
+    .document-status-expired {
+        color: var(--dr-danger);
+        background: var(--dr-danger-soft);
+    }
+
+    .document-status-no-expiry {
+        color: var(--dr-grey);
+        background: var(--dr-grey-soft);
+    }
+
+    /* Actions */
+
+    .document-actions {
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 7px;
+    }
+
+    .document-action-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+
+        min-height: 34px;
+        padding: 7px 10px;
+
+        font-size: 8px;
+        font-weight: 720;
+        text-decoration: none;
+
+        border-radius: 9px;
+
+        transition:
+            color 0.2s ease,
+            background 0.2s ease,
+            border-color 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .document-action-button.download {
+        color: var(--dr-primary);
+
+        background: var(--dr-primary-soft);
+        border: 1px solid #dbeafe;
+    }
+
+    .document-action-button.download:hover {
+        color: #ffffff;
+
+        background: var(--dr-primary);
+        border-color: var(--dr-primary);
+
+        transform: translateY(-1px);
+    }
+
+    .document-action-button.delete {
+        color: var(--dr-danger);
+
+        background: var(--dr-danger-soft);
+        border: 1px solid #fecaca;
+    }
+
+    .document-action-button.delete:hover {
+        color: #ffffff;
+
+        background: var(--dr-danger);
+        border-color: var(--dr-danger);
+
+        transform: translateY(-1px);
+    }
+
+    /* Mobile Cards */
+
+    .mobile-document-list {
+        display: none;
+        padding: 15px;
+    }
+
+    .mobile-document-card {
+        margin-bottom: 12px;
+        padding: 15px;
+
+        background: #ffffff;
+        border: 1px solid var(--dr-border);
+        border-radius: 14px;
+
+        box-shadow: 0 5px 16px rgba(15, 23, 42, 0.035);
+    }
+
+    .mobile-document-card:last-child {
+        margin-bottom: 0;
+    }
+
+    .mobile-document-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+
+        margin-bottom: 14px;
+    }
+
+    .mobile-document-title-card {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        min-width: 0;
+        margin-bottom: 13px;
+        padding: 12px;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--dr-primary-soft),
+                #ffffff
+            );
+
+        border: 1px solid #dbeafe;
+        border-radius: 11px;
+    }
+
+    .mobile-document-title-card .document-title {
+        max-width: 250px;
+    }
+
+    .mobile-document-details {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+
+        margin-bottom: 13px;
+    }
+
+    .mobile-document-detail {
+        padding: 10px;
+
+        background: #f8fafc;
+        border-radius: 10px;
+    }
+
+    .mobile-document-detail small {
+        display: block;
+
+        margin-bottom: 5px;
+
+        color: #94a3b8;
+        font-size: 7px;
+        font-weight: 700;
+        letter-spacing: 0.45px;
+        text-transform: uppercase;
+    }
+
+    .mobile-document-value {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        color: var(--dr-dark);
+        font-size: 9px;
+        font-weight: 680;
+    }
+
+    .mobile-document-value i {
+        color: var(--dr-primary);
+    }
+
+    .mobile-document-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .mobile-document-actions.single-action {
+        grid-template-columns: 1fr;
+    }
+
+    .mobile-document-actions .document-action-button {
+        width: 100%;
+    }
+
+    /* Empty State */
+
+    .document-empty-state {
+        padding: 58px 20px;
+
+        text-align: center;
+    }
+
+    .document-empty-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 66px;
+        height: 66px;
+
+        margin: 0 auto 15px;
+
+        color: var(--dr-purple);
+        font-size: 28px;
+
+        background: var(--dr-purple-soft);
+        border-radius: 19px;
+    }
+
+    .document-empty-state h4 {
+        margin: 0 0 6px;
+
+        color: var(--dr-dark);
+        font-size: 16px;
+        font-weight: 720;
+    }
+
+    .document-empty-state p {
+        max-width: 400px;
+
+        margin: 0 auto 17px;
+
+        color: var(--dr-muted);
+        font-size: 10px;
+        line-height: 1.6;
+    }
+
+    .document-empty-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+
+        min-height: 40px;
+        padding: 8px 13px;
+
+        color: #ffffff;
+        font-size: 9px;
+        font-weight: 720;
+        text-decoration: none;
+
+        background: var(--dr-primary);
+        border: 1px solid var(--dr-primary);
+        border-radius: 9px;
+    }
+
+    .document-empty-button:hover {
+        color: #ffffff;
+        background: var(--dr-primary-dark);
+    }
+
+    /* Delete Modal */
+
+    .document-delete-modal .modal-content {
+        overflow: hidden;
+
+        border: 0;
+        border-radius: 18px;
+
+        box-shadow: 0 25px 70px rgba(15, 23, 42, 0.25);
+    }
+
+    .document-delete-modal-header {
+        position: relative;
+
+        padding: 23px;
+
+        color: #ffffff;
+        text-align: center;
+
+        background:
+            radial-gradient(
+                circle at top right,
+                rgba(255, 255, 255, 0.15),
+                transparent 35%
+            ),
+            linear-gradient(
+                135deg,
+                #991b1b,
+                #dc2626
+            );
+    }
+
+    .document-delete-modal-header .btn-close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+
+        filter: brightness(0) invert(1);
+        opacity: 0.8;
+    }
+
+    .document-delete-modal-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 54px;
+        height: 54px;
+
+        margin: 0 auto 12px;
+
+        color: #ffffff;
+        font-size: 23px;
+
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 15px;
+    }
+
+    .document-delete-modal-header h3 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: 17px;
+        font-weight: 730;
+    }
+
+    .document-delete-modal-header p {
+        margin: 5px 0 0;
+
+        color: #fecaca;
+        font-size: 9px;
+    }
+
+    .document-delete-modal-body {
+        padding: 22px;
+    }
+
+    .document-delete-preview {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        margin: 14px 0;
+        padding: 13px;
+
+        background: #f8fafc;
+        border: 1px solid var(--dr-border);
+        border-radius: 12px;
+    }
+
+    .document-delete-preview-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 42px;
+        height: 42px;
+
+        color: var(--dr-danger);
+        font-size: 18px;
+
+        background: var(--dr-danger-soft);
+        border-radius: 11px;
+    }
+
+    .document-delete-preview strong {
+        display: block;
+        overflow: hidden;
+
+        max-width: 350px;
+
+        color: var(--dr-dark);
+        font-size: 11px;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .document-delete-preview small {
+        display: block;
+
+        margin-top: 3px;
+
+        color: var(--dr-muted);
+        font-size: 8px;
+    }
+
+    .document-delete-warning {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+
+        padding: 11px;
+
+        color: #9a3412;
+        font-size: 9px;
+        line-height: 1.5;
+
+        background: var(--dr-warning-soft);
+        border: 1px solid #fed7aa;
+        border-radius: 10px;
+    }
+
+    .document-delete-modal-footer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 9px;
+
+        padding: 15px 22px;
+
+        background: #f8fafc;
+        border-top: 1px solid var(--dr-border);
+    }
+
+    .document-modal-cancel,
+    .document-modal-delete {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+
+        min-height: 40px;
+        padding: 8px 13px;
+
+        font-size: 10px;
+        font-weight: 700;
+
+        border-radius: 9px;
+    }
+
+    .document-modal-cancel {
+        color: #475569;
+
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+    }
+
+    .document-modal-delete {
+        color: #ffffff;
+
+        background: var(--dr-danger);
+        border: 1px solid var(--dr-danger);
+    }
+
+    .document-modal-delete:hover {
+        color: #ffffff;
+        background: #b91c1c;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 991.98px) {
+        .document-register-hero {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .document-upload-button {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .document-summary-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .document-filter-header,
+        .document-table-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .document-filter-actions {
+            padding-top: 0;
+        }
+
+        .desktop-document-table {
+            display: none;
+        }
+
+        .mobile-document-list {
+            display: block;
+        }
+
+        .document-table-panel {
+            background: #f8fafc;
+        }
+
+        .document-table-header {
+            background: #ffffff;
+        }
+    }
+
+    @media (max-width: 575.98px) {
+        .document-register-hero {
+            padding: 21px;
+            border-radius: 17px;
+        }
+
+        .document-register-hero-content {
+            align-items: flex-start;
+        }
+
+        .document-register-hero-icon {
+            width: 47px;
+            height: 47px;
+
+            font-size: 20px;
+        }
+
+        .document-filter-body {
+            padding: 16px;
+        }
+
+        .document-filter-actions {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .document-filter-submit,
+        .document-filter-reset {
+            width: 100%;
+        }
+
+        .document-filter-panel,
+        .document-table-panel {
+            border-radius: 15px;
+        }
+
+        .mobile-document-details,
+        .mobile-document-actions {
+            grid-template-columns: 1fr;
+        }
+
+        .document-delete-modal-footer {
+            align-items: stretch;
+            flex-direction: column-reverse;
+        }
+
+        .document-delete-modal-footer form,
+        .document-modal-cancel,
+        .document-modal-delete {
+            width: 100%;
+        }
+
+        .document-delete-modal-footer form button {
+            width: 100%;
+        }
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="document-register-page">
+
+    <div class="document-register-wrapper">
+
+        <!-- Breadcrumb -->
+        <nav class="document-register-breadcrumb">
+
+            <a href="{% url 'dashboard:home' %}">
+                <i class="bi bi-house-door"></i>
+                Dashboard
+            </a>
+
+            <i class="bi bi-chevron-right"></i>
+
+            <span>Vehicle Documents</span>
+
+        </nav>
+
+        <!-- Hero -->
+        <section class="document-register-hero">
+
+            <div class="document-register-hero-content">
+
+                <div class="document-register-hero-icon">
+                    <i class="bi bi-folder2-open"></i>
+                </div>
+
+                <div>
+
+                    <div class="document-register-eyebrow">
+                        <span></span>
+                        Fleet Compliance Library
+                    </div>
+
+                    <h2>Vehicle Documents</h2>
+
+                    <p>
+                        Store vehicle registration certificates, insurance
+                        policies, permits, fitness certificates and other
+                        compliance documents in one secure register.
+                    </p>
+
+                </div>
+
+            </div>
+
+            {% if can_manage %}
+
+                <a
+                    href="{% url 'documents:document_create' %}"
+                    class="document-upload-button"
+                >
+                    <i class="bi bi-cloud-arrow-up-fill"></i>
+                    Upload Document
+                </a>
+
+            {% endif %}
+
+        </section>
+
+        <!-- Summary -->
+        <section class="document-summary-grid">
+
+            <article class="document-summary-card total">
+
+                <div class="document-summary-icon">
+                    <i class="bi bi-files"></i>
+                </div>
+
+                <div class="document-summary-content">
+
+                    <span>Total Documents</span>
+
+                    <strong>
+                        {{ documents|length }}
+                    </strong>
+
+                    <small>
+                        Document{{ documents|length|pluralize }}
+                        displayed in the current result
+                    </small>
+
+                </div>
+
+            </article>
+
+            <article class="document-summary-card compliance">
+
+                <div class="document-summary-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+
+                <div class="document-summary-content">
+
+                    <span>Compliance Tracking</span>
+
+                    <strong>Active</strong>
+
+                    <small>
+                        Expiry and validity status shown for every record
+                    </small>
+
+                </div>
+
+            </article>
+
+            <article class="document-summary-card security">
+
+                <div class="document-summary-icon">
+                    <i class="bi bi-cloud-check-fill"></i>
+                </div>
+
+                <div class="document-summary-content">
+
+                    <span>Document Library</span>
+
+                    <strong>Secure</strong>
+
+                    <small>
+                        Centralised files for authorised TransitOps users
+                    </small>
+
+                </div>
+
+            </article>
+
+        </section>
+
+        <!-- Search and Filters -->
+        <section class="document-filter-panel">
+
+            <header class="document-filter-header">
+
+                <div class="document-filter-title">
+
+                    <div class="document-filter-title-icon">
+                        <i class="bi bi-funnel-fill"></i>
+                    </div>
+
+                    <div>
+
+                        <h3>Search, Filter and Sort Documents</h3>
+
+                        <p>
+                            Find files by title, type, vehicle or expiry date
+                        </p>
+
+                    </div>
+
+                </div>
+
+                {% if request.GET.search or request.GET.document_type or request.GET.sort %}
+
+                    <span class="document-filter-active">
+                        <i class="bi bi-check-circle-fill"></i>
+                        Filters Applied
+                    </span>
+
+                {% endif %}
+
+            </header>
+
+            <div class="document-filter-body">
+
+                <form
+                    method="get"
+                    id="documentFilterForm"
+                >
+
+                    <div class="row g-3">
+
+                        <!-- Search -->
+                        <div class="col-xl-4 col-md-6">
+
+                            <div class="document-filter-field">
+
+                                <label for="documentSearch">
+                                    Search Documents
+                                </label>
+
+                                <div class="document-search-wrapper">
+
+                                    <i class="bi bi-search document-search-icon"></i>
+
+                                    <input
+                                        type="search"
+                                        id="documentSearch"
+                                        name="search"
+                                        value="{{ request.GET.search }}"
+                                        class="form-control"
+                                        placeholder="Document title or reference number"
+                                        autocomplete="off"
+                                    >
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Document Type -->
+                        <div class="col-xl-3 col-md-6">
+
+                            <div class="document-filter-field">
+
+                                <label for="documentTypeFilter">
+                                    Document Type
+                                </label>
+
+                                <select
+                                    id="documentTypeFilter"
+                                    name="document_type"
+                                    class="form-select"
+                                >
+
+                                    <option value="">
+                                        All document types
+                                    </option>
+
+                                    {% for value, label in document_types %}
+
+                                        <option
+                                            value="{{ value }}"
+                                            {% if request.GET.document_type == value %}
+                                                selected
+                                            {% endif %}
+                                        >
+                                            {{ label }}
+                                        </option>
+
+                                    {% endfor %}
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Sort -->
+                        <div class="col-xl-3 col-md-6">
+
+                            <div class="document-filter-field">
+
+                                <label for="documentSortFilter">
+                                    Sort Results
+                                </label>
+
+                                <select
+                                    id="documentSortFilter"
+                                    name="sort"
+                                    class="form-select"
+                                >
+
+                                    <option
+                                        value="vehicle"
+                                        {% if request.GET.sort == "vehicle" or not request.GET.sort %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        Vehicle
+                                    </option>
+
+                                    <option
+                                        value="title"
+                                        {% if request.GET.sort == "title" %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        Document Title
+                                    </option>
+
+                                    <option
+                                        value="type"
+                                        {% if request.GET.sort == "type" %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        Document Type
+                                    </option>
+
+                                    <option
+                                        value="expiry"
+                                        {% if request.GET.sort == "expiry" %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        Expiry Date
+                                    </option>
+
+                                    <option
+                                        value="newest"
+                                        {% if request.GET.sort == "newest" %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        Newest First
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="col-xl-2 col-md-6">
+
+                            <div class="document-filter-actions">
+
+                                <button
+                                    type="submit"
+                                    class="document-filter-submit"
+                                    id="documentFilterButton"
+                                >
+                                    <i class="bi bi-search"></i>
+                                    Apply
+                                </button>
+
+                                <a
+                                    href="{% url 'documents:document_list' %}"
+                                    class="document-filter-reset"
+                                    title="Reset filters"
+                                >
+                                    <i class="bi bi-arrow-counterclockwise"></i>
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </section>
+
+        <!-- Document Register -->
+        <section class="document-table-panel">
+
+            <header class="document-table-header">
+
+                <div class="document-table-title">
+
+                    <div class="document-table-title-icon">
+                        <i class="bi bi-folder2-open"></i>
+                    </div>
+
+                    <div>
+
+                        <h3>Document Register</h3>
+
+                        <p>
+                            Review vehicle, document type, dates and validity
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <span class="document-result-count">
+
+                    <i class="bi bi-files"></i>
+
+                    {{ documents|length }}
+                    document{{ documents|length|pluralize }}
+
+                </span>
+
+            </header>
+
+            <!-- Desktop Table -->
+            <div class="table-responsive desktop-document-table">
+
+                <table class="document-management-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Vehicle</th>
+                            <th>Document</th>
+                            <th>Reference</th>
+                            <th>Issue Date</th>
+                            <th>Expiry Date</th>
+                            <th>Status</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for document in documents %}
+
+                            <tr>
+
+                                <!-- Vehicle -->
+                                <td>
+
+                                    <div class="document-vehicle">
+
+                                        <div class="document-vehicle-icon">
+                                            <i class="bi bi-truck-front-fill"></i>
+                                        </div>
+
+                                        <div class="document-vehicle-details">
+
+                                            <strong>
+                                                {{ document.vehicle.registration_number }}
+                                            </strong>
+
+                                            <small>
+
+                                                {% if document.vehicle.vehicle_name %}
+                                                    {{ document.vehicle.vehicle_name }}
+                                                {% else %}
+                                                    Fleet vehicle
+                                                {% endif %}
+
+                                            </small>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+                                <!-- Document -->
+                                <td>
+
+                                    <div class="document-information">
+
+                                        <div class="document-file-icon">
+                                            <i class="bi bi-file-earmark-text-fill"></i>
+                                        </div>
+
+                                        <div class="document-information-content">
+
+                                            <span
+                                                class="document-title"
+                                                title="{{ document.title }}"
+                                            >
+                                                {{ document.title }}
+                                            </span>
+
+                                            <span
+                                                class="
+                                                    document-type-badge
+
+                                                    {% if document.document_type == 'REGISTRATION' or document.document_type == 'RC' %}
+                                                        document-type-registration
+                                                    {% elif document.document_type == 'INSURANCE' %}
+                                                        document-type-insurance
+                                                    {% elif document.document_type == 'PERMIT' %}
+                                                        document-type-permit
+                                                    {% elif document.document_type == 'FITNESS' %}
+                                                        document-type-fitness
+                                                    {% elif document.document_type == 'POLLUTION' or document.document_type == 'PUC' %}
+                                                        document-type-pollution
+                                                    {% else %}
+                                                        document-type-other
+                                                    {% endif %}
+                                                "
+                                            >
+
+                                                {% if document.document_type == "REGISTRATION" or document.document_type == "RC" %}
+                                                    <i class="bi bi-card-heading"></i>
+
+                                                {% elif document.document_type == "INSURANCE" %}
+                                                    <i class="bi bi-shield-check"></i>
+
+                                                {% elif document.document_type == "PERMIT" %}
+                                                    <i class="bi bi-patch-check-fill"></i>
+
+                                                {% elif document.document_type == "FITNESS" %}
+                                                    <i class="bi bi-clipboard2-check-fill"></i>
+
+                                                {% elif document.document_type == "POLLUTION" or document.document_type == "PUC" %}
+                                                    <i class="bi bi-cloud-check-fill"></i>
+
+                                                {% else %}
+                                                    <i class="bi bi-file-earmark-text"></i>
+                                                {% endif %}
+
+                                                {{ document.get_document_type_display }}
+
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+                                <!-- Reference -->
+                                <td>
+
+                                    <span class="document-reference">
+
+                                        <i class="bi bi-hash"></i>
+
+                                        <span>
+                                            {{ document.reference_number|default:"Not provided" }}
+                                        </span>
+
+                                    </span>
+
+                                </td>
+
+                                <!-- Issue Date -->
+                                <td>
+
+                                    {% if document.issue_date %}
+
+                                        <span class="document-date">
+                                            <i class="bi bi-calendar-check"></i>
+
+                                            {{ document.issue_date|date:"d M Y" }}
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="document-no-date">
+                                            Not provided
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <!-- Expiry Date -->
+                                <td>
+
+                                    {% if document.expiry_date %}
+
+                                        <span class="document-date expiry">
+                                            <i class="bi bi-calendar-event"></i>
+
+                                            {{ document.expiry_date|date:"d M Y" }}
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="document-no-date">
+                                            No expiry
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <!-- Status -->
+                                <td>
+
+                                    {% if document.is_expired %}
+
+                                        <span
+                                            class="
+                                                document-status-badge
+                                                document-status-expired
+                                            "
+                                        >
+                                            Expired
+                                        </span>
+
+                                    {% elif document.expiry_date %}
+
+                                        <span
+                                            class="
+                                                document-status-badge
+                                                document-status-valid
+                                            "
+                                        >
+                                            Valid
+                                        </span>
+
+                                    {% else %}
+
+                                        <span
+                                            class="
+                                                document-status-badge
+                                                document-status-no-expiry
+                                            "
+                                        >
+                                            No Expiry
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+                                <!-- Actions -->
+                                <td class="text-end">
+
+                                    <div class="document-actions">
+
+                                        <a
+                                            href="{% url 'documents:document_download' document.pk %}"
+                                            class="document-action-button download document-download-trigger"
+                                        >
+                                            <i class="bi bi-download"></i>
+                                            Download
+                                        </a>
+
+                                        {% if can_manage %}
+
+                                            <button
+                                                type="button"
+                                                class="document-action-button delete document-delete-trigger"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#documentDeleteModal"
+                                                data-delete-url="{% url 'documents:document_delete' document.pk %}"
+                                                data-document-title="{{ document.title }}"
+                                                data-document-type="{{ document.get_document_type_display }}"
+                                                data-vehicle="{{ document.vehicle.registration_number }}"
+                                            >
+                                                <i class="bi bi-trash3"></i>
+                                                Delete
+                                            </button>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        {% empty %}
+
+                            <tr>
+
+                                <td colspan="7">
+
+                                    <div class="document-empty-state">
+
+                                        <div class="document-empty-icon">
+                                            <i class="bi bi-folder2-open"></i>
+                                        </div>
+
+                                        <h4>No Documents Found</h4>
+
+                                        <p>
+                                            No vehicle documents match the
+                                            selected filters. Change your search
+                                            criteria or upload a new document.
+                                        </p>
+
+                                        {% if request.GET.search or request.GET.document_type or request.GET.sort %}
+
+                                            <a
+                                                href="{% url 'documents:document_list' %}"
+                                                class="document-empty-button"
+                                            >
+                                                <i class="bi bi-arrow-counterclockwise"></i>
+                                                Clear Filters
+                                            </a>
+
+                                        {% elif can_manage %}
+
+                                            <a
+                                                href="{% url 'documents:document_create' %}"
+                                                class="document-empty-button"
+                                            >
+                                                <i class="bi bi-cloud-arrow-up-fill"></i>
+                                                Upload Document
+                                            </a>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- Mobile Cards -->
+            <div class="mobile-document-list">
+
+                {% for document in documents %}
+
+                    <article class="mobile-document-card">
+
+                        <div class="mobile-document-header">
+
+                            <div class="document-vehicle">
+
+                                <div class="document-vehicle-icon">
+                                    <i class="bi bi-truck-front-fill"></i>
+                                </div>
+
+                                <div class="document-vehicle-details">
+
+                                    <strong>
+                                        {{ document.vehicle.registration_number }}
+                                    </strong>
+
+                                    <small>
+
+                                        {% if document.vehicle.vehicle_name %}
+                                            {{ document.vehicle.vehicle_name }}
+                                        {% else %}
+                                            Fleet vehicle
+                                        {% endif %}
+
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                            {% if document.is_expired %}
+
+                                <span
+                                    class="
+                                        document-status-badge
+                                        document-status-expired
+                                    "
+                                >
+                                    Expired
+                                </span>
+
+                            {% elif document.expiry_date %}
+
+                                <span
+                                    class="
+                                        document-status-badge
+                                        document-status-valid
+                                    "
+                                >
+                                    Valid
+                                </span>
+
+                            {% else %}
+
+                                <span
+                                    class="
+                                        document-status-badge
+                                        document-status-no-expiry
+                                    "
+                                >
+                                    No Expiry
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                        <div class="mobile-document-title-card">
+
+                            <div class="document-file-icon">
+                                <i class="bi bi-file-earmark-text-fill"></i>
+                            </div>
+
+                            <div class="document-information-content">
+
+                                <span class="document-title">
+                                    {{ document.title }}
+                                </span>
+
+                                <span
+                                    class="
+                                        document-type-badge
+
+                                        {% if document.document_type == 'REGISTRATION' or document.document_type == 'RC' %}
+                                            document-type-registration
+                                        {% elif document.document_type == 'INSURANCE' %}
+                                            document-type-insurance
+                                        {% elif document.document_type == 'PERMIT' %}
+                                            document-type-permit
+                                        {% elif document.document_type == 'FITNESS' %}
+                                            document-type-fitness
+                                        {% elif document.document_type == 'POLLUTION' or document.document_type == 'PUC' %}
+                                            document-type-pollution
+                                        {% else %}
+                                            document-type-other
+                                        {% endif %}
+                                    "
+                                >
+                                    {{ document.get_document_type_display }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="mobile-document-details">
+
+                            <div class="mobile-document-detail">
+
+                                <small>Reference Number</small>
+
+                                <span class="mobile-document-value">
+                                    <i class="bi bi-hash"></i>
+
+                                    {{ document.reference_number|default:"Not provided" }}
+                                </span>
+
+                            </div>
+
+                            <div class="mobile-document-detail">
+
+                                <small>Issue Date</small>
+
+                                <span class="mobile-document-value">
+                                    <i class="bi bi-calendar-check"></i>
+
+                                    {% if document.issue_date %}
+                                        {{ document.issue_date|date:"d M Y" }}
+                                    {% else %}
+                                        Not provided
+                                    {% endif %}
+                                </span>
+
+                            </div>
+
+                            <div class="mobile-document-detail">
+
+                                <small>Expiry Date</small>
+
+                                <span class="mobile-document-value">
+                                    <i class="bi bi-calendar-event"></i>
+
+                                    {% if document.expiry_date %}
+                                        {{ document.expiry_date|date:"d M Y" }}
+                                    {% else %}
+                                        No expiry
+                                    {% endif %}
+                                </span>
+
+                            </div>
+
+                            <div class="mobile-document-detail">
+
+                                <small>Document Status</small>
+
+                                <span class="mobile-document-value">
+
+                                    {% if document.is_expired %}
+                                        <i class="bi bi-x-circle-fill text-danger"></i>
+                                        Expired
+
+                                    {% elif document.expiry_date %}
+                                        <i class="bi bi-check-circle-fill text-success"></i>
+                                        Valid
+
+                                    {% else %}
+                                        <i class="bi bi-dash-circle"></i>
+                                        No expiry
+                                    {% endif %}
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="
+                                mobile-document-actions
+
+                                {% if not can_manage %}
+                                    single-action
+                                {% endif %}
+                            "
+                        >
+
+                            <a
+                                href="{% url 'documents:document_download' document.pk %}"
+                                class="document-action-button download document-download-trigger"
+                            >
+                                <i class="bi bi-download"></i>
+                                Download Document
+                            </a>
+
+                            {% if can_manage %}
+
+                                <button
+                                    type="button"
+                                    class="document-action-button delete document-delete-trigger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#documentDeleteModal"
+                                    data-delete-url="{% url 'documents:document_delete' document.pk %}"
+                                    data-document-title="{{ document.title }}"
+                                    data-document-type="{{ document.get_document_type_display }}"
+                                    data-vehicle="{{ document.vehicle.registration_number }}"
+                                >
+                                    <i class="bi bi-trash3"></i>
+                                    Delete Document
+                                </button>
+
+                            {% endif %}
+
+                        </div>
+
+                    </article>
+
+                {% empty %}
+
+                    <div class="document-empty-state">
+
+                        <div class="document-empty-icon">
+                            <i class="bi bi-folder2-open"></i>
+                        </div>
+
+                        <h4>No Documents Found</h4>
+
+                        <p>
+                            Change your filters or upload a new vehicle document.
+                        </p>
+
+                        {% if request.GET.search or request.GET.document_type or request.GET.sort %}
+
+                            <a
+                                href="{% url 'documents:document_list' %}"
+                                class="document-empty-button"
+                            >
+                                <i class="bi bi-arrow-counterclockwise"></i>
+                                Clear Filters
+                            </a>
+
+                        {% elif can_manage %}
+
+                            <a
+                                href="{% url 'documents:document_create' %}"
+                                class="document-empty-button"
+                            >
+                                <i class="bi bi-cloud-arrow-up-fill"></i>
+                                Upload Document
+                            </a>
+
+                        {% endif %}
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
+
+<!-- Delete Confirmation Modal -->
+{% if can_manage %}
+
+    <div
+        class="modal fade document-delete-modal"
+        id="documentDeleteModal"
+        tabindex="-1"
+        aria-labelledby="documentDeleteModalLabel"
+        aria-hidden="true"
+    >
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content">
+
+                <div class="document-delete-modal-header">
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
+
+                    <div class="document-delete-modal-icon">
+                        <i class="bi bi-trash3-fill"></i>
+                    </div>
+
+                    <h3 id="documentDeleteModalLabel">
+                        Delete Document?
+                    </h3>
+
+                    <p>
+                        Review the document before confirming.
+                    </p>
+
+                </div>
+
+                <div class="document-delete-modal-body">
+
+                    <p class="mb-0 text-muted small">
+                        You are about to permanently delete this vehicle document:
+                    </p>
+
+                    <div class="document-delete-preview">
+
+                        <div class="document-delete-preview-icon">
+                            <i class="bi bi-file-earmark-x-fill"></i>
+                        </div>
+
+                        <div>
+
+                            <strong id="deleteDocumentTitle">
+                                Document title
+                            </strong>
+
+                            <small id="deleteDocumentInformation">
+                                Document information
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <div class="document-delete-warning">
+
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+
+                        <span>
+                            This action cannot be undone. The document file
+                            and its compliance record will be permanently removed.
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="document-delete-modal-footer">
+
+                    <button
+                        type="button"
+                        class="document-modal-cancel"
+                        data-bs-dismiss="modal"
+                    >
+                        <i class="bi bi-arrow-left"></i>
+                        Keep Document
+                    </button>
+
+                    <form
+                        method="post"
+                        id="documentDeleteForm"
+                    >
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="document-modal-delete"
+                            id="documentDeleteConfirmButton"
+                        >
+                            <i class="bi bi-trash3-fill"></i>
+                            Delete Document
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        /*
+         * Clear search using the Escape key.
+         */
+
+        const searchInput = document.getElementById(
+            "documentSearch"
+        );
+
+        if (searchInput) {
+            searchInput.addEventListener(
+                "keydown",
+                function (event) {
+                    if (event.key === "Escape") {
+                        searchInput.value = "";
+                    }
+                }
+            );
+        }
+
+        /*
+         * Filter submission loading feedback.
+         */
+
+        const filterForm = document.getElementById(
+            "documentFilterForm"
+        );
+
+        const filterButton = document.getElementById(
+            "documentFilterButton"
+        );
+
+        if (filterForm && filterButton) {
+            filterForm.addEventListener(
+                "submit",
+                function () {
+                    filterButton.disabled = true;
+
+                    filterButton.innerHTML = `
+                        <span
+                            class="spinner-border spinner-border-sm"
+                            aria-hidden="true"
+                        ></span>
+
+                        <span>Applying...</span>
+                    `;
+                }
+            );
+        }
+
+        /*
+         * Download feedback.
+         */
+
+        const downloadButtons = document.querySelectorAll(
+            ".document-download-trigger"
+        );
+
+        downloadButtons.forEach(function (button) {
+            button.addEventListener(
+                "click",
+                function () {
+                    const originalContent = button.innerHTML;
+
+                    button.innerHTML = `
+                        <span
+                            class="spinner-border spinner-border-sm"
+                            aria-hidden="true"
+                        ></span>
+
+                        <span>Preparing...</span>
+                    `;
+
+                    setTimeout(function () {
+                        button.innerHTML = originalContent;
+                    }, 2500);
+                }
+            );
+        });
+
+        /*
+         * Populate the delete confirmation modal.
+         */
+
+        const deleteButtons = document.querySelectorAll(
+            ".document-delete-trigger"
+        );
+
+        const deleteForm = document.getElementById(
+            "documentDeleteForm"
+        );
+
+        const deleteTitle = document.getElementById(
+            "deleteDocumentTitle"
+        );
+
+        const deleteInformation = document.getElementById(
+            "deleteDocumentInformation"
+        );
+
+        deleteButtons.forEach(function (button) {
+            button.addEventListener(
+                "click",
+                function () {
+                    const deleteUrl =
+                        button.dataset.deleteUrl || "";
+
+                    const documentTitle =
+                        button.dataset.documentTitle ||
+                        "Vehicle document";
+
+                    const documentType =
+                        button.dataset.documentType ||
+                        "Document";
+
+                    const vehicle =
+                        button.dataset.vehicle ||
+                        "Fleet vehicle";
+
+                    if (deleteForm) {
+                        deleteForm.action = deleteUrl;
+                    }
+
+                    if (deleteTitle) {
+                        deleteTitle.textContent =
+                            documentTitle;
+                    }
+
+                    if (deleteInformation) {
+                        deleteInformation.textContent =
+                            documentType +
+                            " • " +
+                            vehicle;
+                    }
+                }
+            );
+        });
+
+        /*
+         * Prevent duplicate delete requests.
+         */
+
+        const deleteConfirmButton = document.getElementById(
+            "documentDeleteConfirmButton"
+        );
+
+        if (deleteForm && deleteConfirmButton) {
+            deleteForm.addEventListener(
+                "submit",
+                function () {
+                    deleteConfirmButton.disabled = true;
+
+                    deleteConfirmButton.innerHTML = `
+                        <span
+                            class="spinner-border spinner-border-sm"
+                            aria-hidden="true"
+                        ></span>
+
+                        <span>Deleting...</span>
+                    `;
+                }
+            );
+        }
+    });
+</script>
+
+{% endblock %}

@@ -1,79 +1,2715 @@
 {% extends "base.html" %}
 
 {% block title %}
-{{ page_heading }} | TransitOps
+{{ page_heading|default:"Trip Form" }} | TransitOps
 {% endblock %}
 
 {% block page_title %}
-{{ page_heading }}
+{{ page_heading|default:"Trip Management" }}
 {% endblock %}
 
 {% block page_subtitle %}
-Enter route, vehicle, driver and cargo information.
+Enter route, vehicle, driver, cargo and financial information.
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+    .trip-form-page {
+        --tf-primary: #2563eb;
+        --tf-primary-dark: #1d4ed8;
+        --tf-primary-soft: #eff6ff;
+
+        --tf-success: #16a34a;
+        --tf-success-soft: #f0fdf4;
+
+        --tf-warning: #d97706;
+        --tf-warning-soft: #fff7ed;
+
+        --tf-danger: #dc2626;
+        --tf-danger-soft: #fef2f2;
+
+        --tf-purple: #7c3aed;
+        --tf-purple-soft: #f5f3ff;
+
+        --tf-cyan: #0891b2;
+        --tf-cyan-soft: #ecfeff;
+
+        --tf-dark: #0f172a;
+        --tf-text: #334155;
+        --tf-muted: #64748b;
+        --tf-border: #e2e8f0;
+        --tf-surface: #ffffff;
+        --tf-background: #f8fafc;
+
+        --tf-radius: 18px;
+        --tf-shadow: 0 16px 42px rgba(15, 23, 42, 0.07);
+    }
+
+    .trip-form-page * {
+        box-sizing: border-box;
+    }
+
+    .trip-form-wrapper {
+        width: 100%;
+        max-width: 1180px;
+        margin: 0 auto;
+    }
+
+    /* Breadcrumb */
+
+    .trip-form-breadcrumb {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        margin-bottom: 18px;
+
+        color: var(--tf-muted);
+        font-size: 12px;
+    }
+
+    .trip-form-breadcrumb a {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        color: var(--tf-muted);
+        font-weight: 600;
+        text-decoration: none;
+
+        transition: color 0.2s ease;
+    }
+
+    .trip-form-breadcrumb a:hover {
+        color: var(--tf-primary);
+    }
+
+    .trip-form-breadcrumb > i {
+        color: #94a3b8;
+        font-size: 10px;
+    }
+
+    /* Hero */
+
+    .trip-form-hero {
+        position: relative;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 25px;
+
+        overflow: hidden;
+
+        margin-bottom: 22px;
+        padding: 28px 30px;
+
+        color: #ffffff;
+
+        background:
+            radial-gradient(
+                circle at 91% 10%,
+                rgba(255, 255, 255, 0.18),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 8% 115%,
+                rgba(14, 165, 233, 0.24),
+                transparent 36%
+            ),
+            linear-gradient(
+                135deg,
+                #0f172a 0%,
+                #1e3a8a 52%,
+                #2563eb 100%
+            );
+
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 22px;
+
+        box-shadow: 0 19px 45px rgba(37, 99, 235, 0.18);
+    }
+
+    .trip-form-hero::after {
+        position: absolute;
+        right: -72px;
+        bottom: -110px;
+
+        width: 255px;
+        height: 255px;
+
+        content: "";
+
+        border: 34px solid rgba(255, 255, 255, 0.055);
+        border-radius: 50%;
+    }
+
+    .trip-form-hero-content {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        min-width: 0;
+        max-width: 790px;
+    }
+
+    .trip-form-hero-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 58px;
+        height: 58px;
+
+        color: #ffffff;
+        font-size: 24px;
+
+        background: rgba(255, 255, 255, 0.13);
+        border: 1px solid rgba(255, 255, 255, 0.17);
+        border-radius: 17px;
+
+        backdrop-filter: blur(10px);
+    }
+
+    .trip-form-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+
+        margin-bottom: 8px;
+        padding: 5px 9px;
+
+        color: #dbeafe;
+        font-size: 9px;
+        font-weight: 750;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 30px;
+    }
+
+    .trip-form-eyebrow span {
+        width: 7px;
+        height: 7px;
+
+        background: #4ade80;
+        border-radius: 50%;
+
+        box-shadow: 0 0 0 5px rgba(74, 222, 128, 0.13);
+    }
+
+    .trip-form-hero h2 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: clamp(24px, 4vw, 32px);
+        font-weight: 760;
+        letter-spacing: -0.8px;
+    }
+
+    .trip-form-hero p {
+        max-width: 650px;
+
+        margin: 8px 0 0;
+
+        color: #dbeafe;
+        font-size: 12px;
+        line-height: 1.65;
+    }
+
+    .trip-back-button {
+        position: relative;
+        z-index: 2;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        gap: 8px;
+
+        min-height: 44px;
+        padding: 9px 15px;
+
+        color: #1e3a8a;
+        font-size: 11px;
+        font-weight: 700;
+        text-decoration: none;
+
+        background: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        border-radius: 10px;
+
+        box-shadow: 0 9px 20px rgba(15, 23, 42, 0.13);
+
+        transition:
+            color 0.2s ease,
+            background 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .trip-back-button:hover {
+        color: var(--tf-primary);
+        background: var(--tf-primary-soft);
+        transform: translateY(-2px);
+    }
+
+    /* Main Layout */
+
+    .trip-form-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 290px;
+        align-items: start;
+        gap: 22px;
+    }
+
+    /* Main Form Card */
+
+    .trip-form-card {
+        overflow: hidden;
+
+        background: var(--tf-surface);
+        border: 1px solid var(--tf-border);
+        border-radius: var(--tf-radius);
+
+        box-shadow: var(--tf-shadow);
+    }
+
+    .trip-form-card-header {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+
+        padding: 20px 23px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(239, 246, 255, 0.95),
+                rgba(255, 255, 255, 0.98)
+            );
+
+        border-bottom: 1px solid var(--tf-border);
+    }
+
+    .trip-form-card-header-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 43px;
+        height: 43px;
+
+        color: var(--tf-primary);
+        font-size: 19px;
+
+        background: #ffffff;
+        border: 1px solid #dbeafe;
+        border-radius: 12px;
+
+        box-shadow: 0 7px 17px rgba(37, 99, 235, 0.09);
+    }
+
+    .trip-form-card-header h3 {
+        margin: 0;
+
+        color: var(--tf-dark);
+        font-size: 16px;
+        font-weight: 720;
+    }
+
+    .trip-form-card-header p {
+        margin: 4px 0 0;
+
+        color: var(--tf-muted);
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+    .trip-form-card-body {
+        padding: 24px;
+    }
+
+    /* General Errors */
+
+    .trip-general-errors {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+
+        margin-bottom: 22px;
+        padding: 14px 15px;
+
+        color: #991b1b;
+
+        background: var(--tf-danger-soft);
+        border: 1px solid #fecaca;
+        border-radius: 12px;
+    }
+
+    .trip-general-errors-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 34px;
+        height: 34px;
+
+        color: var(--tf-danger);
+
+        background: #fee2e2;
+        border-radius: 9px;
+    }
+
+    .trip-general-errors strong {
+        display: block;
+
+        margin-bottom: 4px;
+
+        font-size: 11px;
+        font-weight: 750;
+    }
+
+    .trip-general-errors ul {
+        margin: 0;
+        padding-left: 17px;
+
+        font-size: 10px;
+        line-height: 1.55;
+    }
+
+    /* Form Sections */
+
+    .trip-form-section {
+        margin-bottom: 29px;
+    }
+
+    .trip-form-section:last-of-type {
+        margin-bottom: 0;
+    }
+
+    .trip-form-section-heading {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+
+        margin-bottom: 17px;
+        padding-bottom: 12px;
+
+        border-bottom: 1px solid #eef2f7;
+    }
+
+    .trip-form-section-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 37px;
+        height: 37px;
+
+        color: var(--tf-primary);
+        font-size: 15px;
+
+        background: var(--tf-primary-soft);
+        border-radius: 10px;
+    }
+
+    .trip-form-section-heading h4 {
+        margin: 0;
+
+        color: var(--tf-dark);
+        font-size: 13px;
+        font-weight: 720;
+    }
+
+    .trip-form-section-heading p {
+        margin: 3px 0 0;
+
+        color: var(--tf-muted);
+        font-size: 9px;
+        line-height: 1.45;
+    }
+
+    /* Fields */
+
+    .trip-field {
+        width: 100%;
+    }
+
+    .trip-field-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+
+        margin-bottom: 7px;
+
+        color: var(--tf-text);
+        font-size: 11px;
+        font-weight: 680;
+    }
+
+    .trip-field-label-text {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .required-mark {
+        color: var(--tf-danger);
+    }
+
+    .optional-label {
+        color: #94a3b8;
+        font-size: 8px;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+    }
+
+    .trip-field input:not([type="checkbox"]),
+    .trip-field select,
+    .trip-field textarea {
+        width: 100%;
+        min-height: 46px;
+
+        padding: 10px 13px;
+
+        color: var(--tf-dark);
+        font-size: 12px;
+
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+
+        outline: none;
+        box-shadow: none;
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            background 0.2s ease;
+    }
+
+    .trip-field textarea {
+        min-height: 120px;
+        resize: vertical;
+        line-height: 1.6;
+    }
+
+    .trip-field select {
+        cursor: pointer;
+    }
+
+    .trip-field input:not([type="checkbox"]):hover,
+    .trip-field select:hover,
+    .trip-field textarea:hover {
+        border-color: #94a3b8;
+    }
+
+    .trip-field input:not([type="checkbox"]):focus,
+    .trip-field select:focus,
+    .trip-field textarea:focus {
+        background: #ffffff;
+        border-color: var(--tf-primary);
+
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+
+    .trip-field input::placeholder,
+    .trip-field textarea::placeholder {
+        color: #94a3b8;
+    }
+
+    .trip-field.has-error input:not([type="checkbox"]),
+    .trip-field.has-error select,
+    .trip-field.has-error textarea {
+        background: #fffafa;
+        border-color: #f87171;
+    }
+
+    .trip-field-help {
+        display: flex;
+        align-items: flex-start;
+        gap: 5px;
+
+        margin-top: 6px;
+
+        color: var(--tf-muted);
+        font-size: 9px;
+        line-height: 1.5;
+    }
+
+    .trip-field-help i {
+        margin-top: 1px;
+        color: #94a3b8;
+    }
+
+    .trip-field-errors {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        margin-top: 6px;
+    }
+
+    .trip-field-error {
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+
+        color: var(--tf-danger);
+        font-size: 9px;
+        font-weight: 650;
+        line-height: 1.45;
+    }
+
+    /* Checkbox */
+
+    .trip-checkbox-panel {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+
+        min-height: 76px;
+        padding: 14px 15px;
+
+        background: #f8fafc;
+        border: 1px solid var(--tf-border);
+        border-radius: 12px;
+    }
+
+    .trip-checkbox-content {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+    }
+
+    .trip-checkbox-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 38px;
+        height: 38px;
+
+        color: var(--tf-primary);
+        font-size: 16px;
+
+        background: var(--tf-primary-soft);
+        border-radius: 10px;
+    }
+
+    .trip-checkbox-content strong {
+        display: block;
+
+        color: var(--tf-dark);
+        font-size: 10px;
+    }
+
+    .trip-checkbox-content small {
+        display: block;
+
+        margin-top: 3px;
+
+        color: var(--tf-muted);
+        font-size: 8px;
+        line-height: 1.4;
+    }
+
+    .trip-checkbox-control input[type="checkbox"] {
+        width: 42px;
+        height: 22px;
+
+        margin: 0;
+
+        cursor: pointer;
+        accent-color: var(--tf-primary);
+    }
+
+    /* Route Preview */
+
+    .trip-route-preview {
+        margin-top: 18px;
+        padding: 17px;
+
+        background:
+            radial-gradient(
+                circle at top right,
+                rgba(37, 99, 235, 0.08),
+                transparent 35%
+            ),
+            #f8fafc;
+
+        border: 1px solid var(--tf-border);
+        border-radius: 14px;
+    }
+
+    .trip-route-preview-heading {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+
+        margin-bottom: 14px;
+
+        color: var(--tf-dark);
+        font-size: 10px;
+        font-weight: 720;
+    }
+
+    .trip-route-preview-heading i {
+        color: var(--tf-primary);
+    }
+
+    .trip-route-preview-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 105px minmax(0, 1fr);
+        align-items: center;
+        gap: 14px;
+    }
+
+    .trip-route-preview-point {
+        min-width: 0;
+    }
+
+    .trip-route-preview-point.destination {
+        text-align: right;
+    }
+
+    .trip-route-preview-point small {
+        display: block;
+
+        margin-bottom: 5px;
+
+        color: var(--tf-muted);
+        font-size: 7px;
+        font-weight: 720;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .trip-route-preview-point strong {
+        display: block;
+        overflow: hidden;
+
+        color: var(--tf-dark);
+        font-size: 11px;
+        font-weight: 720;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .trip-route-preview-line {
+        position: relative;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .trip-route-preview-line::before {
+        position: absolute;
+        right: 0;
+        left: 0;
+
+        height: 2px;
+
+        content: "";
+
+        background:
+            linear-gradient(
+                90deg,
+                var(--tf-success),
+                var(--tf-primary),
+                var(--tf-danger)
+            );
+    }
+
+    .trip-route-preview-vehicle {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 38px;
+        height: 38px;
+
+        color: var(--tf-primary);
+        font-size: 16px;
+
+        background: #ffffff;
+        border: 2px solid #bfdbfe;
+        border-radius: 50%;
+
+        box-shadow: 0 5px 14px rgba(37, 99, 235, 0.14);
+    }
+
+    /* Assignment Preview */
+
+    .trip-assignment-preview {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+
+        margin-top: 17px;
+    }
+
+    .trip-assignment-preview-card {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        padding: 12px;
+
+        background: #f8fafc;
+        border: 1px solid var(--tf-border);
+        border-radius: 11px;
+    }
+
+    .trip-assignment-preview-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 34px;
+        height: 34px;
+
+        color: var(--tf-primary);
+        font-size: 14px;
+
+        background: var(--tf-primary-soft);
+        border-radius: 9px;
+    }
+
+    .trip-assignment-preview-card small {
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: var(--tf-muted);
+        font-size: 7px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .trip-assignment-preview-card strong {
+        display: block;
+        overflow: hidden;
+
+        max-width: 220px;
+
+        color: var(--tf-dark);
+        font-size: 10px;
+
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Value Preview Cards */
+
+    .trip-value-preview-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+
+        margin-top: 17px;
+    }
+
+    .trip-value-preview {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        min-height: 72px;
+        padding: 12px;
+
+        background: #f8fafc;
+        border: 1px solid var(--tf-border);
+        border-radius: 11px;
+    }
+
+    .trip-value-preview-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 35px;
+        height: 35px;
+
+        font-size: 14px;
+        border-radius: 9px;
+    }
+
+    .trip-value-preview.cargo .trip-value-preview-icon {
+        color: var(--tf-warning);
+        background: var(--tf-warning-soft);
+    }
+
+    .trip-value-preview.distance .trip-value-preview-icon {
+        color: var(--tf-purple);
+        background: var(--tf-purple-soft);
+    }
+
+    .trip-value-preview.revenue .trip-value-preview-icon {
+        color: var(--tf-success);
+        background: var(--tf-success-soft);
+    }
+
+    .trip-value-preview small {
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: var(--tf-muted);
+        font-size: 7px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .trip-value-preview strong {
+        display: block;
+
+        color: var(--tf-dark);
+        font-size: 11px;
+        font-weight: 730;
+    }
+
+    /* Notes Counter */
+
+    .trip-character-counter {
+        margin-top: 5px;
+
+        color: var(--tf-muted);
+        font-size: 8px;
+        text-align: right;
+    }
+
+    /* Form Footer */
+
+    .trip-form-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+
+        margin-top: 29px;
+        padding-top: 20px;
+
+        border-top: 1px solid #eef2f7;
+    }
+
+    .trip-form-footer-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 7px;
+
+        color: var(--tf-muted);
+        font-size: 9px;
+        line-height: 1.5;
+    }
+
+    .trip-form-footer-note i {
+        margin-top: 1px;
+        color: var(--tf-primary);
+    }
+
+    .trip-form-actions {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+    .trip-cancel-button,
+    .trip-save-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+
+        min-height: 42px;
+        padding: 9px 15px;
+
+        font-size: 11px;
+        font-weight: 700;
+        text-decoration: none;
+
+        border-radius: 10px;
+
+        transition:
+            color 0.2s ease,
+            background 0.2s ease,
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .trip-cancel-button {
+        color: #475569;
+
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+    }
+
+    .trip-cancel-button:hover {
+        color: var(--tf-dark);
+
+        background: #f8fafc;
+        border-color: #94a3b8;
+
+        transform: translateY(-1px);
+    }
+
+    .trip-save-button {
+        color: #ffffff;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--tf-primary),
+                var(--tf-primary-dark)
+            );
+
+        border: 1px solid var(--tf-primary);
+
+        box-shadow: 0 8px 18px rgba(37, 99, 235, 0.2);
+    }
+
+    .trip-save-button:hover {
+        color: #ffffff;
+
+        background:
+            linear-gradient(
+                135deg,
+                #1d4ed8,
+                #1e40af
+            );
+
+        border-color: #1d4ed8;
+
+        box-shadow: 0 11px 23px rgba(37, 99, 235, 0.26);
+
+        transform: translateY(-2px);
+    }
+
+    .trip-save-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.7;
+        transform: none;
+    }
+
+    /* Sidebar */
+
+    .trip-form-sidebar {
+        position: sticky;
+        top: 115px;
+
+        overflow: hidden;
+
+        background: #ffffff;
+        border: 1px solid var(--tf-border);
+        border-radius: var(--tf-radius);
+
+        box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
+    }
+
+    .trip-sidebar-header {
+        padding: 20px;
+
+        color: #ffffff;
+
+        background:
+            radial-gradient(
+                circle at top right,
+                rgba(255, 255, 255, 0.15),
+                transparent 35%
+            ),
+            linear-gradient(
+                135deg,
+                #0f172a,
+                #1e3a8a
+            );
+    }
+
+    .trip-sidebar-header-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 42px;
+        height: 42px;
+
+        margin-bottom: 13px;
+
+        color: #ffffff;
+        font-size: 18px;
+
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+    }
+
+    .trip-sidebar-header h4 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 720;
+    }
+
+    .trip-sidebar-header p {
+        margin: 6px 0 0;
+
+        color: #cbd5e1;
+        font-size: 9px;
+        line-height: 1.55;
+    }
+
+    .trip-sidebar-body {
+        padding: 18px;
+    }
+
+    .trip-guide-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+
+        margin: 0;
+        padding: 0;
+
+        list-style: none;
+    }
+
+    .trip-guide-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .trip-guide-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 31px;
+        height: 31px;
+
+        color: var(--tf-primary);
+        font-size: 13px;
+
+        background: var(--tf-primary-soft);
+        border-radius: 9px;
+    }
+
+    .trip-guide-list strong {
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: var(--tf-dark);
+        font-size: 10px;
+        font-weight: 720;
+    }
+
+    .trip-guide-list p {
+        margin: 0;
+
+        color: var(--tf-muted);
+        font-size: 8px;
+        line-height: 1.5;
+    }
+
+    .trip-safety-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+
+        margin-top: 17px;
+        padding: 11px;
+
+        color: #9a3412;
+        font-size: 8px;
+        line-height: 1.5;
+
+        background: var(--tf-warning-soft);
+        border: 1px solid #fed7aa;
+        border-radius: 10px;
+    }
+
+    .trip-safety-note i {
+        margin-top: 1px;
+
+        color: var(--tf-warning);
+        font-size: 12px;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 991.98px) {
+        .trip-form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .trip-form-sidebar {
+            position: static;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .trip-form-hero {
+            align-items: stretch;
+            flex-direction: column;
+
+            padding: 23px;
+        }
+
+        .trip-back-button {
+            width: 100%;
+        }
+
+        .trip-form-card-body {
+            padding: 20px;
+        }
+
+        .trip-route-preview-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .trip-route-preview-point.destination {
+            text-align: left;
+        }
+
+        .trip-route-preview-line {
+            min-height: 45px;
+        }
+
+        .trip-route-preview-line::before {
+            top: 0;
+            bottom: 0;
+            left: 50%;
+
+            width: 2px;
+            height: auto;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    var(--tf-success),
+                    var(--tf-primary),
+                    var(--tf-danger)
+                );
+        }
+
+        .trip-assignment-preview,
+        .trip-value-preview-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .trip-form-footer {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .trip-form-footer-note {
+            justify-content: center;
+            text-align: center;
+        }
+
+        .trip-form-actions {
+            width: 100%;
+        }
+
+        .trip-cancel-button,
+        .trip-save-button {
+            flex: 1;
+        }
+    }
+
+    @media (max-width: 479.98px) {
+        .trip-form-hero {
+            padding: 20px;
+            border-radius: 17px;
+        }
+
+        .trip-form-hero-content {
+            align-items: flex-start;
+        }
+
+        .trip-form-hero-icon {
+            width: 47px;
+            height: 47px;
+
+            font-size: 20px;
+        }
+
+        .trip-form-card,
+        .trip-form-sidebar {
+            border-radius: 15px;
+        }
+
+        .trip-form-card-header,
+        .trip-form-card-body {
+            padding: 17px;
+        }
+
+        .trip-form-actions {
+            flex-direction: column-reverse;
+        }
+
+        .trip-cancel-button,
+        .trip-save-button {
+            width: 100%;
+        }
+
+        .trip-checkbox-panel {
+            align-items: flex-start;
+        }
+    }
+</style>
+
 {% endblock %}
 
 {% block content %}
 
-<div class="card border-0 shadow-sm">
-    <div class="card-body p-4">
+<div class="trip-form-page">
 
-        <form method="post" novalidate>
-            {% csrf_token %}
+    <div class="trip-form-wrapper">
 
-            {% if form.non_field_errors %}
-                <div class="alert alert-danger">
-                    {{ form.non_field_errors }}
+        <!-- Breadcrumb -->
+        <nav class="trip-form-breadcrumb">
+
+            <a href="{% url 'dashboard:home' %}">
+                <i class="bi bi-house-door"></i>
+                Dashboard
+            </a>
+
+            <i class="bi bi-chevron-right"></i>
+
+            <a href="{% url 'operations:trip_list' %}">
+                Trips
+            </a>
+
+            <i class="bi bi-chevron-right"></i>
+
+            <span>
+                {{ page_heading|default:"Trip Form" }}
+            </span>
+
+        </nav>
+
+        <!-- Hero -->
+        <section class="trip-form-hero">
+
+            <div class="trip-form-hero-content">
+
+                <div class="trip-form-hero-icon">
+                    <i class="bi bi-signpost-split-fill"></i>
                 </div>
-            {% endif %}
 
-            <div class="row g-3">
+                <div>
 
-                {% for field in form %}
-                    <div
-                        class="{% if field.name == 'notes' %}col-12{% else %}col-md-6{% endif %}"
+                    <div class="trip-form-eyebrow">
+                        <span></span>
+                        Fleet Trip Planning
+                    </div>
+
+                    <h2>
+                        {{ page_heading|default:"Trip Form" }}
+                    </h2>
+
+                    <p>
+                        Enter the route, vehicle, driver, cargo weight,
+                        distance and expected revenue for this fleet trip.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <a
+                href="{% url 'operations:trip_list' %}"
+                class="trip-back-button"
+            >
+                <i class="bi bi-arrow-left"></i>
+                Back to Trips
+            </a>
+
+        </section>
+
+        <div class="trip-form-grid">
+
+            <!-- Main Form -->
+            <section class="trip-form-card">
+
+                <header class="trip-form-card-header">
+
+                    <div class="trip-form-card-header-icon">
+                        <i class="bi bi-clipboard2-check-fill"></i>
+                    </div>
+
+                    <div>
+
+                        <h3>Trip Information</h3>
+
+                        <p>
+                            Complete all required fields and review the
+                            trip preview before saving.
+                        </p>
+
+                    </div>
+
+                </header>
+
+                <div class="trip-form-card-body">
+
+                    <form
+                        method="post"
+                        enctype="multipart/form-data"
+                        id="tripForm"
+                        novalidate
                     >
-                        <label class="form-label fw-semibold">
-                            {{ field.label }}
+                        {% csrf_token %}
 
-                            {% if field.field.required %}
-                                <span class="text-danger">*</span>
-                            {% endif %}
-                        </label>
+                        {% for hidden_field in form.hidden_fields %}
+                            {{ hidden_field }}
+                        {% endfor %}
 
-                        {{ field }}
+                        <!-- General Errors -->
+                        {% if form.non_field_errors %}
 
-                        {% if field.help_text %}
-                            <small class="text-muted d-block">
-                                {{ field.help_text }}
-                            </small>
+                            <div class="trip-general-errors">
+
+                                <div class="trip-general-errors-icon">
+                                    <i class="bi bi-exclamation-octagon-fill"></i>
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        Please correct the following errors
+                                    </strong>
+
+                                    <ul>
+
+                                        {% for error in form.non_field_errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+
+                                    </ul>
+
+                                </div>
+
+                            </div>
+
                         {% endif %}
 
-                        {% for error in field.errors %}
-                            <div class="text-danger small mt-1">
-                                {{ error }}
+                        <!-- Route Information -->
+                        <section class="trip-form-section">
+
+                            <div class="trip-form-section-heading">
+
+                                <div class="trip-form-section-icon">
+                                    <i class="bi bi-map-fill"></i>
+                                </div>
+
+                                <div>
+
+                                    <h4>Route Information</h4>
+
+                                    <p>
+                                        Enter the starting point and final destination.
+                                    </p>
+
+                                </div>
+
                             </div>
-                        {% endfor %}
+
+                            <div class="row g-3">
+
+                                {% for field in form.visible_fields %}
+
+                                    {% if field.name == "source" or field.name == "destination" %}
+
+                                        <div class="col-md-6">
+
+                                            <div
+                                                class="
+                                                    trip-field
+
+                                                    {% if field.errors %}
+                                                        has-error
+                                                    {% endif %}
+                                                "
+                                            >
+
+                                                <label
+                                                    for="{{ field.id_for_label }}"
+                                                    class="trip-field-label"
+                                                >
+
+                                                    <span class="trip-field-label-text">
+
+                                                        {{ field.label }}
+
+                                                        {% if field.field.required %}
+                                                            <span class="required-mark">*</span>
+                                                        {% endif %}
+
+                                                    </span>
+
+                                                    {% if not field.field.required %}
+
+                                                        <span class="optional-label">
+                                                            Optional
+                                                        </span>
+
+                                                    {% endif %}
+
+                                                </label>
+
+                                                {{ field }}
+
+                                                <div class="trip-field-help">
+
+                                                    {% if field.name == "source" %}
+
+                                                        <i class="bi bi-geo-alt-fill"></i>
+
+                                                        <span>
+                                                            Enter the trip's starting city,
+                                                            warehouse or pickup location.
+                                                        </span>
+
+                                                    {% else %}
+
+                                                        <i class="bi bi-flag-fill"></i>
+
+                                                        <span>
+                                                            Enter the final delivery or
+                                                            destination location.
+                                                        </span>
+
+                                                    {% endif %}
+
+                                                </div>
+
+                                                {% if field.errors %}
+
+                                                    <div class="trip-field-errors">
+
+                                                        {% for error in field.errors %}
+
+                                                            <div class="trip-field-error">
+                                                                <i class="bi bi-exclamation-circle-fill"></i>
+                                                                <span>{{ error }}</span>
+                                                            </div>
+
+                                                        {% endfor %}
+
+                                                    </div>
+
+                                                {% endif %}
+
+                                            </div>
+
+                                        </div>
+
+                                    {% endif %}
+
+                                {% endfor %}
+
+                            </div>
+
+                            <!-- Route Preview -->
+                            <div class="trip-route-preview">
+
+                                <div class="trip-route-preview-heading">
+                                    <i class="bi bi-map"></i>
+                                    Live Route Preview
+                                </div>
+
+                                <div class="trip-route-preview-grid">
+
+                                    <div class="trip-route-preview-point">
+
+                                        <small>Starting Point</small>
+
+                                        <strong id="sourcePreview">
+                                            Select source
+                                        </strong>
+
+                                    </div>
+
+                                    <div class="trip-route-preview-line">
+
+                                        <div class="trip-route-preview-vehicle">
+                                            <i class="bi bi-truck-front-fill"></i>
+                                        </div>
+
+                                    </div>
+
+                                    <div
+                                        class="
+                                            trip-route-preview-point
+                                            destination
+                                        "
+                                    >
+
+                                        <small>Destination</small>
+
+                                        <strong id="destinationPreview">
+                                            Select destination
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </section>
+
+                        <!-- Assignment -->
+                        <section class="trip-form-section">
+
+                            <div class="trip-form-section-heading">
+
+                                <div class="trip-form-section-icon">
+                                    <i class="bi bi-person-workspace"></i>
+                                </div>
+
+                                <div>
+
+                                    <h4>Vehicle and Driver Assignment</h4>
+
+                                    <p>
+                                        Assign an available vehicle and eligible driver.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            <div class="row g-3">
+
+                                {% for field in form.visible_fields %}
+
+                                    {% if field.name == "vehicle" or field.name == "driver" %}
+
+                                        <div class="col-md-6">
+
+                                            <div
+                                                class="
+                                                    trip-field
+
+                                                    {% if field.errors %}
+                                                        has-error
+                                                    {% endif %}
+                                                "
+                                            >
+
+                                                <label
+                                                    for="{{ field.id_for_label }}"
+                                                    class="trip-field-label"
+                                                >
+
+                                                    <span class="trip-field-label-text">
+
+                                                        {{ field.label }}
+
+                                                        {% if field.field.required %}
+                                                            <span class="required-mark">*</span>
+                                                        {% endif %}
+
+                                                    </span>
+
+                                                    {% if not field.field.required %}
+
+                                                        <span class="optional-label">
+                                                            Optional
+                                                        </span>
+
+                                                    {% endif %}
+
+                                                </label>
+
+                                                {{ field }}
+
+                                                <div class="trip-field-help">
+
+                                                    {% if field.name == "vehicle" %}
+
+                                                        <i class="bi bi-truck-front-fill"></i>
+
+                                                        <span>
+                                                            Select an available vehicle with
+                                                            sufficient cargo capacity.
+                                                        </span>
+
+                                                    {% else %}
+
+                                                        <i class="bi bi-person-badge-fill"></i>
+
+                                                        <span>
+                                                            Select an available driver with
+                                                            a valid licence.
+                                                        </span>
+
+                                                    {% endif %}
+
+                                                </div>
+
+                                                {% if field.errors %}
+
+                                                    <div class="trip-field-errors">
+
+                                                        {% for error in field.errors %}
+
+                                                            <div class="trip-field-error">
+                                                                <i class="bi bi-exclamation-circle-fill"></i>
+                                                                <span>{{ error }}</span>
+                                                            </div>
+
+                                                        {% endfor %}
+
+                                                    </div>
+
+                                                {% endif %}
+
+                                            </div>
+
+                                        </div>
+
+                                    {% endif %}
+
+                                {% endfor %}
+
+                            </div>
+
+                            <!-- Assignment Preview -->
+                            <div class="trip-assignment-preview">
+
+                                <div class="trip-assignment-preview-card">
+
+                                    <div class="trip-assignment-preview-icon">
+                                        <i class="bi bi-truck-front-fill"></i>
+                                    </div>
+
+                                    <div>
+
+                                        <small>Selected Vehicle</small>
+
+                                        <strong id="vehiclePreview">
+                                            No vehicle selected
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="trip-assignment-preview-card">
+
+                                    <div class="trip-assignment-preview-icon">
+                                        <i class="bi bi-person-badge-fill"></i>
+                                    </div>
+
+                                    <div>
+
+                                        <small>Selected Driver</small>
+
+                                        <strong id="driverPreview">
+                                            No driver selected
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </section>
+
+                        <!-- Cargo and Financial Information -->
+                        <section class="trip-form-section">
+
+                            <div class="trip-form-section-heading">
+
+                                <div class="trip-form-section-icon">
+                                    <i class="bi bi-box-seam-fill"></i>
+                                </div>
+
+                                <div>
+
+                                    <h4>Cargo and Financial Information</h4>
+
+                                    <p>
+                                        Enter cargo weight, planned distance and revenue.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            <div class="row g-3">
+
+                                {% for field in form.visible_fields %}
+
+                                    {% if field.name == "cargo_weight" or field.name == "planned_distance" or field.name == "revenue" %}
+
+                                        <div class="col-md-6">
+
+                                            <div
+                                                class="
+                                                    trip-field
+
+                                                    {% if field.errors %}
+                                                        has-error
+                                                    {% endif %}
+                                                "
+                                            >
+
+                                                <label
+                                                    for="{{ field.id_for_label }}"
+                                                    class="trip-field-label"
+                                                >
+
+                                                    <span class="trip-field-label-text">
+
+                                                        {{ field.label }}
+
+                                                        {% if field.field.required %}
+                                                            <span class="required-mark">*</span>
+                                                        {% endif %}
+
+                                                    </span>
+
+                                                    {% if not field.field.required %}
+
+                                                        <span class="optional-label">
+                                                            Optional
+                                                        </span>
+
+                                                    {% endif %}
+
+                                                </label>
+
+                                                {{ field }}
+
+                                                <div class="trip-field-help">
+
+                                                    {% if field.name == "cargo_weight" %}
+
+                                                        <i class="bi bi-box-seam"></i>
+
+                                                        <span>
+                                                            Enter the total cargo weight in kilograms.
+                                                        </span>
+
+                                                    {% elif field.name == "planned_distance" %}
+
+                                                        <i class="bi bi-signpost-2-fill"></i>
+
+                                                        <span>
+                                                            Enter the estimated route distance in kilometres.
+                                                        </span>
+
+                                                    {% else %}
+
+                                                        <i class="bi bi-currency-rupee"></i>
+
+                                                        <span>
+                                                            Enter the expected revenue for this trip.
+                                                        </span>
+
+                                                    {% endif %}
+
+                                                </div>
+
+                                                {% if field.errors %}
+
+                                                    <div class="trip-field-errors">
+
+                                                        {% for error in field.errors %}
+
+                                                            <div class="trip-field-error">
+                                                                <i class="bi bi-exclamation-circle-fill"></i>
+                                                                <span>{{ error }}</span>
+                                                            </div>
+
+                                                        {% endfor %}
+
+                                                    </div>
+
+                                                {% endif %}
+
+                                            </div>
+
+                                        </div>
+
+                                    {% endif %}
+
+                                {% endfor %}
+
+                            </div>
+
+                            <!-- Values Preview -->
+                            <div class="trip-value-preview-grid">
+
+                                <div class="trip-value-preview cargo">
+
+                                    <div class="trip-value-preview-icon">
+                                        <i class="bi bi-box-seam-fill"></i>
+                                    </div>
+
+                                    <div>
+
+                                        <small>Cargo Weight</small>
+
+                                        <strong id="cargoWeightPreview">
+                                            0 kg
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="trip-value-preview distance">
+
+                                    <div class="trip-value-preview-icon">
+                                        <i class="bi bi-signpost-2-fill"></i>
+                                    </div>
+
+                                    <div>
+
+                                        <small>Planned Distance</small>
+
+                                        <strong id="distancePreview">
+                                            0 km
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="trip-value-preview revenue">
+
+                                    <div class="trip-value-preview-icon">
+                                        <i class="bi bi-cash-stack"></i>
+                                    </div>
+
+                                    <div>
+
+                                        <small>Expected Revenue</small>
+
+                                        <strong id="revenuePreview">
+                                            ₹0.00
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </section>
+
+                        <!-- Additional Information -->
+                        <section class="trip-form-section">
+
+                            <div class="trip-form-section-heading">
+
+                                <div class="trip-form-section-icon">
+                                    <i class="bi bi-card-text"></i>
+                                </div>
+
+                                <div>
+
+                                    <h4>Additional Information</h4>
+
+                                    <p>
+                                        Add trip notes or complete other configured fields.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            <div class="row g-3">
+
+                                {% for field in form.visible_fields %}
+
+                                    {% if field.name != "source" and field.name != "destination" and field.name != "vehicle" and field.name != "driver" and field.name != "cargo_weight" and field.name != "planned_distance" and field.name != "revenue" %}
+
+                                        <div
+                                            class="
+                                                {% if field.name == 'notes' or field.name == 'description' or field.name == 'remarks' %}
+                                                    col-12
+                                                {% else %}
+                                                    col-md-6
+                                                {% endif %}
+                                            "
+                                        >
+
+                                            <div
+                                                class="
+                                                    trip-field
+
+                                                    {% if field.errors %}
+                                                        has-error
+                                                    {% endif %}
+                                                "
+                                            >
+
+                                                {% if field.field.widget.input_type == "checkbox" %}
+
+                                                    <div class="trip-checkbox-panel">
+
+                                                        <div class="trip-checkbox-content">
+
+                                                            <div class="trip-checkbox-icon">
+                                                                <i class="bi bi-toggle-on"></i>
+                                                            </div>
+
+                                                            <div>
+
+                                                                <strong>
+                                                                    {{ field.label }}
+                                                                </strong>
+
+                                                                <small>
+
+                                                                    {% if field.help_text %}
+                                                                        {{ field.help_text }}
+                                                                    {% else %}
+                                                                        Enable or disable this option.
+                                                                    {% endif %}
+
+                                                                </small>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="trip-checkbox-control">
+                                                            {{ field }}
+                                                        </div>
+
+                                                    </div>
+
+                                                {% else %}
+
+                                                    <label
+                                                        for="{{ field.id_for_label }}"
+                                                        class="trip-field-label"
+                                                    >
+
+                                                        <span class="trip-field-label-text">
+
+                                                            {{ field.label }}
+
+                                                            {% if field.field.required %}
+                                                                <span class="required-mark">*</span>
+                                                            {% endif %}
+
+                                                        </span>
+
+                                                        {% if not field.field.required %}
+
+                                                            <span class="optional-label">
+                                                                Optional
+                                                            </span>
+
+                                                        {% endif %}
+
+                                                    </label>
+
+                                                    {{ field }}
+
+                                                    {% if field.help_text %}
+
+                                                        <div class="trip-field-help">
+                                                            <i class="bi bi-info-circle"></i>
+
+                                                            <span>
+                                                                {{ field.help_text }}
+                                                            </span>
+                                                        </div>
+
+                                                    {% elif field.name == "notes" %}
+
+                                                        <div class="trip-field-help">
+                                                            <i class="bi bi-card-text"></i>
+
+                                                            <span>
+                                                                Add delivery instructions, cargo
+                                                                details or other important notes.
+                                                            </span>
+                                                        </div>
+
+                                                        <div
+                                                            class="trip-character-counter"
+                                                            id="notesCounter"
+                                                        >
+                                                            0 characters
+                                                        </div>
+
+                                                    {% endif %}
+
+                                                {% endif %}
+
+                                                {% if field.errors %}
+
+                                                    <div class="trip-field-errors">
+
+                                                        {% for error in field.errors %}
+
+                                                            <div class="trip-field-error">
+                                                                <i class="bi bi-exclamation-circle-fill"></i>
+                                                                <span>{{ error }}</span>
+                                                            </div>
+
+                                                        {% endfor %}
+
+                                                    </div>
+
+                                                {% endif %}
+
+                                            </div>
+
+                                        </div>
+
+                                    {% endif %}
+
+                                {% endfor %}
+
+                            </div>
+
+                        </section>
+
+                        <!-- Actions -->
+                        <footer class="trip-form-footer">
+
+                            <div class="trip-form-footer-note">
+
+                                <i class="bi bi-shield-check"></i>
+
+                                <span>
+                                    Confirm route, vehicle, driver and cargo
+                                    information before saving.
+                                </span>
+
+                            </div>
+
+                            <div class="trip-form-actions">
+
+                                <a
+                                    href="{% url 'operations:trip_list' %}"
+                                    class="trip-cancel-button"
+                                >
+                                    <i class="bi bi-x-lg"></i>
+                                    Cancel
+                                </a>
+
+                                <button
+                                    type="submit"
+                                    class="trip-save-button"
+                                    id="tripSaveButton"
+                                >
+                                    <i class="bi bi-check2-circle"></i>
+
+                                    <span>
+                                        {{ button_text|default:"Save Trip" }}
+                                    </span>
+                                </button>
+
+                            </div>
+
+                        </footer>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+            <!-- Sidebar -->
+            <aside class="trip-form-sidebar">
+
+                <header class="trip-sidebar-header">
+
+                    <div class="trip-sidebar-header-icon">
+                        <i class="bi bi-info-circle-fill"></i>
                     </div>
-                {% endfor %}
 
-            </div>
+                    <h4>Trip Planning Guide</h4>
 
-            <div class="mt-4 d-flex gap-2">
-                <button class="btn btn-primary">
-                    {{ button_text }}
-                </button>
+                    <p>
+                        Follow these checks to create a safe and accurate
+                        fleet trip.
+                    </p>
 
-                <a
-                    href="{% url 'operations:trip_list' %}"
-                    class="btn btn-light"
-                >
-                    Cancel
-                </a>
-            </div>
+                </header>
 
-        </form>
+                <div class="trip-sidebar-body">
+
+                    <ul class="trip-guide-list">
+
+                        <li>
+
+                            <span class="trip-guide-icon">
+                                <i class="bi bi-map"></i>
+                            </span>
+
+                            <div>
+
+                                <strong>Verify the Route</strong>
+
+                                <p>
+                                    Confirm both pickup and destination locations
+                                    before saving.
+                                </p>
+
+                            </div>
+
+                        </li>
+
+                        <li>
+
+                            <span class="trip-guide-icon">
+                                <i class="bi bi-truck-front"></i>
+                            </span>
+
+                            <div>
+
+                                <strong>Check Vehicle Capacity</strong>
+
+                                <p>
+                                    Cargo weight must not exceed the selected
+                                    vehicle's maximum load.
+                                </p>
+
+                            </div>
+
+                        </li>
+
+                        <li>
+
+                            <span class="trip-guide-icon">
+                                <i class="bi bi-person-badge"></i>
+                            </span>
+
+                            <div>
+
+                                <strong>Driver Eligibility</strong>
+
+                                <p>
+                                    Assign an available driver with a valid and
+                                    suitable licence.
+                                </p>
+
+                            </div>
+
+                        </li>
+
+                        <li>
+
+                            <span class="trip-guide-icon">
+                                <i class="bi bi-signpost-2"></i>
+                            </span>
+
+                            <div>
+
+                                <strong>Accurate Distance</strong>
+
+                                <p>
+                                    Planned distance supports fuel, cost and
+                                    performance calculations.
+                                </p>
+
+                            </div>
+
+                        </li>
+
+                        <li>
+
+                            <span class="trip-guide-icon">
+                                <i class="bi bi-currency-rupee"></i>
+                            </span>
+
+                            <div>
+
+                                <strong>Review Revenue</strong>
+
+                                <p>
+                                    Enter the expected customer payment or
+                                    trip income accurately.
+                                </p>
+
+                            </div>
+
+                        </li>
+
+                    </ul>
+
+                    <div class="trip-safety-note">
+
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+
+                        <span>
+                            The server will validate vehicle availability,
+                            driver availability, licence validity and cargo
+                            capacity when the trip is saved or dispatched.
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </div>
 
     </div>
+
 </div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        /*
+         * Find common trip fields by their Django field names.
+         */
+
+        const sourceInput = document.querySelector(
+            '[name="source"]'
+        );
+
+        const destinationInput = document.querySelector(
+            '[name="destination"]'
+        );
+
+        const vehicleInput = document.querySelector(
+            '[name="vehicle"]'
+        );
+
+        const driverInput = document.querySelector(
+            '[name="driver"]'
+        );
+
+        const cargoWeightInput = document.querySelector(
+            '[name="cargo_weight"]'
+        );
+
+        const plannedDistanceInput = document.querySelector(
+            '[name="planned_distance"]'
+        );
+
+        const revenueInput = document.querySelector(
+            '[name="revenue"]'
+        );
+
+        const notesInput = document.querySelector(
+            '[name="notes"]'
+        );
+
+        /*
+         * Add placeholders and input attributes.
+         */
+
+        if (sourceInput) {
+            sourceInput.placeholder =
+                "Example: Surat Warehouse";
+
+            sourceInput.setAttribute(
+                "autocomplete",
+                "off"
+            );
+        }
+
+        if (destinationInput) {
+            destinationInput.placeholder =
+                "Example: Ahmedabad Distribution Centre";
+
+            destinationInput.setAttribute(
+                "autocomplete",
+                "off"
+            );
+        }
+
+        if (cargoWeightInput) {
+            cargoWeightInput.placeholder =
+                "Example: 850";
+
+            cargoWeightInput.setAttribute(
+                "min",
+                "0"
+            );
+
+            cargoWeightInput.setAttribute(
+                "step",
+                "0.01"
+            );
+
+            cargoWeightInput.setAttribute(
+                "inputmode",
+                "decimal"
+            );
+        }
+
+        if (plannedDistanceInput) {
+            plannedDistanceInput.placeholder =
+                "Example: 265";
+
+            plannedDistanceInput.setAttribute(
+                "min",
+                "0"
+            );
+
+            plannedDistanceInput.setAttribute(
+                "step",
+                "0.01"
+            );
+
+            plannedDistanceInput.setAttribute(
+                "inputmode",
+                "decimal"
+            );
+        }
+
+        if (revenueInput) {
+            revenueInput.placeholder =
+                "Example: 18500";
+
+            revenueInput.setAttribute(
+                "min",
+                "0"
+            );
+
+            revenueInput.setAttribute(
+                "step",
+                "0.01"
+            );
+
+            revenueInput.setAttribute(
+                "inputmode",
+                "decimal"
+            );
+        }
+
+        if (notesInput) {
+            notesInput.placeholder =
+                "Add delivery instructions, cargo details or important trip notes...";
+        }
+
+        /*
+         * Helper for reading the selected option text.
+         */
+
+        function getSelectedOptionText(selectElement) {
+            if (
+                !selectElement ||
+                selectElement.tagName !== "SELECT"
+            ) {
+                return "";
+            }
+
+            const selectedOption =
+                selectElement.options[
+                    selectElement.selectedIndex
+                ];
+
+            if (!selectedOption || !selectedOption.value) {
+                return "";
+            }
+
+            return selectedOption.text.trim();
+        }
+
+        /*
+         * Live route preview.
+         */
+
+        const sourcePreview = document.getElementById(
+            "sourcePreview"
+        );
+
+        const destinationPreview = document.getElementById(
+            "destinationPreview"
+        );
+
+        function updateRoutePreview() {
+            if (sourcePreview) {
+                sourcePreview.textContent =
+                    sourceInput && sourceInput.value.trim()
+                        ? sourceInput.value.trim()
+                        : "Select source";
+            }
+
+            if (destinationPreview) {
+                destinationPreview.textContent =
+                    destinationInput &&
+                    destinationInput.value.trim()
+                        ? destinationInput.value.trim()
+                        : "Select destination";
+            }
+        }
+
+        if (sourceInput) {
+            sourceInput.addEventListener(
+                "input",
+                updateRoutePreview
+            );
+        }
+
+        if (destinationInput) {
+            destinationInput.addEventListener(
+                "input",
+                updateRoutePreview
+            );
+        }
+
+        updateRoutePreview();
+
+        /*
+         * Vehicle and driver preview.
+         */
+
+        const vehiclePreview = document.getElementById(
+            "vehiclePreview"
+        );
+
+        const driverPreview = document.getElementById(
+            "driverPreview"
+        );
+
+        function updateAssignmentPreview() {
+            if (vehiclePreview) {
+                const vehicleText =
+                    getSelectedOptionText(vehicleInput);
+
+                vehiclePreview.textContent =
+                    vehicleText ||
+                    (
+                        vehicleInput &&
+                        vehicleInput.value
+                            ? vehicleInput.value
+                            : "No vehicle selected"
+                    );
+            }
+
+            if (driverPreview) {
+                const driverText =
+                    getSelectedOptionText(driverInput);
+
+                driverPreview.textContent =
+                    driverText ||
+                    (
+                        driverInput &&
+                        driverInput.value
+                            ? driverInput.value
+                            : "No driver selected"
+                    );
+            }
+        }
+
+        if (vehicleInput) {
+            vehicleInput.addEventListener(
+                "change",
+                updateAssignmentPreview
+            );
+        }
+
+        if (driverInput) {
+            driverInput.addEventListener(
+                "change",
+                updateAssignmentPreview
+            );
+        }
+
+        updateAssignmentPreview();
+
+        /*
+         * Cargo, distance and revenue previews.
+         */
+
+        const cargoWeightPreview = document.getElementById(
+            "cargoWeightPreview"
+        );
+
+        const distancePreview = document.getElementById(
+            "distancePreview"
+        );
+
+        const revenuePreview = document.getElementById(
+            "revenuePreview"
+        );
+
+        function getSafeNumber(value) {
+            const number = Number(value || "0");
+
+            if (
+                Number.isNaN(number) ||
+                number < 0
+            ) {
+                return 0;
+            }
+
+            return number;
+        }
+
+        function updateValuePreviews() {
+            const cargoWeight = getSafeNumber(
+                cargoWeightInput
+                    ? cargoWeightInput.value
+                    : 0
+            );
+
+            const plannedDistance = getSafeNumber(
+                plannedDistanceInput
+                    ? plannedDistanceInput.value
+                    : 0
+            );
+
+            const revenue = getSafeNumber(
+                revenueInput
+                    ? revenueInput.value
+                    : 0
+            );
+
+            if (cargoWeightPreview) {
+                cargoWeightPreview.textContent =
+                    new Intl.NumberFormat(
+                        "en-IN",
+                        {
+                            maximumFractionDigits: 2
+                        }
+                    ).format(cargoWeight) +
+                    " kg";
+            }
+
+            if (distancePreview) {
+                distancePreview.textContent =
+                    new Intl.NumberFormat(
+                        "en-IN",
+                        {
+                            maximumFractionDigits: 2
+                        }
+                    ).format(plannedDistance) +
+                    " km";
+            }
+
+            if (revenuePreview) {
+                revenuePreview.textContent =
+                    new Intl.NumberFormat(
+                        "en-IN",
+                        {
+                            style: "currency",
+                            currency: "INR",
+                            maximumFractionDigits: 2
+                        }
+                    ).format(revenue);
+            }
+        }
+
+        [
+            cargoWeightInput,
+            plannedDistanceInput,
+            revenueInput
+        ].forEach(function (input) {
+            if (input) {
+                input.addEventListener(
+                    "input",
+                    updateValuePreviews
+                );
+            }
+        });
+
+        updateValuePreviews();
+
+        /*
+         * Notes character counter.
+         */
+
+        const notesCounter = document.getElementById(
+            "notesCounter"
+        );
+
+        function updateNotesCounter() {
+            if (!notesInput || !notesCounter) {
+                return;
+            }
+
+            const characterCount =
+                notesInput.value.length;
+
+            notesCounter.textContent =
+                characterCount +
+                (
+                    characterCount === 1
+                        ? " character"
+                        : " characters"
+                );
+        }
+
+        if (notesInput) {
+            notesInput.addEventListener(
+                "input",
+                updateNotesCounter
+            );
+
+            updateNotesCounter();
+        }
+
+        /*
+         * Prevent duplicate submissions.
+         */
+
+        const tripForm = document.getElementById(
+            "tripForm"
+        );
+
+        const saveButton = document.getElementById(
+            "tripSaveButton"
+        );
+
+        if (tripForm && saveButton) {
+            tripForm.addEventListener(
+                "submit",
+                function () {
+                    saveButton.disabled = true;
+
+                    saveButton.innerHTML = `
+                        <span
+                            class="spinner-border spinner-border-sm"
+                            aria-hidden="true"
+                        ></span>
+
+                        <span>Saving Trip...</span>
+                    `;
+                }
+            );
+        }
+    });
+</script>
 
 {% endblock %}

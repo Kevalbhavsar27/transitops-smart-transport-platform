@@ -3,10 +3,10 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 
 from accounts.decorators import role_required
-from accounts.models import User
+from accounts.models import *
 
-from .forms import DriverForm, VehicleForm
-from .models import Driver, Vehicle
+from .forms import *
+from .models import *
 
 
 VEHICLE_VIEW_ROLES = (
@@ -103,10 +103,12 @@ def vehicle_create(request):
         },
     )
 
-
 @role_required(*VEHICLE_MANAGE_ROLES)
 def vehicle_update(request, pk):
-    vehicle = get_object_or_404(Vehicle, pk=pk)
+    vehicle = get_object_or_404(
+        Vehicle,
+        pk=pk,
+    )
 
     form = VehicleForm(
         request.POST or None,
@@ -114,14 +116,20 @@ def vehicle_update(request, pk):
     )
 
     if request.method == "POST" and form.is_valid():
-        vehicle = form.save()
+        updated_vehicle = form.save()
 
         messages.success(
             request,
-            f"Vehicle {vehicle.registration_number} updated successfully.",
+            (
+                f"Vehicle "
+                f"{updated_vehicle.registration_number} "
+                "updated successfully."
+            ),
         )
 
-        return redirect("fleet:vehicle_list")
+        return redirect(
+            "fleet:vehicle_list"
+        )
 
     return render(
         request,
@@ -129,8 +137,13 @@ def vehicle_update(request, pk):
         {
             "form": form,
             "vehicle": vehicle,
-            "page_heading": "Update Vehicle",
-            "button_text": "Update Vehicle",
+            "page_heading": "Edit Vehicle",
+            "page_subtitle": (
+                f"Update information for "
+                f"{vehicle.registration_number}."
+            ),
+            "button_text": "Save Changes",
+            "is_edit": True,
         },
     )
 
