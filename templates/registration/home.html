@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block title %}
+    Dashboard | TransitOps
+{% endblock %}
+
+{% block page_title %}
+    Operations Dashboard
+{% endblock %}
+
+{% block page_subtitle %}
+    Monitor fleet availability, trips and driver operations.
+{% endblock %}
+
+{% block content %}
+
+<div class="welcome-banner">
+
+    <div>
+        <p class="eyebrow">
+            LIVE OPERATIONS
+        </p>
+
+        <h3>
+            Welcome,
+            {{ request.user.first_name|default:request.user.email }}
+        </h3>
+
+        <p>
+            Your fleet operation overview will appear here.
+        </p>
+    </div>
+
+    <div class="utilization-box">
+        <span>Fleet utilization</span>
+        <strong>{{ fleet_utilization }}%</strong>
+    </div>
+
+</div>
+
+<div class="stats-grid">
+
+    {% for stat in stats %}
+
+        <article class="stat-card">
+
+            <div class="stat-card-top">
+                <span class="stat-label">
+                    {{ stat.title }}
+                </span>
+
+                <span class="stat-indicator"></span>
+            </div>
+
+            <div class="stat-value">
+                {{ stat.value }}
+            </div>
+
+            <p>
+                {{ stat.subtitle }}
+            </p>
+
+        </article>
+
+    {% endfor %}
+
+</div>
+
+<div class="dashboard-grid">
+
+    <section class="dashboard-panel">
+
+        <div class="panel-heading">
+            <div>
+                <h4>Recent Trips</h4>
+                <p>Latest dispatch activity</p>
+            </div>
+
+            <a href="#" class="panel-link">
+                View all
+            </a>
+        </div>
+
+        <div class="empty-state">
+            <div class="empty-icon">↗</div>
+
+            <h5>No trips created yet</h5>
+
+            <p>
+                Your latest dispatched trips will appear here.
+            </p>
+        </div>
+
+    </section>
+
+    <section class="dashboard-panel">
+
+        <div class="panel-heading">
+            <div>
+                <h4>Operational Alerts</h4>
+                <p>Items requiring attention</p>
+            </div>
+        </div>
+
+        <div class="alert-list">
+
+            <div class="operation-alert">
+                <span class="alert-symbol warning">!</span>
+
+                <div>
+                    <strong>Driver licence alerts</strong>
+
+                    <p>
+                        Expiring licence notifications will appear here.
+                    </p>
+                </div>
+            </div>
+
+            <div class="operation-alert">
+                <span class="alert-symbol maintenance">M</span>
+
+                <div>
+                    <strong>Maintenance reminders</strong>
+
+                    <p>
+                        Scheduled maintenance alerts will appear here.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

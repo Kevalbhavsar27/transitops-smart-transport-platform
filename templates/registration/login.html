@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}
+    Login | TransitOps
+{% endblock %}
+
+{% block authentication_content %}
+
+<div class="login-wrapper">
+
+    <div class="login-brand-panel">
+
+        <div class="large-brand-icon">
+            T
+        </div>
+
+        <h1>TransitOps</h1>
+
+        <p>
+            Manage vehicles, drivers, trips, maintenance,
+            fuel and operational expenses from one platform.
+        </p>
+
+        <div class="login-feature-list">
+
+            <div>✓ Real-time fleet visibility</div>
+            <div>✓ Automated dispatch validations</div>
+            <div>✓ Maintenance and expense tracking</div>
+            <div>✓ Operational analytics</div>
+
+        </div>
+
+    </div>
+
+    <div class="login-form-panel">
+
+        <div class="login-card">
+
+            <p class="eyebrow">
+                SECURE ACCESS
+            </p>
+
+            <h2>Welcome back</h2>
+
+            <p class="login-description">
+                Enter your company account details.
+            </p>
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <form method="post">
+
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        Email address
+                    </label>
+
+                    {{ form.username }}
+
+                    {% for error in form.username.errors %}
+                        <small class="text-danger">
+                            {{ error }}
+                        </small>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">
+                        Password
+                    </label>
+
+                    {{ form.password }}
+
+                    {% for error in form.password.errors %}
+                        <small class="text-danger">
+                            {{ error }}
+                        </small>
+                    {% endfor %}
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary w-100 login-submit-button"
+                >
+                    Sign in to TransitOps
+                </button>
+
+            </form>
+
+            <p class="login-footer-text">
+                Access is restricted to authorized employees.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
