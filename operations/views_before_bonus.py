@@ -1,23 +1,10 @@
 import csv
 from decimal import Decimal
-from io import BytesIO
 
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.db.models import Q, Sum
 from django.http import HttpResponse
-from django.utils import timezone
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4, landscape
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib.units import mm
-from reportlab.platypus import (
-    Paragraph,
-    SimpleDocTemplate,
-    Spacer,
-    Table,
-    TableStyle,
-)
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
@@ -81,12 +68,6 @@ FUEL_MANAGE_ROLES = (
 )
 
 
-
-def apply_safe_sorting(queryset, requested_sort, allowed_sorts, default_sort):
-    ordering = allowed_sorts.get(requested_sort, default_sort)
-    return queryset.order_by(ordering)
-
-
 def show_validation_errors(request, error):
     """Convert Django ValidationError messages into Django messages."""
     if hasattr(error, "message_dict"):
@@ -124,21 +105,6 @@ def trip_list(request):
 
     if trip_status:
         trips = trips.filter(status=trip_status)
-
-    trip_sort = request.GET.get("sort", "newest")
-    trips = apply_safe_sorting(
-        trips,
-        trip_sort,
-        {
-            "newest": "-created_at",
-            "oldest": "created_at",
-            "route": "source",
-            "vehicle": "vehicle__registration_number",
-            "driver": "driver__name",
-            "status": "status",
-        },
-        "-created_at",
-    )
 
     context = {
         "trips": trips,
@@ -309,21 +275,6 @@ def maintenance_list(request):
             | Q(description__icontains=search)
         )
 
-    maintenance_sort = request.GET.get("sort", "newest")
-    records = apply_safe_sorting(
-        records,
-        maintenance_sort,
-        {
-            "newest": "-created_at",
-            "oldest": "created_at",
-            "vehicle": "vehicle__registration_number",
-            "priority": "priority",
-            "status": "status",
-            "cost_high": "-final_cost",
-        },
-        "-created_at",
-    )
-
     return render(
         request,
         "operations/maintenance_list.html",
@@ -469,21 +420,6 @@ def fuel_log_list(request):
             | Q(trip__destination__icontains=search)
         )
 
-    fuel_sort = request.GET.get("sort", "newest")
-    fuel_logs = apply_safe_sorting(
-        fuel_logs,
-        fuel_sort,
-        {
-            "newest": "-date",
-            "oldest": "date",
-            "vehicle": "vehicle__registration_number",
-            "liters_high": "-liters",
-            "cost_high": "-total_cost",
-            "odometer_high": "-odometer",
-        },
-        "-date",
-    )
-
     total_cost = (
         fuel_logs.aggregate(total=Sum("total_cost"))["total"]
         or Decimal("0")
@@ -596,21 +532,6 @@ def expense_list(request):
 
     if expense_type:
         expenses = expenses.filter(expense_type=expense_type)
-
-    expense_sort = request.GET.get("sort", "newest")
-    expenses = apply_safe_sorting(
-        expenses,
-        expense_sort,
-        {
-            "newest": "-date",
-            "oldest": "date",
-            "vehicle": "vehicle__registration_number",
-            "type": "expense_type",
-            "amount_high": "-amount",
-            "amount_low": "amount",
-        },
-        "-date",
-    )
 
     total_amount = (
         expenses.aggregate(total=Sum("amount"))["total"]
@@ -907,105 +828,4 @@ def export_vehicle_report_csv(request):
             ]
         )
 
-    return response
-
-
-@role_required(*TRIP_VIEW_ROLES)
-def export_vehicle_report_pdf(request):
-    rows = build_vehicle_report_rows()
-    buffer = BytesIO()
-
-    document = SimpleDocTemplate(
-        buffer,
-        pagesize=landscape(A4),
-        leftMargin=12 * mm,
-        rightMargin=12 * mm,
-        topMargin=12 * mm,
-        bottomMargin=12 * mm,
-        title="TransitOps Vehicle Performance Report",
-    )
-
-    styles = getSampleStyleSheet()
-    elements = [
-        Paragraph("TransitOps Vehicle Performance Report", styles["Title"]),
-        Paragraph(
-            f"Generated: {timezone.localtime():%d %b %Y, %I:%M %p}",
-            styles["Normal"],
-        ),
-        Spacer(1, 8),
-    ]
-
-    table_data = [
-        [
-            "Registration",
-            "Vehicle",
-            "Trips",
-            "Distance",
-            "Efficiency",
-            "Revenue",
-            "Operational Cost",
-            "Net Profit",
-            "ROI",
-        ]
-    ]
-
-    for row in rows:
-        table_data.append(
-            [
-                row["vehicle"].registration_number,
-                row["vehicle"].vehicle_name,
-                str(row["completed_trips"]),
-                f'{row["total_distance"]:.2f} km',
-                f'{row["fuel_efficiency"]:.2f} km/L',
-                f'INR {row["revenue"]:.2f}',
-                f'INR {row["operational_cost"]:.2f}',
-                f'INR {row["profit"]:.2f}',
-                f'{row["roi"]:.2f}%',
-            ]
-        )
-
-    table = Table(
-        table_data,
-        repeatRows=1,
-        colWidths=[
-            28 * mm,
-            32 * mm,
-            14 * mm,
-            22 * mm,
-            24 * mm,
-            25 * mm,
-            32 * mm,
-            26 * mm,
-            18 * mm,
-        ],
-    )
-    table.setStyle(
-        TableStyle(
-            [
-                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1f4f99")),
-                ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-                ("FONTSIZE", (0, 0), (-1, -1), 8),
-                ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#d0d5dd")),
-                ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f5f7fa")]),
-                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                ("LEFTPADDING", (0, 0), (-1, -1), 4),
-                ("RIGHTPADDING", (0, 0), (-1, -1), 4),
-                ("TOPPADDING", (0, 0), (-1, -1), 5),
-                ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
-            ]
-        )
-    )
-    elements.append(table)
-
-    document.build(elements)
-    buffer.seek(0)
-
-    response = HttpResponse(
-        buffer.getvalue(),
-        content_type="application/pdf",
-    )
-    response["Content-Disposition"] = (
-        'attachment; filename="transitops_vehicle_report.pdf"'
-    )
     return response

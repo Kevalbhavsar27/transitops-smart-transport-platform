@@ -39,9 +39,10 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
 
-    "accounts",
+     "accounts.apps.AccountsConfig",
     "fleet",
     "operations",
+    "documents",
 ]
 
 REST_FRAMEWORK = {
@@ -212,3 +213,15 @@ LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "dashboard:home"
 
 LOGOUT_REDIRECT_URL = "accounts:login"
+EMAIL_BACKEND = (
+    "django.core.mail.backends.console.EmailBackend"
+)
+
+DEFAULT_FROM_EMAIL = (
+    "TransitOps <transitops@localhost>"
+)
+
+LICENSE_REMINDER_DAYS = 30
+LICENSE_REMINDER_RECIPIENTS = [
+    "admin@transitops.local",
+]

@@ -14,18 +14,7 @@ Vehicle cost, efficiency, profitability and ROI analysis.
 
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-
-    <div>
-        <h4 class="mb-1">
-            Vehicle Performance Report
-        </h4>
-
-        <p class="text-muted mb-0">
-            Financial and operational analysis
-        </p>
-    </div>
-
+<div class="d-flex gap-2">
     <a
         href="{% url 'operations:export_vehicle_report_csv' %}"
         class="btn btn-success"
@@ -33,6 +22,12 @@ Vehicle cost, efficiency, profitability and ROI analysis.
         Export CSV
     </a>
 
+    <a
+        href="{% url 'operations:export_vehicle_report_pdf' %}"
+        class="btn btn-danger"
+    >
+        Export PDF
+    </a>
 </div>
 
 <div class="row g-3 mb-4">

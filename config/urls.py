@@ -85,6 +85,15 @@ urlpatterns = [
         "api/v1/operations/",
         include("operations.api_urls"),
     ),
+    path(
+    "documents/",
+    include("documents.urls"),
+),
+
+path(
+    "api/v1/documents/",
+    include("documents.api_urls"),
+),
 ]
 
 

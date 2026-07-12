@@ -132,4 +132,9 @@ path(
     views.export_vehicle_report_csv,
     name="export_vehicle_report_csv",
 ),
+path(
+    "reports/export/pdf/",
+    views.export_vehicle_report_pdf,
+    name="export_vehicle_report_pdf",
+),
 ]
