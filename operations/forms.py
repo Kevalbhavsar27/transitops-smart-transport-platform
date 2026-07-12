@@ -45,10 +45,23 @@ class TripForm(
         ]
 
         widgets = {
+            "source": forms.TextInput(
+                attrs={
+                    "placeholder": "Enter source city",
+                }
+            ),
+
+            "destination": forms.TextInput(
+                attrs={
+                    "placeholder": "Enter destination city",
+                }
+            ),
+
             "cargo_weight": forms.NumberInput(
                 attrs={
                     "min": "0.01",
                     "step": "0.01",
+                    "placeholder": "Cargo weight in kg",
                 }
             ),
 
@@ -56,6 +69,7 @@ class TripForm(
                 attrs={
                     "min": "0.01",
                     "step": "0.01",
+                    "placeholder": "Distance in km",
                 }
             ),
 
@@ -63,12 +77,14 @@ class TripForm(
                 attrs={
                     "min": "0",
                     "step": "0.01",
+                    "placeholder": "Trip revenue",
                 }
             ),
 
             "notes": forms.Textarea(
                 attrs={
                     "rows": 3,
+                    "placeholder": "Additional trip information",
                 }
             ),
         }
@@ -80,18 +96,20 @@ class TripForm(
             status=Vehicle.Status.AVAILABLE
         )
 
-        valid_drivers = Driver.objects.filter(
+        available_drivers = Driver.objects.filter(
             status=Driver.Status.AVAILABLE,
             license_expiry_date__gte=timezone.localdate(),
         )
 
+        # While editing a Draft trip, keep its current
+        # vehicle and driver visible in the dropdown.
         if self.instance and self.instance.pk:
             available_vehicles = Vehicle.objects.filter(
                 Q(status=Vehicle.Status.AVAILABLE)
                 | Q(pk=self.instance.vehicle_id)
             )
 
-            valid_drivers = Driver.objects.filter(
+            available_drivers = Driver.objects.filter(
                 Q(
                     status=Driver.Status.AVAILABLE,
                     license_expiry_date__gte=timezone.localdate(),
@@ -99,13 +117,32 @@ class TripForm(
                 | Q(pk=self.instance.driver_id)
             )
 
-        self.fields["vehicle"].queryset = (
-            available_vehicles
+        self.fields["vehicle"].queryset = available_vehicles
+        self.fields["driver"].queryset = available_drivers
+
+        # Display capacity inside the vehicle dropdown.
+        self.fields["vehicle"].label_from_instance = (
+            lambda vehicle: (
+                f"{vehicle.registration_number} - "
+                f"{vehicle.vehicle_name} "
+                f"(Maximum {vehicle.maximum_load_capacity} kg)"
+            )
         )
 
-        self.fields["driver"].queryset = valid_drivers
+        self.fields["cargo_weight"].help_text = (
+            "Cargo weight cannot exceed the selected "
+            "vehicle's maximum load capacity."
+        )
 
         self.apply_bootstrap()
+
+        self.fields["vehicle"].widget.attrs[
+            "class"
+        ] = "form-select"
+
+        self.fields["driver"].widget.attrs[
+            "class"
+        ] = "form-select"
 
     def clean(self):
         cleaned_data = super().clean()
@@ -127,45 +164,65 @@ class TripForm(
                 "Source and destination cannot be the same.",
             )
 
-        if (
-            vehicle
-            and cargo_weight
-            and cargo_weight
-            > vehicle.maximum_load_capacity
-        ):
-            self.add_error(
-                "cargo_weight",
-                (
-                    f"Maximum capacity is "
-                    f"{vehicle.maximum_load_capacity} kg."
-                ),
+        # Vehicle-capacity validation
+        if vehicle and cargo_weight is not None:
+            if cargo_weight > vehicle.maximum_load_capacity:
+                self.add_error(
+                    "cargo_weight",
+                    (
+                        f"Cargo weight is {cargo_weight} kg, "
+                        f"but vehicle "
+                        f"{vehicle.registration_number} can carry "
+                        f"maximum "
+                        f"{vehicle.maximum_load_capacity} kg."
+                    ),
+                )
+
+        if vehicle:
+            current_vehicle_allowed = (
+                self.instance
+                and self.instance.pk
+                and vehicle.pk == self.instance.vehicle_id
             )
 
-        if (
-            vehicle
-            and vehicle.status
-            != Vehicle.Status.AVAILABLE
-        ):
-            self.add_error(
-                "vehicle",
-                "This vehicle is not available.",
-            )
+            if (
+                vehicle.status != Vehicle.Status.AVAILABLE
+                and not current_vehicle_allowed
+            ):
+                self.add_error(
+                    "vehicle",
+                    "This vehicle is not available.",
+                )
 
         if driver:
-            if driver.status != Driver.Status.AVAILABLE:
+            current_driver_allowed = (
+                self.instance
+                and self.instance.pk
+                and driver.pk == self.instance.driver_id
+            )
+
+            if (
+                driver.status != Driver.Status.AVAILABLE
+                and not current_driver_allowed
+            ):
                 self.add_error(
                     "driver",
                     "This driver is not available.",
                 )
 
-            elif driver.is_license_expired:
+            if driver.is_license_expired:
                 self.add_error(
                     "driver",
                     "This driver's licence has expired.",
                 )
 
-        return cleaned_data
+            if driver.status == Driver.Status.SUSPENDED:
+                self.add_error(
+                    "driver",
+                    "A suspended driver cannot be assigned.",
+                )
 
+        return cleaned_data
 
 class TripCompleteForm(
     BootstrapFormMixin,

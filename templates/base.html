@@ -27,7 +27,10 @@
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
         rel="stylesheet"
     >
-
+<link
+    rel="stylesheet"
+    href="{% static 'css/dark-mode.css' %}"
+>
     <!-- Your existing external CSS -->
     <link
         rel="stylesheet"
@@ -965,19 +968,44 @@
 
             </div>
 
-            <div class="header-profile">
+           <div class="header-actions">
 
-                <span class="status-dot"></span>
+    <button
+        type="button"
+        class="theme-toggle"
+        id="themeToggle"
+        aria-label="Change application theme"
+        aria-pressed="false"
+    >
+        <i
+            class="bi bi-moon-stars-fill"
+            id="themeToggleIcon"
+        ></i>
 
-                <span>
-                    {% if request.user.is_superuser %}
-                        Super Admin
-                    {% else %}
-                        {{ request.user.get_role_display|default:"User" }}
-                    {% endif %}
-                </span>
+        <span
+            class="theme-toggle-text"
+            id="themeToggleText"
+        >
+            Dark
+        </span>
+    </button>
 
-            </div>
+
+    <div class="header-profile">
+
+        <span class="status-dot"></span>
+
+        <span>
+            {% if request.user.is_superuser %}
+                Super Admin
+            {% else %}
+                {{ request.user.get_role_display|default:"User" }}
+            {% endif %}
+        </span>
+
+    </div>
+
+</div>
 
         </header>
 
@@ -1050,13 +1078,31 @@
     {% block authentication_content %}{% endblock %}
 </main>
 
+<button
+    type="button"
+    class="theme-toggle authentication-theme-toggle"
+    id="themeToggle"
+    aria-label="Change application theme"
+    aria-pressed="false"
+>
+    <i
+        class="bi bi-moon-stars-fill"
+        id="themeToggleIcon"
+    ></i>
+
+    <span
+        class="theme-toggle-text"
+        id="themeToggleText"
+    >
+        Dark
+    </span>
+</button>
+
 {% endif %}
 
 <!-- Bootstrap JavaScript -->
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-></script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/theme.js' %}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const sidebar = document.getElementById("applicationSidebar");
@@ -1140,7 +1186,38 @@
         });
     });
 </script>
+<script>
+    (function () {
+        try {
+            const savedTheme = localStorage.getItem(
+                "transitops-theme"
+            );
 
+            const systemTheme = window.matchMedia(
+                "(prefers-color-scheme: dark)"
+            ).matches
+                ? "dark"
+                : "light";
+
+            const theme = savedTheme || systemTheme;
+
+            document.documentElement.setAttribute(
+                "data-bs-theme",
+                theme
+            );
+
+            document.documentElement.setAttribute(
+                "data-theme",
+                theme
+            );
+        } catch (error) {
+            document.documentElement.setAttribute(
+                "data-bs-theme",
+                "light"
+            );
+        }
+    })();
+</script>
 {% block extra_js %}{% endblock %}
 
 </body>

@@ -1,7 +1,7 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils import timezone
-
+from decimal import Decimal
 
 class Vehicle(models.Model):
     class VehicleType(models.TextChoices):
@@ -42,7 +42,7 @@ class Vehicle(models.Model):
         max_digits=12,
         decimal_places=2,
         help_text="Maximum cargo capacity in kilograms.",
-        validators=[MinValueValidator(0)],
+        validators=[ MinValueValidator(Decimal("0.01")),],
     )
 
     odometer = models.DecimalField(

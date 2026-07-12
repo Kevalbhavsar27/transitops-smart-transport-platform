@@ -52,7 +52,7 @@ class VehicleForm(forms.ModelForm):
                     "class": "form-control",
                     "min": "0",
                     "step": "0.01",
-                    "placeholder": "Capacity in kilograms",
+                    "placeholder": "Example: 500",
                 }
             ),
 
@@ -228,3 +228,14 @@ class VehicleForm(forms.ModelForm):
             )
 
         return status
+    def clean_maximum_load_capacity(self):
+        capacity = self.cleaned_data[
+        "maximum_load_capacity"
+    ]
+
+        if capacity <= 0:
+            raise forms.ValidationError(
+            "Vehicle capacity must be greater than zero."
+        )
+
+        return capacity
