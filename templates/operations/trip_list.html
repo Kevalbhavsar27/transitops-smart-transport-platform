@@ -14,11 +14,16 @@ Create, dispatch, complete and monitor transport trips.
 
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex flex-wrap justify-content-between
+            align-items-center gap-3 mb-4">
+
     <div>
-        <h4 class="mb-1">Trips</h4>
+        <h4 class="mb-1">
+            Trips
+        </h4>
+
         <p class="text-muted mb-0">
-            {{ trips|length }} trip{{ trips|length|pluralize }}
+            Monitor all transport operations and trip statuses.
         </p>
     </div>
 
@@ -30,60 +35,335 @@ Create, dispatch, complete and monitor transport trips.
             + Create Trip
         </a>
     {% endif %}
+
 </div>
 
-<div class="card border-0 shadow-sm mb-4">
-    <div class="card-body">
 
-        <form method="get" class="row g-3">
+<!-- Trip Statistics -->
 
-            <div class="col-md-7">
-                <input
-                    type="text"
-                    name="search"
-                    value="{{ request.GET.search }}"
-                    class="form-control"
-                    placeholder="Search source, destination, vehicle or driver"
-                >
+<div class="row g-3 mb-4">
+
+    <div class="col-xl-2 col-md-4 col-sm-6">
+
+        <div class="card border-0 shadow-sm h-100">
+
+            <div class="card-body">
+
+                <small class="text-muted">
+                    Total Trips
+                </small>
+
+                <h3 class="fw-bold mb-0 mt-2">
+                    {{ trip_statistics.total }}
+                </h3>
+
             </div>
 
-            <div class="col-md-3">
-                <select
-                    name="status"
-                    class="form-select"
-                >
-                    <option value="">All statuses</option>
+        </div>
 
-                    {% for value, label in trip_statuses %}
+    </div>
+
+
+    <div class="col-xl-2 col-md-4 col-sm-6">
+
+        <div class="card border-0 shadow-sm h-100">
+
+            <div class="card-body">
+
+                <small class="text-muted">
+                    Draft
+                </small>
+
+                <h3 class="fw-bold text-secondary mb-0 mt-2">
+                    {{ trip_statistics.draft }}
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-xl-2 col-md-4 col-sm-6">
+
+        <div class="card border-0 shadow-sm h-100">
+
+            <div class="card-body">
+
+                <small class="text-muted">
+                    Dispatched
+                </small>
+
+                <h3 class="fw-bold text-primary mb-0 mt-2">
+                    {{ trip_statistics.dispatched }}
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-xl-2 col-md-4 col-sm-6">
+
+        <div class="card border-0 shadow-sm h-100">
+
+            <div class="card-body">
+
+                <small class="text-muted">
+                    Completed
+                </small>
+
+                <h3 class="fw-bold text-success mb-0 mt-2">
+                    {{ trip_statistics.completed }}
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-xl-2 col-md-4 col-sm-6">
+
+        <div class="card border-0 shadow-sm h-100">
+
+            <div class="card-body">
+
+                <small class="text-muted">
+                    Cancelled
+                </small>
+
+                <h3 class="fw-bold text-danger mb-0 mt-2">
+                    {{ trip_statistics.cancelled }}
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-xl-2 col-md-4 col-sm-6">
+
+        <div class="card border-0 shadow-sm h-100">
+
+            <div class="card-body">
+
+                <small class="text-muted">
+                    Completed Revenue
+                </small>
+
+                <h5 class="fw-bold text-success mb-0 mt-2">
+                    ₹{{ trip_statistics.completed_revenue|floatformat:2 }}
+                </h5>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Search, Filter and Sorting -->
+
+<div class="card border-0 shadow-sm mb-4">
+
+    <div class="card-body">
+
+        <form method="get">
+
+            <div class="row g-3">
+
+                <div class="col-xl-4 col-md-6">
+
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ request.GET.search }}"
+                        class="form-control"
+                        placeholder="Search route, vehicle, driver or notes"
+                    >
+
+                </div>
+
+
+                <div class="col-xl-3 col-md-6">
+
+                    <select
+                        name="status"
+                        class="form-select"
+                    >
+                        <option value="">
+                            All statuses
+                        </option>
+
+                        {% for value, label in trip_statuses %}
+
+                            <option
+                                value="{{ value }}"
+                                {% if request.GET.status == value %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ label }}
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <div class="col-xl-3 col-md-6">
+
+                    <select
+                        name="sort"
+                        class="form-select"
+                    >
                         <option
-                            value="{{ value }}"
-                            {% if request.GET.status == value %}
+                            value="newest"
+                            {% if selected_sort == "newest" %}
                                 selected
                             {% endif %}
                         >
-                            {{ label }}
+                            Newest First
                         </option>
-                    {% endfor %}
-                </select>
-            </div>
 
-            <div class="col-md-2 d-grid">
-                <button class="btn btn-dark">
-                    Search
-                </button>
+                        <option
+                            value="oldest"
+                            {% if selected_sort == "oldest" %}
+                                selected
+                            {% endif %}
+                        >
+                            Oldest First
+                        </option>
+
+                        <option
+                            value="source"
+                            {% if selected_sort == "source" %}
+                                selected
+                            {% endif %}
+                        >
+                            Source
+                        </option>
+
+                        <option
+                            value="destination"
+                            {% if selected_sort == "destination" %}
+                                selected
+                            {% endif %}
+                        >
+                            Destination
+                        </option>
+
+                        <option
+                            value="vehicle"
+                            {% if selected_sort == "vehicle" %}
+                                selected
+                            {% endif %}
+                        >
+                            Vehicle
+                        </option>
+
+                        <option
+                            value="driver"
+                            {% if selected_sort == "driver" %}
+                                selected
+                            {% endif %}
+                        >
+                            Driver
+                        </option>
+
+                        <option
+                            value="status"
+                            {% if selected_sort == "status" %}
+                                selected
+                            {% endif %}
+                        >
+                            Status
+                        </option>
+
+                        <option
+                            value="cargo_high"
+                            {% if selected_sort == "cargo_high" %}
+                                selected
+                            {% endif %}
+                        >
+                            Highest Cargo Weight
+                        </option>
+
+                        <option
+                            value="distance_high"
+                            {% if selected_sort == "distance_high" %}
+                                selected
+                            {% endif %}
+                        >
+                            Highest Distance
+                        </option>
+
+                        <option
+                            value="revenue_high"
+                            {% if selected_sort == "revenue_high" %}
+                                selected
+                            {% endif %}
+                        >
+                            Highest Revenue
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="col-xl-2 col-md-6">
+
+                    <div class="d-flex gap-2">
+
+                        <button
+                            type="submit"
+                            class="btn btn-dark flex-grow-1"
+                        >
+                            Apply
+                        </button>
+
+                        <a
+                            href="{% url 'operations:trip_list' %}"
+                            class="btn btn-outline-secondary"
+                        >
+                            Reset
+                        </a>
+
+                    </div>
+
+                </div>
+
             </div>
 
         </form>
 
     </div>
+
 </div>
 
+
+<!-- Trip Table -->
+
 <div class="card border-0 shadow-sm">
+
     <div class="table-responsive">
 
         <table class="table table-hover align-middle mb-0">
 
             <thead class="table-light">
+
                 <tr>
                     <th>Trip</th>
                     <th>Route</th>
@@ -91,83 +371,125 @@ Create, dispatch, complete and monitor transport trips.
                     <th>Driver</th>
                     <th>Cargo</th>
                     <th>Distance</th>
+                    <th>Revenue</th>
                     <th>Status</th>
-                    <th class="text-end">Action</th>
+                    <th class="text-end">
+                        Action
+                    </th>
                 </tr>
+
             </thead>
 
             <tbody>
 
                 {% for trip in trips %}
+
                     <tr>
+
                         <td>
-                            <strong>#{{ trip.pk }}</strong>
+                            <strong>
+                                {% if trip.trip_number %}
+                                    {{ trip.trip_number }}
+                                {% else %}
+                                    #{{ trip.pk }}
+                                {% endif %}
+                            </strong>
                         </td>
+
 
                         <td>
                             {{ trip.source }}
-                            <span class="text-muted">→</span>
+
+                            <span class="text-muted">
+                                →
+                            </span>
+
                             {{ trip.destination }}
                         </td>
+
 
                         <td>
                             {{ trip.vehicle.registration_number }}
                         </td>
 
+
                         <td>
                             {{ trip.driver.name }}
                         </td>
 
-                        <td>
-                            {{ trip.cargo_weight }} kg
-                        </td>
 
                         <td>
-                            {{ trip.planned_distance }} km
+                            {{ trip.cargo_weight|floatformat:2 }} kg
                         </td>
 
+
                         <td>
+                            {{ trip.planned_distance|floatformat:2 }} km
+                        </td>
+
+
+                        <td>
+                            ₹{{ trip.revenue|floatformat:2 }}
+                        </td>
+
+
+                        <td>
+
                             {% if trip.status == "DRAFT" %}
+
                                 <span class="badge text-bg-secondary">
                                     Draft
                                 </span>
 
                             {% elif trip.status == "DISPATCHED" %}
+
                                 <span class="badge text-bg-primary">
                                     Dispatched
                                 </span>
 
                             {% elif trip.status == "COMPLETED" %}
+
                                 <span class="badge text-bg-success">
                                     Completed
                                 </span>
 
-                            {% else %}
+                            {% elif trip.status == "CANCELLED" %}
+
                                 <span class="badge text-bg-danger">
                                     Cancelled
                                 </span>
+
                             {% endif %}
+
                         </td>
 
+
                         <td class="text-end">
+
                             <a
                                 href="{% url 'operations:trip_detail' trip.pk %}"
                                 class="btn btn-sm btn-outline-primary"
                             >
                                 View
                             </a>
+
                         </td>
+
                     </tr>
 
                 {% empty %}
+
                     <tr>
+
                         <td
-                            colspan="8"
+                            colspan="9"
                             class="text-center text-muted py-5"
                         >
                             No trips found.
                         </td>
+
                     </tr>
+
                 {% endfor %}
 
             </tbody>
@@ -175,6 +497,7 @@ Create, dispatch, complete and monitor transport trips.
         </table>
 
     </div>
+
 </div>
 
 {% endblock %}

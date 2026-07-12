@@ -4,7 +4,7 @@ from io import BytesIO
 
 from django.contrib import messages
 from django.core.exceptions import ValidationError
-from django.db.models import Q, Sum
+from django.db.models import Count, Q, Sum
 from django.http import HttpResponse
 from django.utils import timezone
 from reportlab.lib import colors
@@ -107,50 +107,135 @@ def show_validation_errors(request, error):
 def trip_list(request):
     trips = (
         Trip.objects
-        .select_related("vehicle", "driver")
+        .select_related(
+            "vehicle",
+            "driver",
+        )
         .all()
     )
 
-    search = request.GET.get("search", "").strip()
-    trip_status = request.GET.get("status", "").strip()
+    # ---------------------------------------------------------
+    # Trip statistics
+    # ---------------------------------------------------------
+    trip_statistics = Trip.objects.aggregate(
+        total=Count("id"),
+
+        draft=Count(
+            "id",
+            filter=Q(
+                status=Trip.Status.DRAFT
+            ),
+        ),
+
+        dispatched=Count(
+            "id",
+            filter=Q(
+                status=Trip.Status.DISPATCHED
+            ),
+        ),
+
+        completed=Count(
+            "id",
+            filter=Q(
+                status=Trip.Status.COMPLETED
+            ),
+        ),
+
+        cancelled=Count(
+            "id",
+            filter=Q(
+                status=Trip.Status.CANCELLED
+            ),
+        ),
+
+        completed_revenue=Sum(
+            "revenue",
+            filter=Q(
+                status=Trip.Status.COMPLETED
+            ),
+        ),
+    )
+
+    trip_statistics["completed_revenue"] = (
+        trip_statistics["completed_revenue"]
+        or Decimal("0")
+    )
+
+    # ---------------------------------------------------------
+    # Search and filters
+    # ---------------------------------------------------------
+    search = request.GET.get(
+        "search",
+        "",
+    ).strip()
+
+    trip_status = request.GET.get(
+        "status",
+        "",
+    ).strip()
 
     if search:
         trips = trips.filter(
             Q(source__icontains=search)
             | Q(destination__icontains=search)
-            | Q(vehicle__registration_number__icontains=search)
+            | Q(
+                vehicle__registration_number__icontains=search
+            )
             | Q(driver__name__icontains=search)
+            | Q(notes__icontains=search)
         )
 
     if trip_status:
-        trips = trips.filter(status=trip_status)
+        trips = trips.filter(
+            status=trip_status
+        )
 
-    trip_sort = request.GET.get("sort", "newest")
-    trips = apply_safe_sorting(
-        trips,
-        trip_sort,
-        {
-            "newest": "-created_at",
-            "oldest": "created_at",
-            "route": "source",
-            "vehicle": "vehicle__registration_number",
-            "driver": "driver__name",
-            "status": "status",
-        },
-        "-created_at",
+    # ---------------------------------------------------------
+    # Sorting
+    # ---------------------------------------------------------
+    trip_sort = request.GET.get(
+        "sort",
+        "newest",
+    )
+
+    allowed_sorts = {
+        "newest": "-created_at",
+        "oldest": "created_at",
+        "source": "source",
+        "destination": "destination",
+        "vehicle": "vehicle__registration_number",
+        "driver": "driver__name",
+        "status": "status",
+        "cargo_high": "-cargo_weight",
+        "distance_high": "-planned_distance",
+        "revenue_high": "-revenue",
+    }
+
+    trips = trips.order_by(
+        allowed_sorts.get(
+            trip_sort,
+            "-created_at",
+        )
     )
 
     context = {
         "trips": trips,
+        "trip_statistics": trip_statistics,
         "trip_statuses": Trip.Status.choices,
+        "selected_sort": trip_sort,
+
         "can_manage": (
             request.user.is_superuser
-            or request.user.role in TRIP_MANAGE_ROLES
+            or request.user.role
+            in TRIP_MANAGE_ROLES
         ),
     }
 
-    return render(request, "operations/trip_list.html", context)
-
+    return render(
+        request,
+        "operations/trip_list.html",
+        context,
+    )
 
 @role_required(*TRIP_MANAGE_ROLES)
 def trip_create(request):

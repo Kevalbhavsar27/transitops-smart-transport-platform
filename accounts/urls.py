@@ -1,15 +1,51 @@
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
 
-from accounts.forms import EmailAuthenticationForm
-from accounts.views import *
+from .forms import EmailAuthenticationForm
+from . import views
+
 
 app_name = "accounts"
 
 
 urlpatterns = [
-    path("login/",LoginView.as_view(template_name="registration/login.html",authentication_form=EmailAuthenticationForm,redirect_authenticated_user=True,),name="login"),
-    path("logout/",LogoutView.as_view(),name="logout",),
-    path("",account_list,name="account_list",),
-    path("add/",account_create,name="account_create",),
+    path(
+        "login/",
+        LoginView.as_view(
+            template_name="registration/login.html",
+            authentication_form=EmailAuthenticationForm,
+            redirect_authenticated_user=True,
+        ),
+        name="login",
+    ),
+
+    path(
+        "logout/",
+        LogoutView.as_view(),
+        name="logout",
+    ),
+
+    path(
+        "",
+        views.account_list,
+        name="account_list",
+    ),
+
+    path(
+        "add/",
+        views.account_create,
+        name="account_create",
+    ),
+
+    path(
+        "<int:pk>/edit/",
+        views.account_update,
+        name="account_update",
+    ),
+
+    path(
+        "<int:pk>/delete/",
+        views.account_delete,
+        name="account_delete",
+    ),
 ]

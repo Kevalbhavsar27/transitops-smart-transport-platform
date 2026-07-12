@@ -1,159 +1,2348 @@
 {% extends "base.html" %}
 
+{% block title %}
+{{ page_heading }} | TransitOps
+{% endblock %}
+
+{% block page_title %}
+{{ page_heading }}
+{% endblock %}
+
+{% block page_subtitle %}
+{{ page_subtitle }}
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+    .account-editor-page {
+        --editor-primary: #2563eb;
+        --editor-primary-dark: #1d4ed8;
+        --editor-primary-soft: #eff6ff;
+
+        --editor-success: #16a34a;
+        --editor-success-soft: #f0fdf4;
+
+        --editor-danger: #dc2626;
+        --editor-danger-soft: #fef2f2;
+
+        --editor-warning: #d97706;
+        --editor-warning-soft: #fff7ed;
+
+        --editor-dark: #0f172a;
+        --editor-text: #334155;
+        --editor-muted: #64748b;
+        --editor-border: #e2e8f0;
+        --editor-surface: #ffffff;
+
+        --editor-radius: 18px;
+        --editor-shadow:
+            0 16px 42px rgba(15, 23, 42, 0.07);
+    }
+
+    .account-editor-page * {
+        box-sizing: border-box;
+    }
+
+    .account-editor-wrapper {
+        width: 100%;
+        max-width: 1160px;
+        margin: 0 auto;
+    }
+
+    /* Breadcrumb */
+
+    .account-editor-breadcrumb {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        margin-bottom: 18px;
+
+        color: var(--editor-muted);
+        font-size: 12px;
+    }
+
+    .account-editor-breadcrumb a {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        color: var(--editor-muted);
+        font-weight: 600;
+
+        transition: color 0.2s ease;
+    }
+
+    .account-editor-breadcrumb a:hover {
+        color: var(--editor-primary);
+    }
+
+    .account-editor-breadcrumb > i {
+        color: #94a3b8;
+        font-size: 10px;
+    }
+
+    /* Hero Header */
+
+    .account-editor-hero {
+        position: relative;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 25px;
+
+        overflow: hidden;
+
+        margin-bottom: 22px;
+        padding: 26px 28px;
+
+        color: #ffffff;
+
+        background:
+            radial-gradient(
+                circle at 90% 10%,
+                rgba(255, 255, 255, 0.18),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 8% 115%,
+                rgba(14, 165, 233, 0.24),
+                transparent 36%
+            ),
+            linear-gradient(
+                135deg,
+                #0f172a 0%,
+                #1e3a8a 52%,
+                #2563eb 100%
+            );
+
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 21px;
+
+        box-shadow:
+            0 18px 42px rgba(37, 99, 235, 0.17);
+    }
+
+    .account-editor-hero::after {
+        position: absolute;
+        right: -65px;
+        bottom: -100px;
+
+        width: 230px;
+        height: 230px;
+
+        content: "";
+
+        border: 32px solid rgba(255, 255, 255, 0.055);
+        border-radius: 50%;
+    }
+
+    .account-editor-hero-content {
+        position: relative;
+        z-index: 2;
+
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .account-editor-hero-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 53px;
+        height: 53px;
+
+        color: #ffffff;
+        font-size: 22px;
+
+        background: rgba(255, 255, 255, 0.13);
+        border: 1px solid rgba(255, 255, 255, 0.17);
+        border-radius: 15px;
+
+        backdrop-filter: blur(10px);
+    }
+
+    .account-editor-hero h2 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: clamp(23px, 4vw, 30px);
+        font-weight: 760;
+        letter-spacing: -0.7px;
+    }
+
+    .account-editor-hero p {
+        max-width: 620px;
+
+        margin: 7px 0 0;
+
+        color: #dbeafe;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .account-back-button {
+        position: relative;
+        z-index: 2;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        gap: 8px;
+
+        min-height: 43px;
+        padding: 9px 15px;
+
+        color: #1e3a8a;
+        font-size: 11px;
+        font-weight: 700;
+
+        background: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.65);
+        border-radius: 10px;
+
+        box-shadow:
+            0 9px 20px rgba(15, 23, 42, 0.13);
+
+        transition:
+            color 0.2s ease,
+            background 0.2s ease,
+            transform 0.2s ease;
+    }
+
+    .account-back-button:hover {
+        color: var(--editor-primary);
+        background: var(--editor-primary-soft);
+        transform: translateY(-2px);
+    }
+
+    /* Main Layout */
+
+    .account-editor-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 285px;
+        align-items: start;
+        gap: 22px;
+    }
+
+    /* Form Card */
+
+    .account-editor-card {
+        overflow: hidden;
+
+        background: var(--editor-surface);
+        border: 1px solid var(--editor-border);
+        border-radius: var(--editor-radius);
+
+        box-shadow: var(--editor-shadow);
+    }
+
+    .account-editor-card-header {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+
+        padding: 20px 23px;
+
+        background:
+            linear-gradient(
+                135deg,
+                rgba(239, 246, 255, 0.95),
+                rgba(255, 255, 255, 0.98)
+            );
+
+        border-bottom: 1px solid var(--editor-border);
+    }
+
+    .account-editor-card-header-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 43px;
+        height: 43px;
+
+        color: var(--editor-primary);
+        font-size: 19px;
+
+        background: #ffffff;
+        border: 1px solid #dbeafe;
+        border-radius: 12px;
+
+        box-shadow:
+            0 7px 17px rgba(37, 99, 235, 0.09);
+    }
+
+    .account-editor-card-header h3 {
+        margin: 0;
+
+        color: var(--editor-dark);
+        font-size: 16px;
+        font-weight: 720;
+    }
+
+    .account-editor-card-header p {
+        margin: 4px 0 0;
+
+        color: var(--editor-muted);
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+    .account-editor-card-body {
+        padding: 24px;
+    }
+
+    /* General Form Errors */
+
+    .form-general-errors {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+
+        margin-bottom: 22px;
+        padding: 14px 15px;
+
+        color: #991b1b;
+
+        background: var(--editor-danger-soft);
+        border: 1px solid #fecaca;
+        border-radius: 12px;
+    }
+
+    .form-general-error-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 33px;
+        height: 33px;
+
+        color: var(--editor-danger);
+
+        background: #fee2e2;
+        border-radius: 9px;
+    }
+
+    .form-general-errors strong {
+        display: block;
+
+        margin-bottom: 4px;
+
+        font-size: 11px;
+        font-weight: 750;
+    }
+
+    .form-general-errors ul {
+        margin: 0;
+        padding-left: 17px;
+
+        font-size: 10px;
+        line-height: 1.55;
+    }
+
+    /* Form Sections */
+
+    .account-form-section {
+        margin-bottom: 28px;
+    }
+
+    .account-form-section:last-of-type {
+        margin-bottom: 0;
+    }
+
+    .account-form-section-heading {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+
+        margin-bottom: 17px;
+        padding-bottom: 12px;
+
+        border-bottom: 1px solid #eef2f7;
+    }
+
+    .account-form-section-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 36px;
+        height: 36px;
+
+        color: var(--editor-primary);
+        font-size: 15px;
+
+        background: var(--editor-primary-soft);
+        border-radius: 10px;
+    }
+
+    .account-form-section-heading h4 {
+        margin: 0;
+
+        color: var(--editor-dark);
+        font-size: 13px;
+        font-weight: 720;
+    }
+
+    .account-form-section-heading p {
+        margin: 3px 0 0;
+
+        color: var(--editor-muted);
+        font-size: 9px;
+        line-height: 1.45;
+    }
+
+    /* Fields */
+
+    .account-form-field {
+        width: 100%;
+    }
+
+    .account-form-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+
+        margin-bottom: 7px;
+
+        color: var(--editor-text);
+        font-size: 11px;
+        font-weight: 680;
+    }
+
+    .required-mark {
+        margin-left: 2px;
+
+        color: var(--editor-danger);
+    }
+
+    .optional-mark {
+        margin-left: 5px;
+
+        color: #94a3b8;
+        font-size: 8px;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+    }
+
+    .account-form-field input:not([type="checkbox"]),
+    .account-form-field select,
+    .account-form-field textarea {
+        width: 100%;
+        min-height: 45px;
+
+        padding: 10px 13px;
+
+        color: var(--editor-dark);
+        font-size: 12px;
+
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+
+        outline: none;
+        box-shadow: none;
+
+        transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            background 0.2s ease;
+    }
+
+    .account-form-field select {
+        cursor: pointer;
+    }
+
+    .account-form-field input:not([type="checkbox"]):hover,
+    .account-form-field select:hover,
+    .account-form-field textarea:hover {
+        border-color: #94a3b8;
+    }
+
+    .account-form-field input:not([type="checkbox"]):focus,
+    .account-form-field select:focus,
+    .account-form-field textarea:focus {
+        background: #ffffff;
+        border-color: var(--editor-primary);
+
+        box-shadow:
+            0 0 0 4px rgba(37, 99, 235, 0.1);
+    }
+
+    .account-form-field input::placeholder {
+        color: #94a3b8;
+    }
+
+    .account-form-field.has-error input:not([type="checkbox"]),
+    .account-form-field.has-error select,
+    .account-form-field.has-error textarea {
+        background: #fffafa;
+        border-color: #f87171;
+    }
+
+    .field-help-text {
+        display: flex;
+        align-items: flex-start;
+        gap: 5px;
+
+        margin-top: 6px;
+
+        color: var(--editor-muted);
+        font-size: 9px;
+        line-height: 1.5;
+    }
+
+    .field-help-text i {
+        margin-top: 1px;
+
+        color: #94a3b8;
+    }
+
+    .field-errors {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        margin-top: 6px;
+    }
+
+    .field-error {
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+
+        color: var(--editor-danger);
+        font-size: 9px;
+        font-weight: 650;
+        line-height: 1.45;
+    }
+
+    .field-error i {
+        margin-top: 1px;
+    }
+
+    /* Account Status */
+
+    .account-status-panel {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+
+        min-height: 79px;
+        padding: 14px 15px;
+
+        background: #f8fafc;
+        border: 1px solid var(--editor-border);
+        border-radius: 12px;
+
+        transition:
+            border-color 0.2s ease,
+            background 0.2s ease;
+    }
+
+    .account-status-panel.is-active {
+        background: var(--editor-success-soft);
+        border-color: #bbf7d0;
+    }
+
+    .account-status-information {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+    }
+
+    .account-status-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 39px;
+        height: 39px;
+
+        color: #64748b;
+        font-size: 17px;
+
+        background: #e2e8f0;
+        border-radius: 11px;
+    }
+
+    .account-status-panel.is-active .account-status-icon {
+        color: var(--editor-success);
+        background: #dcfce7;
+    }
+
+    .account-status-information strong {
+        display: block;
+
+        color: var(--editor-dark);
+        font-size: 11px;
+        font-weight: 720;
+    }
+
+    .account-status-information small {
+        display: block;
+
+        margin-top: 3px;
+
+        color: var(--editor-muted);
+        font-size: 8px;
+        line-height: 1.45;
+    }
+
+    .account-status-toggle {
+        flex-shrink: 0;
+    }
+
+    .account-status-toggle input[type="checkbox"] {
+        position: relative;
+
+        width: 44px;
+        height: 23px;
+
+        margin: 0;
+
+        cursor: pointer;
+
+        background: #cbd5e1;
+        border: 0;
+        border-radius: 30px;
+
+        appearance: none;
+
+        transition:
+            background 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .account-status-toggle input[type="checkbox"]::after {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+
+        width: 17px;
+        height: 17px;
+
+        content: "";
+
+        background: #ffffff;
+        border-radius: 50%;
+
+        box-shadow:
+            0 2px 5px rgba(15, 23, 42, 0.2);
+
+        transition: transform 0.2s ease;
+    }
+
+    .account-status-toggle input[type="checkbox"]:checked {
+        background: var(--editor-success);
+    }
+
+    .account-status-toggle input[type="checkbox"]:checked::after {
+        transform: translateX(21px);
+    }
+
+    .account-status-toggle input[type="checkbox"]:focus {
+        box-shadow:
+            0 0 0 4px rgba(22, 163, 74, 0.12);
+    }
+
+    /* Password Fields */
+
+    .password-field-wrapper {
+        position: relative;
+    }
+
+    .password-field-wrapper input {
+        padding-right: 46px !important;
+    }
+
+    .password-visibility-button {
+        position: absolute;
+        top: 50%;
+        right: 7px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 33px;
+        height: 33px;
+        padding: 0;
+
+        color: #64748b;
+        font-size: 14px;
+
+        background: transparent;
+        border: 0;
+        border-radius: 8px;
+
+        transform: translateY(-50%);
+
+        transition:
+            color 0.2s ease,
+            background 0.2s ease;
+    }
+
+    .password-visibility-button:hover {
+        color: var(--editor-primary);
+        background: var(--editor-primary-soft);
+    }
+
+    .password-update-notice {
+        display: flex;
+        align-items: flex-start;
+        gap: 11px;
+
+        padding: 13px 14px;
+
+        color: #1e40af;
+
+        background: var(--editor-primary-soft);
+        border: 1px solid #bfdbfe;
+        border-radius: 11px;
+    }
+
+    .password-update-notice-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 33px;
+        height: 33px;
+
+        color: var(--editor-primary);
+
+        background: #dbeafe;
+        border-radius: 9px;
+    }
+
+    .password-update-notice strong {
+        display: block;
+
+        margin-bottom: 3px;
+
+        font-size: 10px;
+        font-weight: 750;
+    }
+
+    .password-update-notice p {
+        margin: 0;
+
+        font-size: 9px;
+        line-height: 1.5;
+    }
+
+    /* Form Footer */
+
+    .account-editor-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+
+        margin-top: 28px;
+        padding-top: 20px;
+
+        border-top: 1px solid #eef2f7;
+    }
+
+    .account-editor-footer-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 7px;
+
+        color: var(--editor-muted);
+        font-size: 9px;
+        line-height: 1.5;
+    }
+
+    .account-editor-footer-note i {
+        margin-top: 1px;
+
+        color: var(--editor-primary);
+    }
+
+    .account-editor-actions {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+    .account-cancel-button,
+    .account-save-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+
+        min-height: 42px;
+        padding: 9px 15px;
+
+        font-size: 11px;
+        font-weight: 700;
+
+        border-radius: 10px;
+
+        transition:
+            color 0.2s ease,
+            background 0.2s ease,
+            border-color 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .account-cancel-button {
+        color: #475569;
+
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+    }
+
+    .account-cancel-button:hover {
+        color: var(--editor-dark);
+
+        background: #f8fafc;
+        border-color: #94a3b8;
+
+        transform: translateY(-1px);
+    }
+
+    .account-save-button {
+        color: #ffffff;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--editor-primary),
+                var(--editor-primary-dark)
+            );
+
+        border: 1px solid var(--editor-primary);
+
+        box-shadow:
+            0 8px 18px rgba(37, 99, 235, 0.2);
+    }
+
+    .account-save-button:hover {
+        color: #ffffff;
+
+        background:
+            linear-gradient(
+                135deg,
+                #1d4ed8,
+                #1e40af
+            );
+
+        border-color: #1d4ed8;
+
+        box-shadow:
+            0 11px 23px rgba(37, 99, 235, 0.26);
+
+        transform: translateY(-2px);
+    }
+
+    .account-save-button:disabled {
+        cursor: not-allowed;
+
+        opacity: 0.7;
+        transform: none;
+    }
+
+    /* Sidebar */
+
+    .account-editor-sidebar {
+        position: sticky;
+        top: 115px;
+
+        overflow: hidden;
+
+        background: #ffffff;
+        border: 1px solid var(--editor-border);
+        border-radius: var(--editor-radius);
+
+        box-shadow:
+            0 12px 32px rgba(15, 23, 42, 0.06);
+    }
+
+    .account-editor-sidebar-header {
+        padding: 20px;
+
+        color: #ffffff;
+
+        background:
+            radial-gradient(
+                circle at top right,
+                rgba(255, 255, 255, 0.15),
+                transparent 35%
+            ),
+            linear-gradient(
+                135deg,
+                #0f172a,
+                #1e3a8a
+            );
+    }
+
+    .account-editor-sidebar-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 42px;
+        height: 42px;
+
+        margin-bottom: 13px;
+
+        color: #ffffff;
+        font-size: 18px;
+
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+    }
+
+    .account-editor-sidebar-header h4 {
+        margin: 0;
+
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 720;
+    }
+
+    .account-editor-sidebar-header p {
+        margin: 6px 0 0;
+
+        color: #cbd5e1;
+        font-size: 9px;
+        line-height: 1.55;
+    }
+
+    .account-editor-sidebar-body {
+        padding: 18px;
+    }
+
+    .editor-guidance-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+
+        margin: 0;
+        padding: 0;
+
+        list-style: none;
+    }
+
+    .editor-guidance-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .guidance-list-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+
+        width: 31px;
+        height: 31px;
+
+        color: var(--editor-primary);
+        font-size: 13px;
+
+        background: var(--editor-primary-soft);
+        border-radius: 9px;
+    }
+
+    .editor-guidance-list strong {
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: var(--editor-dark);
+        font-size: 10px;
+        font-weight: 720;
+    }
+
+    .editor-guidance-list p {
+        margin: 0;
+
+        color: var(--editor-muted);
+        font-size: 8px;
+        line-height: 1.5;
+    }
+
+    .editor-security-note {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+
+        margin-top: 17px;
+        padding: 11px;
+
+        color: #166534;
+        font-size: 8px;
+        line-height: 1.5;
+
+        background: var(--editor-success-soft);
+        border: 1px solid #bbf7d0;
+        border-radius: 10px;
+    }
+
+    .editor-security-note i {
+        margin-top: 1px;
+
+        color: var(--editor-success);
+        font-size: 12px;
+    }
+
+    /* Responsive Design */
+
+    @media (max-width: 991.98px) {
+        .account-editor-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .account-editor-sidebar {
+            position: static;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .account-editor-hero {
+            align-items: stretch;
+            flex-direction: column;
+
+            padding: 22px;
+        }
+
+        .account-back-button {
+            width: 100%;
+        }
+
+        .account-editor-card-body {
+            padding: 20px;
+        }
+
+        .account-editor-footer {
+            align-items: stretch;
+            flex-direction: column;
+        }
+
+        .account-editor-footer-note {
+            justify-content: center;
+            text-align: center;
+        }
+
+        .account-editor-actions {
+            width: 100%;
+        }
+
+        .account-cancel-button,
+        .account-save-button {
+            flex: 1;
+        }
+    }
+
+    @media (max-width: 479.98px) {
+        .account-editor-hero {
+            padding: 19px;
+            border-radius: 16px;
+        }
+
+        .account-editor-hero-content {
+            align-items: flex-start;
+        }
+
+        .account-editor-hero-icon {
+            width: 44px;
+            height: 44px;
+
+            font-size: 19px;
+        }
+
+        .account-editor-card,
+        .account-editor-sidebar {
+            border-radius: 15px;
+        }
+
+        .account-editor-card-header {
+            padding: 17px;
+        }
+
+        .account-editor-card-body {
+            padding: 17px;
+        }
+
+        .account-editor-actions {
+            flex-direction: column-reverse;
+        }
+
+        .account-cancel-button,
+        .account-save-button {
+            width: 100%;
+        }
+
+        .account-status-panel {
+            align-items: flex-start;
+        }
+    }
+</style>
+
+{% endblock %}
+
 {% block content %}
 
-<div class="container py-4">
+<div class="account-editor-page">
 
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
+    <div class="account-editor-wrapper">
 
-            <div class="card border-0 shadow-sm">
+        <!-- Breadcrumb -->
+        <nav class="account-editor-breadcrumb">
 
-                <div class="card-header bg-white py-3">
-                    <h3 class="mb-0">
-                        Add New Account
-                    </h3>
+            <a href="{% url 'dashboard:home' %}">
+                <i class="bi bi-house-door"></i>
+                Dashboard
+            </a>
+
+            <i class="bi bi-chevron-right"></i>
+
+            <a href="{% url 'accounts:account_list' %}">
+                User Accounts
+            </a>
+
+            <i class="bi bi-chevron-right"></i>
+
+            <span>{{ page_heading }}</span>
+
+        </nav>
+
+        <!-- Hero -->
+        <section class="account-editor-hero">
+
+            <div class="account-editor-hero-content">
+
+                <div class="account-editor-hero-icon">
+
+                    {% if is_edit %}
+                        <i class="bi bi-person-gear"></i>
+                    {% else %}
+                        <i class="bi bi-person-plus-fill"></i>
+                    {% endif %}
+
                 </div>
 
-                <div class="card-body p-4">
+                <div>
+                    <h2>{{ page_heading }}</h2>
 
-                    <form method="post">
-                        {% csrf_token %}
+                    <p>{{ page_subtitle }}</p>
+                </div>
 
-                        {% if form.non_field_errors %}
-                            <div class="alert alert-danger">
-                                {{ form.non_field_errors }}
-                            </div>
+            </div>
+
+            <a
+                href="{% url 'accounts:account_list' %}"
+                class="account-back-button"
+            >
+                <i class="bi bi-arrow-left"></i>
+                Back to Accounts
+            </a>
+
+        </section>
+
+        <div class="account-editor-grid">
+
+            <!-- Main Form -->
+            <section class="account-editor-card">
+
+                <header class="account-editor-card-header">
+
+                    <div class="account-editor-card-header-icon">
+
+                        {% if is_edit %}
+                            <i class="bi bi-pencil-square"></i>
+                        {% else %}
+                            <i class="bi bi-person-vcard"></i>
                         {% endif %}
 
-                        <div class="row g-3">
+                    </div>
 
-                            <div class="col-md-6">
-                                <label class="form-label">
-                                    First Name
-                                </label>
+                    <div>
 
-                                {{ form.first_name }}
+                        <h3>
+                            {% if is_edit %}
+                                Update Account Information
+                            {% else %}
+                                New Account Information
+                            {% endif %}
+                        </h3>
 
-                                {% for error in form.first_name.errors %}
-                                    <div class="text-danger small">
-                                        {{ error }}
-                                    </div>
-                                {% endfor %}
-                            </div>
+                        <p>
+                            Complete the fields below and review the user's
+                            access settings before saving.
+                        </p>
 
-                            <div class="col-md-6">
-                                <label class="form-label">
-                                    Last Name
-                                </label>
+                    </div>
 
-                                {{ form.last_name }}
+                </header>
 
-                                {% for error in form.last_name.errors %}
-                                    <div class="text-danger small">
-                                        {{ error }}
-                                    </div>
-                                {% endfor %}
-                            </div>
+                <div class="account-editor-card-body">
 
-                            <div class="col-md-12">
-                                <label class="form-label">
-                                    Email Address
-                                </label>
+                    <form
+                        method="post"
+                        id="accountEditorForm"
+                        novalidate
+                    >
+                        {% csrf_token %}
 
-                                {{ form.email }}
+                        <!-- Non-field Errors -->
+                        {% if form.non_field_errors %}
 
-                                {% for error in form.email.errors %}
-                                    <div class="text-danger small">
-                                        {{ error }}
-                                    </div>
-                                {% endfor %}
-                            </div>
+                            <div class="form-general-errors">
 
-                            <div class="col-md-6">
-                                <label class="form-label">
-                                    Role
-                                </label>
-
-                                {{ form.role }}
-
-                                {% for error in form.role.errors %}
-                                    <div class="text-danger small">
-                                        {{ error }}
-                                    </div>
-                                {% endfor %}
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label d-block">
-                                    Account Status
-                                </label>
-
-                                <div class="form-check mt-2">
-                                    {{ form.is_active }}
-
-                                    <label class="form-check-label">
-                                        Active account
-                                    </label>
+                                <div class="form-general-error-icon">
+                                    <i class="bi bi-exclamation-octagon-fill"></i>
                                 </div>
+
+                                <div>
+
+                                    <strong>
+                                        Please correct the following errors
+                                    </strong>
+
+                                    <ul>
+                                        {% for error in form.non_field_errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+
+                                </div>
+
                             </div>
 
-                            <div class="col-md-6">
-                                <label class="form-label">
-                                    Password
-                                </label>
+                        {% endif %}
 
-                                {{ form.password1 }}
+                        <!-- Personal Information -->
+                        <section class="account-form-section">
 
-                                {% for error in form.password1.errors %}
-                                    <div class="text-danger small">
-                                        {{ error }}
+                            <div class="account-form-section-heading">
+
+                                <div class="account-form-section-icon">
+                                    <i class="bi bi-person-fill"></i>
+                                </div>
+
+                                <div>
+                                    <h4>Personal Information</h4>
+
+                                    <p>
+                                        Basic information used to identify this
+                                        TransitOps user.
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <div class="row g-3">
+
+                                <!-- First Name -->
+                                <div class="col-md-6">
+
+                                    <div
+                                        class="
+                                            account-form-field
+                                            {% if form.first_name.errors %}
+                                                has-error
+                                            {% endif %}
+                                        "
+                                    >
+
+                                        <label
+                                            for="{{ form.first_name.id_for_label }}"
+                                            class="account-form-label"
+                                        >
+                                            <span>
+                                                First Name
+                                                <span class="required-mark">*</span>
+                                            </span>
+                                        </label>
+
+                                        {{ form.first_name }}
+
+                                        {% if form.first_name.errors %}
+
+                                            <div class="field-errors">
+
+                                                {% for error in form.first_name.errors %}
+
+                                                    <div class="field-error">
+                                                        <i class="bi bi-exclamation-circle-fill"></i>
+                                                        <span>{{ error }}</span>
+                                                    </div>
+
+                                                {% endfor %}
+
+                                            </div>
+
+                                        {% endif %}
+
                                     </div>
-                                {% endfor %}
-                            </div>
 
-                            <div class="col-md-6">
-                                <label class="form-label">
-                                    Confirm Password
-                                </label>
+                                </div>
 
-                                {{ form.password2 }}
+                                <!-- Last Name -->
+                                <div class="col-md-6">
 
-                                {% for error in form.password2.errors %}
-                                    <div class="text-danger small">
-                                        {{ error }}
+                                    <div
+                                        class="
+                                            account-form-field
+                                            {% if form.last_name.errors %}
+                                                has-error
+                                            {% endif %}
+                                        "
+                                    >
+
+                                        <label
+                                            for="{{ form.last_name.id_for_label }}"
+                                            class="account-form-label"
+                                        >
+                                            <span>
+                                                Last Name
+
+                                                <span class="optional-mark">
+                                                    Optional
+                                                </span>
+                                            </span>
+                                        </label>
+
+                                        {{ form.last_name }}
+
+                                        {% if form.last_name.errors %}
+
+                                            <div class="field-errors">
+
+                                                {% for error in form.last_name.errors %}
+
+                                                    <div class="field-error">
+                                                        <i class="bi bi-exclamation-circle-fill"></i>
+                                                        <span>{{ error }}</span>
+                                                    </div>
+
+                                                {% endfor %}
+
+                                            </div>
+
+                                        {% endif %}
+
                                     </div>
-                                {% endfor %}
+
+                                </div>
+
+                                <!-- Email -->
+                                <div class="col-12">
+
+                                    <div
+                                        class="
+                                            account-form-field
+                                            {% if form.email.errors %}
+                                                has-error
+                                            {% endif %}
+                                        "
+                                    >
+
+                                        <label
+                                            for="{{ form.email.id_for_label }}"
+                                            class="account-form-label"
+                                        >
+                                            <span>
+                                                Email Address
+                                                <span class="required-mark">*</span>
+                                            </span>
+                                        </label>
+
+                                        {{ form.email }}
+
+                                        <div class="field-help-text">
+                                            <i class="bi bi-info-circle"></i>
+
+                                            <span>
+                                                This email address will be used
+                                                to sign in to TransitOps.
+                                            </span>
+                                        </div>
+
+                                        {% if form.email.errors %}
+
+                                            <div class="field-errors">
+
+                                                {% for error in form.email.errors %}
+
+                                                    <div class="field-error">
+                                                        <i class="bi bi-exclamation-circle-fill"></i>
+                                                        <span>{{ error }}</span>
+                                                    </div>
+
+                                                {% endfor %}
+
+                                            </div>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
                             </div>
 
-                        </div>
+                        </section>
 
-                        <div class="d-flex gap-2 mt-4">
+                        <!-- Access Configuration -->
+                        <section class="account-form-section">
 
-                            <button
-                                type="submit"
-                                class="btn btn-primary"
-                            >
-                                Create Account
-                            </button>
+                            <div class="account-form-section-heading">
 
-                            <a
-                                href="{% url 'accounts:account_list' %}"
-                                class="btn btn-outline-secondary"
-                            >
-                                Cancel
-                            </a>
+                                <div class="account-form-section-icon">
+                                    <i class="bi bi-shield-lock-fill"></i>
+                                </div>
 
-                        </div>
+                                <div>
+                                    <h4>Access Configuration</h4>
+
+                                    <p>
+                                        Configure the user's role and account
+                                        availability.
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <div class="row g-3">
+
+                                <!-- Role -->
+                                <div class="col-md-6">
+
+                                    <div
+                                        class="
+                                            account-form-field
+                                            {% if form.role.errors %}
+                                                has-error
+                                            {% endif %}
+                                        "
+                                    >
+
+                                        <label
+                                            for="{{ form.role.id_for_label }}"
+                                            class="account-form-label"
+                                        >
+                                            <span>
+                                                User Role
+                                                <span class="required-mark">*</span>
+                                            </span>
+                                        </label>
+
+                                        {{ form.role }}
+
+                                        <div class="field-help-text">
+                                            <i class="bi bi-person-lock"></i>
+
+                                            <span>
+                                                The selected role controls which
+                                                modules this user can access.
+                                            </span>
+                                        </div>
+
+                                        {% if form.role.errors %}
+
+                                            <div class="field-errors">
+
+                                                {% for error in form.role.errors %}
+
+                                                    <div class="field-error">
+                                                        <i class="bi bi-exclamation-circle-fill"></i>
+                                                        <span>{{ error }}</span>
+                                                    </div>
+
+                                                {% endfor %}
+
+                                            </div>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+                                <!-- Account Status -->
+                                <div class="col-md-6">
+
+                                    <label
+                                        for="{{ form.is_active.id_for_label }}"
+                                        class="account-form-label"
+                                    >
+                                        <span>Account Status</span>
+                                    </label>
+
+                                    <div
+                                        class="account-status-panel"
+                                        id="accountStatusPanel"
+                                    >
+
+                                        <div class="account-status-information">
+
+                                            <div class="account-status-icon">
+
+                                                <i
+                                                    class="bi bi-person-x-fill"
+                                                    id="accountStatusIcon"
+                                                ></i>
+
+                                            </div>
+
+                                            <div>
+
+                                                <strong id="accountStatusTitle">
+                                                    Inactive Account
+                                                </strong>
+
+                                                <small id="accountStatusDescription">
+                                                    The user cannot sign in to TransitOps.
+                                                </small>
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="account-status-toggle">
+                                            {{ form.is_active }}
+                                        </div>
+
+                                    </div>
+
+                                    {% if form.is_active.errors %}
+
+                                        <div class="field-errors">
+
+                                            {% for error in form.is_active.errors %}
+
+                                                <div class="field-error">
+                                                    <i class="bi bi-exclamation-circle-fill"></i>
+                                                    <span>{{ error }}</span>
+                                                </div>
+
+                                            {% endfor %}
+
+                                        </div>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </section>
+
+                        <!-- Security -->
+                        <section class="account-form-section">
+
+                            <div class="account-form-section-heading">
+
+                                <div class="account-form-section-icon">
+                                    <i class="bi bi-key-fill"></i>
+                                </div>
+
+                                <div>
+                                    <h4>Account Security</h4>
+
+                                    <p>
+                                        Configure or update the account password.
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            {% if is_edit %}
+
+                                <div class="password-update-notice mb-3">
+
+                                    <div class="password-update-notice-icon">
+                                        <i class="bi bi-info-circle-fill"></i>
+                                    </div>
+
+                                    <div>
+                                        <strong>Password update is optional</strong>
+
+                                        <p>
+                                            Leave both password fields blank to
+                                            keep the user's existing password.
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                                <div class="row g-3">
+
+                                    <!-- New Password -->
+                                    <div class="col-md-6">
+
+                                        <div
+                                            class="
+                                                account-form-field
+                                                {% if form.new_password1.errors %}
+                                                    has-error
+                                                {% endif %}
+                                            "
+                                        >
+
+                                            <label
+                                                for="{{ form.new_password1.id_for_label }}"
+                                                class="account-form-label"
+                                            >
+                                                <span>
+                                                    New Password
+
+                                                    <span class="optional-mark">
+                                                        Optional
+                                                    </span>
+                                                </span>
+                                            </label>
+
+                                            <div class="password-field-wrapper">
+
+                                                {{ form.new_password1 }}
+
+                                                <button
+                                                    type="button"
+                                                    class="password-visibility-button"
+                                                    data-password-target="{{ form.new_password1.id_for_label }}"
+                                                    aria-label="Show password"
+                                                >
+                                                    <i class="bi bi-eye"></i>
+                                                </button>
+
+                                            </div>
+
+                                            <div class="field-help-text">
+                                                <i class="bi bi-shield-check"></i>
+
+                                                <span>
+                                                    Use at least eight characters,
+                                                    including letters and numbers.
+                                                </span>
+                                            </div>
+
+                                            {% if form.new_password1.errors %}
+
+                                                <div class="field-errors">
+
+                                                    {% for error in form.new_password1.errors %}
+
+                                                        <div class="field-error">
+                                                            <i class="bi bi-exclamation-circle-fill"></i>
+                                                            <span>{{ error }}</span>
+                                                        </div>
+
+                                                    {% endfor %}
+
+                                                </div>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </div>
+
+                                    <!-- Confirm New Password -->
+                                    <div class="col-md-6">
+
+                                        <div
+                                            class="
+                                                account-form-field
+                                                {% if form.new_password2.errors %}
+                                                    has-error
+                                                {% endif %}
+                                            "
+                                        >
+
+                                            <label
+                                                for="{{ form.new_password2.id_for_label }}"
+                                                class="account-form-label"
+                                            >
+                                                <span>
+                                                    Confirm New Password
+
+                                                    <span class="optional-mark">
+                                                        Optional
+                                                    </span>
+                                                </span>
+                                            </label>
+
+                                            <div class="password-field-wrapper">
+
+                                                {{ form.new_password2 }}
+
+                                                <button
+                                                    type="button"
+                                                    class="password-visibility-button"
+                                                    data-password-target="{{ form.new_password2.id_for_label }}"
+                                                    aria-label="Show password"
+                                                >
+                                                    <i class="bi bi-eye"></i>
+                                                </button>
+
+                                            </div>
+
+                                            <div class="field-help-text">
+                                                <i class="bi bi-check2-circle"></i>
+
+                                                <span>
+                                                    Enter the same new password
+                                                    again for verification.
+                                                </span>
+                                            </div>
+
+                                            {% if form.new_password2.errors %}
+
+                                                <div class="field-errors">
+
+                                                    {% for error in form.new_password2.errors %}
+
+                                                        <div class="field-error">
+                                                            <i class="bi bi-exclamation-circle-fill"></i>
+                                                            <span>{{ error }}</span>
+                                                        </div>
+
+                                                    {% endfor %}
+
+                                                </div>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            {% else %}
+
+                                <div class="row g-3">
+
+                                    <!-- Password -->
+                                    <div class="col-md-6">
+
+                                        <div
+                                            class="
+                                                account-form-field
+                                                {% if form.password1.errors %}
+                                                    has-error
+                                                {% endif %}
+                                            "
+                                        >
+
+                                            <label
+                                                for="{{ form.password1.id_for_label }}"
+                                                class="account-form-label"
+                                            >
+                                                <span>
+                                                    Password
+                                                    <span class="required-mark">*</span>
+                                                </span>
+                                            </label>
+
+                                            <div class="password-field-wrapper">
+
+                                                {{ form.password1 }}
+
+                                                <button
+                                                    type="button"
+                                                    class="password-visibility-button"
+                                                    data-password-target="{{ form.password1.id_for_label }}"
+                                                    aria-label="Show password"
+                                                >
+                                                    <i class="bi bi-eye"></i>
+                                                </button>
+
+                                            </div>
+
+                                            <div class="field-help-text">
+                                                <i class="bi bi-shield-check"></i>
+
+                                                <span>
+                                                    Use at least eight characters,
+                                                    including letters and numbers.
+                                                </span>
+                                            </div>
+
+                                            {% if form.password1.errors %}
+
+                                                <div class="field-errors">
+
+                                                    {% for error in form.password1.errors %}
+
+                                                        <div class="field-error">
+                                                            <i class="bi bi-exclamation-circle-fill"></i>
+                                                            <span>{{ error }}</span>
+                                                        </div>
+
+                                                    {% endfor %}
+
+                                                </div>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </div>
+
+                                    <!-- Confirm Password -->
+                                    <div class="col-md-6">
+
+                                        <div
+                                            class="
+                                                account-form-field
+                                                {% if form.password2.errors %}
+                                                    has-error
+                                                {% endif %}
+                                            "
+                                        >
+
+                                            <label
+                                                for="{{ form.password2.id_for_label }}"
+                                                class="account-form-label"
+                                            >
+                                                <span>
+                                                    Confirm Password
+                                                    <span class="required-mark">*</span>
+                                                </span>
+                                            </label>
+
+                                            <div class="password-field-wrapper">
+
+                                                {{ form.password2 }}
+
+                                                <button
+                                                    type="button"
+                                                    class="password-visibility-button"
+                                                    data-password-target="{{ form.password2.id_for_label }}"
+                                                    aria-label="Show password"
+                                                >
+                                                    <i class="bi bi-eye"></i>
+                                                </button>
+
+                                            </div>
+
+                                            <div class="field-help-text">
+                                                <i class="bi bi-check2-circle"></i>
+
+                                                <span>
+                                                    Enter the same password again
+                                                    for verification.
+                                                </span>
+                                            </div>
+
+                                            {% if form.password2.errors %}
+
+                                                <div class="field-errors">
+
+                                                    {% for error in form.password2.errors %}
+
+                                                        <div class="field-error">
+                                                            <i class="bi bi-exclamation-circle-fill"></i>
+                                                            <span>{{ error }}</span>
+                                                        </div>
+
+                                                    {% endfor %}
+
+                                                </div>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            {% endif %}
+
+                        </section>
+
+                        <!-- Form Actions -->
+                        <footer class="account-editor-footer">
+
+                            <div class="account-editor-footer-note">
+
+                                <i class="bi bi-shield-check"></i>
+
+                                <span>
+                                    Review all information before saving the account.
+                                </span>
+
+                            </div>
+
+                            <div class="account-editor-actions">
+
+                                <a
+                                    href="{% url 'accounts:account_list' %}"
+                                    class="account-cancel-button"
+                                >
+                                    <i class="bi bi-x-lg"></i>
+                                    Cancel
+                                </a>
+
+                                <button
+                                    type="submit"
+                                    class="account-save-button"
+                                    id="accountSaveButton"
+                                >
+                                    {% if is_edit %}
+                                        <i class="bi bi-check2-circle"></i>
+                                    {% else %}
+                                        <i class="bi bi-person-plus-fill"></i>
+                                    {% endif %}
+
+                                    <span>
+                                        {{ button_text }}
+                                    </span>
+                                </button>
+
+                            </div>
+
+                        </footer>
 
                     </form>
 
                 </div>
-            </div>
+
+            </section>
+
+            <!-- Guidance Sidebar -->
+            <aside class="account-editor-sidebar">
+
+                <header class="account-editor-sidebar-header">
+
+                    <div class="account-editor-sidebar-icon">
+                        <i class="bi bi-info-circle-fill"></i>
+                    </div>
+
+                    <h4>
+                        {% if is_edit %}
+                            Account Update Guide
+                        {% else %}
+                            Account Creation Guide
+                        {% endif %}
+                    </h4>
+
+                    <p>
+                        Follow these recommendations to maintain secure and
+                        organised user access.
+                    </p>
+
+                </header>
+
+                <div class="account-editor-sidebar-body">
+
+                    <ul class="editor-guidance-list">
+
+                        <li>
+
+                            <span class="guidance-list-icon">
+                                <i class="bi bi-envelope-check"></i>
+                            </span>
+
+                            <div>
+                                <strong>Use a Unique Email</strong>
+
+                                <p>
+                                    Every TransitOps account must use a unique
+                                    and valid email address.
+                                </p>
+                            </div>
+
+                        </li>
+
+                        <li>
+
+                            <span class="guidance-list-icon">
+                                <i class="bi bi-person-lock"></i>
+                            </span>
+
+                            <div>
+                                <strong>Assign the Correct Role</strong>
+
+                                <p>
+                                    Give users only the access required for
+                                    their responsibilities.
+                                </p>
+                            </div>
+
+                        </li>
+
+                        <li>
+
+                            <span class="guidance-list-icon">
+                                <i class="bi bi-key"></i>
+                            </span>
+
+                            <div>
+                                <strong>Use a Strong Password</strong>
+
+                                <p>
+                                    Avoid names, mobile numbers and commonly
+                                    used passwords.
+                                </p>
+                            </div>
+
+                        </li>
+
+                        <li>
+
+                            <span class="guidance-list-icon">
+                                <i class="bi bi-toggle-on"></i>
+                            </span>
+
+                            <div>
+                                <strong>Review Account Status</strong>
+
+                                <p>
+                                    Inactive accounts cannot log in but their
+                                    records remain stored.
+                                </p>
+                            </div>
+
+                        </li>
+
+                        {% if is_edit %}
+
+                            <li>
+
+                                <span class="guidance-list-icon">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                </span>
+
+                                <div>
+                                    <strong>Password Changes</strong>
+
+                                    <p>
+                                        Leave password fields blank when the
+                                        current password should remain unchanged.
+                                    </p>
+                                </div>
+
+                            </li>
+
+                        {% endif %}
+
+                    </ul>
+
+                    <div class="editor-security-note">
+
+                        <i class="bi bi-shield-fill-check"></i>
+
+                        <span>
+                            Account access is protected using authentication
+                            and role-based permissions.
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </aside>
 
         </div>
+
     </div>
 
 </div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        /*
+         * Add placeholders and autocomplete attributes without
+         * requiring changes to the Django form widgets.
+         */
+
+        const firstNameInput = document.getElementById(
+            "{{ form.first_name.id_for_label }}"
+        );
+
+        const lastNameInput = document.getElementById(
+            "{{ form.last_name.id_for_label }}"
+        );
+
+        const emailInput = document.getElementById(
+            "{{ form.email.id_for_label }}"
+        );
+
+        const roleInput = document.getElementById(
+            "{{ form.role.id_for_label }}"
+        );
+
+        if (firstNameInput) {
+            firstNameInput.placeholder = "Enter first name";
+            firstNameInput.setAttribute(
+                "autocomplete",
+                "given-name"
+            );
+        }
+
+        if (lastNameInput) {
+            lastNameInput.placeholder = "Enter last name";
+            lastNameInput.setAttribute(
+                "autocomplete",
+                "family-name"
+            );
+        }
+
+        if (emailInput) {
+            emailInput.placeholder = "name@transitops.in";
+            emailInput.setAttribute(
+                "autocomplete",
+                "email"
+            );
+        }
+
+        if (roleInput) {
+            roleInput.setAttribute(
+                "aria-label",
+                "Select user role"
+            );
+        }
+
+        {% if is_edit %}
+
+            const passwordOneInput = document.getElementById(
+                "{{ form.new_password1.id_for_label }}"
+            );
+
+            const passwordTwoInput = document.getElementById(
+                "{{ form.new_password2.id_for_label }}"
+            );
+
+            if (passwordOneInput) {
+                passwordOneInput.placeholder =
+                    "Enter a new password";
+
+                passwordOneInput.setAttribute(
+                    "autocomplete",
+                    "new-password"
+                );
+            }
+
+            if (passwordTwoInput) {
+                passwordTwoInput.placeholder =
+                    "Confirm the new password";
+
+                passwordTwoInput.setAttribute(
+                    "autocomplete",
+                    "new-password"
+                );
+            }
+
+        {% else %}
+
+            const passwordOneInput = document.getElementById(
+                "{{ form.password1.id_for_label }}"
+            );
+
+            const passwordTwoInput = document.getElementById(
+                "{{ form.password2.id_for_label }}"
+            );
+
+            if (passwordOneInput) {
+                passwordOneInput.placeholder =
+                    "Create a secure password";
+
+                passwordOneInput.setAttribute(
+                    "autocomplete",
+                    "new-password"
+                );
+            }
+
+            if (passwordTwoInput) {
+                passwordTwoInput.placeholder =
+                    "Enter the password again";
+
+                passwordTwoInput.setAttribute(
+                    "autocomplete",
+                    "new-password"
+                );
+            }
+
+        {% endif %}
+
+        /*
+         * Password visibility controls.
+         */
+
+        const passwordToggleButtons =
+            document.querySelectorAll(
+                ".password-visibility-button"
+            );
+
+        passwordToggleButtons.forEach(function (button) {
+            button.addEventListener("click", function () {
+                const inputId =
+                    button.dataset.passwordTarget;
+
+                const passwordInput =
+                    document.getElementById(inputId);
+
+                const icon =
+                    button.querySelector("i");
+
+                if (!passwordInput) {
+                    return;
+                }
+
+                const isPasswordHidden =
+                    passwordInput.type === "password";
+
+                passwordInput.type =
+                    isPasswordHidden
+                        ? "text"
+                        : "password";
+
+                if (icon) {
+                    icon.className =
+                        isPasswordHidden
+                            ? "bi bi-eye-slash"
+                            : "bi bi-eye";
+                }
+
+                button.setAttribute(
+                    "aria-label",
+                    isPasswordHidden
+                        ? "Hide password"
+                        : "Show password"
+                );
+            });
+        });
+
+        /*
+         * Account active/inactive status UI.
+         */
+
+        const activeCheckbox = document.getElementById(
+            "{{ form.is_active.id_for_label }}"
+        );
+
+        const statusPanel = document.getElementById(
+            "accountStatusPanel"
+        );
+
+        const statusIcon = document.getElementById(
+            "accountStatusIcon"
+        );
+
+        const statusTitle = document.getElementById(
+            "accountStatusTitle"
+        );
+
+        const statusDescription = document.getElementById(
+            "accountStatusDescription"
+        );
+
+        function updateAccountStatusDisplay() {
+            if (
+                !activeCheckbox ||
+                !statusPanel ||
+                !statusIcon ||
+                !statusTitle ||
+                !statusDescription
+            ) {
+                return;
+            }
+
+            if (activeCheckbox.checked) {
+                statusPanel.classList.add("is-active");
+
+                statusIcon.className =
+                    "bi bi-person-check-fill";
+
+                statusTitle.textContent =
+                    "Active Account";
+
+                statusDescription.textContent =
+                    "The user can sign in to TransitOps.";
+            } else {
+                statusPanel.classList.remove("is-active");
+
+                statusIcon.className =
+                    "bi bi-person-x-fill";
+
+                statusTitle.textContent =
+                    "Inactive Account";
+
+                statusDescription.textContent =
+                    "The user cannot sign in to TransitOps.";
+            }
+        }
+
+        if (activeCheckbox) {
+            updateAccountStatusDisplay();
+
+            activeCheckbox.addEventListener(
+                "change",
+                updateAccountStatusDisplay
+            );
+        }
+
+        /*
+         * Prevent duplicate submission and display loading state.
+         */
+
+        const accountForm = document.getElementById(
+            "accountEditorForm"
+        );
+
+        const saveButton = document.getElementById(
+            "accountSaveButton"
+        );
+
+        if (accountForm && saveButton) {
+            accountForm.addEventListener(
+                "submit",
+                function () {
+                    saveButton.disabled = true;
+
+                    saveButton.innerHTML = `
+                        <span
+                            class="spinner-border spinner-border-sm"
+                            aria-hidden="true"
+                        ></span>
+
+                        <span>
+                            {% if is_edit %}
+                                Saving Changes...
+                            {% else %}
+                                Creating Account...
+                            {% endif %}
+                        </span>
+                    `;
+                }
+            );
+        }
+    });
+</script>
 
 {% endblock %}
